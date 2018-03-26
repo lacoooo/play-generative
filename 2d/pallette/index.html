@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      align-content: center;
+      align-items: center;
+      justify-content: center;
+    }
+    canvas {
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      background:rgb(250, 250, 250);
+      /* background: black; */
+    }
+    img {
+      display: none;
+    }
+  </style>
+</head>
+<canvas id='final'></canvas>
+<canvas id="canvas" width='1000' height='1000' resize hidpi="on"></canvas>
+<img id='img' src="./img/212.jpg" alt="">
+<body>
+  <script src="../../assets/tombola.js"></script>
+  <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+  <script src="../../assets/paper-full.js"></script>
+  <script src="../../assets/colorPalettes100.js"></script>
+  <script src='./head.js' type="text/paperscript" canvas="canvas"></script>
+</body>
+
+</html>

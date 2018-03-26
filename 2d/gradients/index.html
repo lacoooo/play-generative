@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        canvas {
+            position: absolute;
+            display: block;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            /* background: black; */
+        }
+
+        img {
+            display: none;
+        }
+        a {
+            display: none;
+        }
+    </style>
+</head>
+
+<canvas id='final'></canvas>
+<canvas id="canvas" width='1000' height='1000' style='opacity:1' resize hidpi="on"></canvas>
+<a id='save' href="">download</a>
+
+<script>
+
+    var qwq = document.getElementById('canvas')
+    var qeq = document.getElementById('final')
+    var width = window.innerWidth - 100
+    var height = window.innerHeight - 100
+
+    qwq.setAttribute('width', width || 1000)
+    qwq.setAttribute('height', height || 1000)
+
+    qeq.setAttribute('width', width || 1000)
+    qeq.setAttribute('height', height || 1000)
+
+</script>
+
+<body>
+    <script src="https://cdn.bootcss.com/paper.js/0.11.5/paper-full.min.js"></script>
+    <script src='./por.js' type="text/paperscript" canvas="canvas"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script>
+        var canvas = document.getElementById('canvas')
+        var final = document.getElementById('final')
+        var ctx = final.getContext('2d')
+        var save = document.getElementById('save')
+        function Options() {
+            this.size = 50
+            this.pos1_X = 0
+            this.pos1_Y = 0
+            this.pos2_X = 50
+            this.pos2_Y = 0
+            this.color1 = "#1de4eb"
+            this.color2 = "#9140ff"
+            this.download = function () {
+                var base64 = final.toDataURL('image/png', 1)
+
+                save.setAttribute('href', base64)
+                save.setAttribute('download', Math.random() * 100 + ".png")
+                save.click()
+            }
+            this.clear = function () {
+                ctx.clearRect(0, 0, width, height)
+            }
+        }
+
+        var options = new Options()
+
+        function monit() {
+            var gui = new dat.GUI()
+            gui.add(options, 'size', 20, 70)
+            gui.add(options, 'pos1_X', 0, 100)
+            gui.add(options, 'pos1_Y', 0, 100)
+            gui.add(options, 'pos2_X', 0, 100)
+            gui.add(options, 'pos2_Y', 0, 100)
+            gui.addColor(options, 'color1')
+            gui.addColor(options, 'color2')
+            gui.add(options, 'clear')
+            gui.add(options, 'download')
+        }
+        monit()
+    </script>
+</body>
+
+</html>

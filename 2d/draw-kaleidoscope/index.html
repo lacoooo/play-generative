@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>draw kaleidoscope</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div id='app'></div>
+  <a id='save' style='display: none' href="">download</a>
+  <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+  <script>
+
+    let setting = {
+      container: '#app',
+      segments: 26,
+      strokeWidth: 0.2
+    }
+
+    function Options() {
+      this.lineWidth = 0.5
+      this.segments = 50
+      this.lineColor = '#000'
+      this.mirror = 'true'
+      this.showGuide = function () {
+        kaleido.showGuide()
+      }
+      this.init = function () {
+        kaleido.delete()
+        kaleido = new Kaleido(setting)
+        if (kaleido.segments % 2 == 1) kaleido.segments ++
+        kaleido.segments = Math.floor(kaleido.segments)
+      }
+      this.download = function () {
+        var base64 = kaleido.canvas.toDataURL('image/png', 1)
+
+        save.setAttribute('href', base64)
+        save.setAttribute('download', Math.random() * 10000000000000000 + ".png")
+        save.click()
+      }
+    }
+
+    var options = new Options()
+
+    function monit() {
+      var gui = new dat.GUI()
+      gui.add(options, 'lineWidth', 0, 10)
+      var controller = gui.add(options, 'segments', 2, 100)
+      gui.addColor(options, 'lineColor')
+      gui.add(options, 'mirror', ['true', 'false'])
+      gui.add(options, 'showGuide')
+      gui.add(options, 'init')
+      gui.add(options, 'download')
+
+      controller.onChange(function (v) {
+        if (v % 2 == 1) v ++
+        v = Math.floor(v)
+        kaleido.segments = v
+        kaleido.drawGuide()
+      })
+    }
+
+    monit()
+  </script>
+  <script src="kaleido.js"></script>
+  <script src='js/main.js'></script>
+</body>
+
+</html>

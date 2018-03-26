@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            width: 300px;
+        }
+
+        #button {
+            height: 20px;
+            line-height: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 6px 14px;
+            cursor: pointer;
+            color: rgba(0, 0, 0, 0.4);
+            margin: 10px;
+            user-select: none;
+        }
+    </style>
+</head>
+<canvas id='canvas'></canvas>
+<div id='button' onclick="go()">draw</div>
+
+<body>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script>
+        var originData = []
+        var newData = []
+        var simplex = new SimplexNoise()
+        var drawIt = false
+        var canvasSize = 900
+        var prec = 500
+        var brush = 100
+        function go() {
+            drawIt = !drawIt
+            prec = 500
+            stw = 20
+            simplex = new SimplexNoise()
+        }
+        function setup() {
+            createCanvas(canvasSize, canvasSize)
+            background(255)
+            stroke(0)
+            strokeWeight(1)
+            noFill()
+            var canvas = document.getElementById('canvas')
+            var ctx = canvas.getContext('2d')
+            canvas.width = canvasSize
+            canvas.height = canvasSize
+            var img = new Image()
+            img.crossOrigin = "anonymous"
+            img.src = '../img/9(12).jpg'
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, canvasSize, canvasSize)
+                originData = Array.from(ctx.getImageData(0, 0, canvasSize, canvasSize).data)
+                for (let i = 0; i < (originData.length / 4); i++) {
+                    newData[i] = []
+                    for (let y = 0; y < 4; y++) {
+                        newData[i].push(originData[i * 4 + y])
+                    }
+                }
+            }
+            setInterval(() => {
+                if (prec < 11) prec = 20
+                if (brush < 25) brush = 40
+            }, 1000)
+        }
+
+        function draw() {
+            if (!drawIt) {
+                background(255)
+                return
+            }
+            const p = Math.round(Math.random() * newData.length)
+            if (!newData[p]) return
+            const q = (p / canvasSize).toFixed() * 1
+            const e = p % canvasSize
+
+            let pos = []
+            for (let i = 0; i < 4; i++) {
+                pos[i] = [(Math.random() - 0.5) * prec + e, (Math.random() - 0.5) * prec + q]
+            }
+            for (let i = 0; i < 80; i++) {
+                drawLine(pos, p)
+            }
+            if (brush > 20) brush -= 0.1
+            if (prec > 50) prec -= 0.3
+        }
+        function drawLine(pos, p) {
+            beginShape()
+            let R = newData[p][0] + Math.round((Math.random() - 0.5) * 80)
+            let G = newData[p][1] + Math.round((Math.random() - 0.5) * 80)
+            let B = newData[p][2] + Math.round((Math.random() - 0.5) * 80)
+            if (Math.random() > 0.98) {
+                R += 50
+                G += 50
+                B += 50
+            }
+            if (R > 255) R = 255
+            if (G > 255) G = 255
+            if (B > 255) B = 255
+            if (R < 0) R = 0
+            if (G < 0) G = 0
+            if (B < 0) B = 0
+
+            stroke(`rgba(${R}, ${G}, ${B}, .8)`)
+            const scale = Math.round(Math.random() * brush)
+            for (let i = 0; i < 4; i++) {
+                const driftX = Math.round((Math.random() - 0.5) * scale)
+                const driftY = Math.round((Math.random() - 0.5) * scale)
+                curveVertex(pos[i][0] + driftX, pos[i][1] + driftY)
+            }
+            endShape()
+        }
+    </script>
+</body>
+
+</html>

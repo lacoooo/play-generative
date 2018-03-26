@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>spring-demo</title>
+</head>
+
+<body>
+	<script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+	<script src='https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js'></script>
+	<script src='./spring.js'></script>
+	<script src='./demo.js'></script>
+	<script>
+		function Options() {
+			this.dist = 50
+			this.distLine = 100
+			this.init = function () {
+				myp5.initData()
+			}
+		}
+
+		var options = new Options()
+
+		function monit() {
+			var gui = new dat.GUI()
+			gui.add(options, 'dist', 0, 300)
+			gui.add(options, 'distLine', 0, 300)
+			gui.add(options, 'init')
+		}
+
+		monit()
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            user-select: none;
+        }
+
+        canvas {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src='./node.js'></script>
+    <script src='./spring.js'></script>
+    <script src='./main.js'></script>
+    <script>
+        function Options() {
+            this.rate = 1
+            this.count = 100
+            this.strength = -1
+            this.line = 0.05
+            this.stiff = 0.01
+            this.dist = 20
+            this.direct = 'all'
+            this.mode = 'origin'
+            this.init = function () {
+                myp5.background(255);
+                myp5.initNodesAndSprings();
+            }
+        }
+
+        var options = new Options()
+
+        function monit() {
+            var gui = new dat.GUI()
+            gui.add(options, 'rate', 0, 10)
+            gui.add(options, 'count', 50, 300)
+            gui.add(options, 'strength', -2, 0.5)
+            gui.add(options, 'line', 0, 1)
+            gui.add(options, 'stiff', -0.2, 0.2)
+            gui.add(options, 'dist', 0, 500)
+            gui.add(options, 'direct', ['all', 'x', 'y']);
+            gui.add(options, 'mode', ['origin', 'fly']);
+            gui.add(options, 'init')
+        }
+
+        monit()
+    </script>
+</body>
+
+</html>

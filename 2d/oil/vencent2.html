@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/particle.js"></script>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <style>
+        * {
+            user-select: none;
+        }
+    </style>
+</head>
+<canvas id='canvas' style='width:100px'></canvas>
+
+<body>
+    <script>
+        var configs = {
+            backgroundColor: '#eee9e9',
+            particleNum: 20,
+            step: 20,
+            base: 2500,
+            zInc: 0.0001,
+            canvasSize: {
+                width: 1000,
+                height: 1000
+            }
+        }
+
+        var baseImageData = []
+        var drawIt = false
+        var prec = 500
+        var brush = 60
+        var c
+
+        function monit() {
+            gui = new dat.GUI()
+            gui.add(configs, 'step', 1, 20)
+            gui.add(configs, 'base', 500, 3000)
+            gui.add(configs, 'zInc', 0.0001, 0.01)
+            gui.close()
+        }
+
+        function mouseClicked(e) {
+            if (e.target.nodeName != 'CANVAS') return
+            background(255)
+            drawIt = !drawIt
+            simplexNoise = new SimplexNoise()
+        }
+
+        function setup() {
+            c = createCanvas(configs.canvasSize.width, configs.canvasSize.height)
+            background(255)
+            stroke(0)
+            strokeWeight(0.3)
+            noFill()
+
+            var canvas = document.getElementById('canvas')
+            var ctx = canvas.getContext('2d')
+            canvas.width = width
+            canvas.height = height
+            var img = new Image()
+            img.crossOrigin = "anonymous"
+            img.src = './img/9(13).jpg '
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, width, height)
+                let originData = Array.from(ctx.getImageData(0, 0, width, height).data)
+                for (let i = 0; i < (originData.length / 4); i++) {
+                    baseImageData[i] = []
+                    for (let y = 0; y < 3; y++) {
+                        baseImageData[i].push(originData[i * 4 + y])
+                    }
+                }
+            }
+        }
+        function draw() {
+            if (!drawIt) {
+                return
+            }
+            var step = configs.step,
+                base = configs.base,
+                originPostion, color,
+                i, p, angle, wiggle = 10
+
+            for (i = 0, len = particles.length; i < len; i++) {
+                p = particles[i]
+
+                p.pastX = p.x
+                p.pastY = p.y
+
+                originPostion = Math.floor(p.y) * width + Math.floor(p.x)
+
+                angle = simplexNoise.noise3D(p.x / base, p.y / base, zoff) * 10
+                p.x += Math.cos(angle) * step
+                p.y += Math.sin(angle) * step
+
+                let pos = []
+                pos[0] = [(Math.random() - 0.5) * wiggle + p.pastX, (Math.random() - 0.5) * wiggle + p.pastY]
+                pos[1] = [(Math.random() - 0.5) * wiggle + p.pastX, (Math.random() - 0.5) * wiggle + p.pastY]
+                pos[2] = [(Math.random() - 0.5) * wiggle + p.x, (Math.random() - 0.5) * wiggle + p.y]
+                pos[3] = [(Math.random() - 0.5) * wiggle + p.x, (Math.random() - 0.5) * wiggle + p.y]
+
+                for (let i = 0; i < 80; i++) {
+                    drawLine(pos, originPostion)
+                }
+                if (brush > 20) brush -= 0.1
+                if (prec > 50) prec -= 0.3
+
+                if (p.x < 0 || p.x > configs.canvasSize.width || p.y < 0 || p.y > configs.canvasSize.height) {
+                    p.x = p.pastX = configs.canvasSize.width * Math.random()
+                    p.y = p.pastY = configs.canvasSize.height * Math.random()
+                }
+            }
+
+            zoff += configs.zInc
+        }
+
+        var canvas,
+            context,
+            particles = [],
+            simplexNoise = new SimplexNoise(),
+            zoff = 0,
+            gui
+
+        function produceParticles() {
+            for (var i = 0; i < configs.particleNum; i++) {
+                particles[i] = new Particle()
+            }
+        }
+
+        function keyPressed() {
+            if (keyCode !== ENTER) return
+            if (!c) return
+            saveCanvas(c, 'myCanvas', 'jpg')
+            return false;
+        }
+        function init() {
+            produceParticles()
+            monit()
+        }
+        function drawLine(pos, originPostion) {
+            if (!baseImageData[originPostion]) return
+            beginShape()
+            let R = baseImageData[originPostion][0] + Math.round((Math.random() - 0.5) * 80)
+            let G = baseImageData[originPostion][1] + Math.round((Math.random() - 0.5) * 80)
+            let B = baseImageData[originPostion][2] + Math.round((Math.random() - 0.5) * 80)
+            if (Math.random() > 0.98) {
+                R += 50
+                G += 50
+                B += 50
+            }
+            if (R > 255) R = 255
+            if (G > 255) G = 255
+            if (B > 255) B = 255
+            if (R < 0) R = 0
+            if (G < 0) G = 0
+            if (B < 0) B = 0
+
+            stroke(`rgba(${R}, ${G}, ${B}, .8)`)
+            const scale = Math.round(Math.random() * brush)
+            for (let i = 0; i < 4; i++) {
+                const driftX = Math.round((Math.random() - 0.5) * scale)
+                const driftY = Math.round((Math.random() - 0.5) * scale)
+                curveVertex(pos[i][0] + driftX, pos[i][1] + driftY)
+
+            }
+            endShape()
+        }
+
+        init()
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<canvas id='canvas'></canvas>
+<button onclick="go()">draw</button>
+
+<body>
+  <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+  <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+  <script>
+    var originData = []
+    var newData = []
+    var simplex = new SimplexNoise()
+    var drawIt = false
+    var canvasSize = 800
+    var prec = 500
+    function go() {
+      drawIt = !drawIt
+      stw = 20
+      simplex = new SimplexNoise()
+    }
+    function setup() {
+      createCanvas(canvasSize, canvasSize)
+      background(255)
+      stroke(0)
+      strokeWeight(1)
+      noFill()
+      var canvas = document.getElementById('canvas')
+      var ctx = canvas.getContext('2d')
+      canvas.width = canvasSize
+      canvas.height = canvasSize
+      var img = new Image()
+      img.crossOrigin = "anonymous"
+      img.src = '../img/9(12).jpg'
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, canvasSize, canvasSize)
+        originData = Array.from(ctx.getImageData(0, 0, canvasSize, canvasSize).data)
+        for (let i = 0; i < (originData.length / 4); i++) {
+          newData[i] = []
+          for (let y = 0; y < 4; y++) {
+            newData[i].push(originData[i * 4 + y])
+          }
+        }
+      }
+      setInterval(()=> {
+        if (prec < 11) prec = 20
+      }, 1000)
+    }
+
+    function draw() {
+      if (!drawIt) {
+        background(255)
+        return
+      }
+      for (let i = 0; i < 100; i++) {
+        const p = Math.round(Math.random() * newData.length)
+        if (!newData[p]) return
+        const q = (p / canvasSize).toFixed() * 1
+        const e = p % canvasSize
+        // if (simplex.noise2D(q / 100, e / 100) > 0.8) continue
+        stroke(`rgba(${newData[p][0]}, ${newData[p][1]}, ${newData[p][2]}, .8)`)
+        beginShape()
+        curveVertex(e + (Math.random() - 0.5) * prec, q + (Math.random() - 0.5) * prec)
+        curveVertex(e + (Math.random() - 0.5) * prec, q + (Math.random() - 0.5) * prec)
+        curveVertex(e + (Math.random() - 0.5) * prec, q + (Math.random() - 0.5) * prec)
+        curveVertex(e + (Math.random() - 0.5) * prec, q + (Math.random() - 0.5) * prec)
+        endShape()
+      }
+      if (prec > 10) prec -= 1
+    }
+
+  </script>
+</body>
+
+</html>

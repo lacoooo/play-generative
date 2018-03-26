@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+</head>
+
+<body>
+	<script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+	<script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+	<script>
+		var simplex = new SimplexNoise()
+		var canvasize = 800
+		var pars = []
+		var rate = 0.02
+		var large = 0
+		for (let i = 0; i < canvasize; i++) {
+			pars.push({ x: i, y: canvasize / 2 })
+		}
+
+		function setup() {
+			createCanvas(canvasize, canvasize)
+			background(240)
+			strokeWeight(0.1)
+			stroke(`rgba(0,0,0,0.2)`)
+			noFill()
+			setInterval(() => {
+				background(`rgba(255,255,255,0.2)`)
+				simplex = new SimplexNoise()
+				pars = []
+				large = 0
+				for (let i = 0; i < canvasize; i++) {
+					pars.push({ x: i, y: canvasize / 2 })
+				}
+			}, 6000)
+		}
+		function draw() {
+			for (let i = 0; i < canvasize; i++) {
+				const y
+					= simplex.noise2D(pars[i].x * rate, pars[i].y * rate) * large
+					+ canvasize / 2
+				const x = i
+				point(x, y)
+				pars[i].y += 0.005
+			}
+			large += simplex.noise2D(pars[0].x, pars[0].y) * 10
+		}
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+</head>
+
+<body>
+    <canvas id='canvas' style='width: 300px'></canvas>
+    <script>
+        function monit() {
+            gui = new dat.GUI()
+            // gui.add(configs, 'step', 1, 20)
+            // gui.add(configs, 'base', 500, 3000)
+            // gui.add(configs, 'zInc', 0.0001, 0.01)
+            gui.close()
+        }
+
+        monit()
+
+        function keyPressed() {
+            if (keyCode !== ENTER) return
+            if (!p5Canvas) return
+            saveCanvas(p5Canvas, 'myCanvas', 'jpg')
+            return false;
+        }
+
+        function mouseClicked(e) {
+            if (e.target.nodeName != 'CANVAS') return
+            // background(255)
+            anim()
+        }
+
+
+
+        ;
+        var p5Canvas,
+            originData = [],
+            newData = [],
+            points = [],
+            points2 = [],
+            pointNum = 20000,
+            simplex = new SimplexNoise(),
+            canvasSize = 600,
+            pixelsNum = canvasSize * canvasSize,
+            prec = 500,
+            brush = 100,
+            animIt,
+            bgColor = 255,
+            lineColor = 0,
+            lineWidth = 0.1,
+            delta = 0
+        function setup() {
+            p5Canvas = createCanvas(canvasSize, canvasSize)
+            background(bgColor)
+            stroke(lineColor)
+            strokeWeight(lineWidth)
+            noFill()
+            var canvas = document.getElementById('canvas')
+            var ctx = canvas.getContext('2d')
+            canvas.width = canvasSize
+            canvas.height = canvasSize
+            var img = new Image()
+            img.crossOrigin = "anonymous"
+            img.src = './img/1.jpg'
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, canvasSize, canvasSize)
+                originData = Array.from(ctx.getImageData(0, 0, canvasSize, canvasSize).data)
+                for (let i = 0; i < (originData.length / 4); i++) {
+                    newData[i] = originData[i * 4]
+                }
+            }
+        }
+        function draw() {
+
+            for (let j = 0; j < 20; j++) {
+                const point = floor(pixelsNum * random())
+                const color = newData[point]
+                const chance = floor(random(255))
+                if (color < chance) {
+                    stroke(0)
+                    const y = floor(point / canvasSize)
+                    const x = point % canvasSize
+                    for (let i = 0; i < points.length; i++) {
+                        const dist = createVector(x, y).dist(createVector(points[i].x, points[i].y))
+                        if (dist > 200) continue
+                        strokeWeight(0.01 / dist)
+                        line(x, y, points[i].x, points[i].y)
+                    }
+                    points.push({ x, y })
+                }
+            }
+
+        }
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        html,
+        body {
+            background: rgba(0, 0, 0, 0.005);
+        }
+
+        canvas {
+            position: absolute;
+            display: block;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        img {
+            display: none;
+        }
+
+        a {
+            display: none;
+        }
+    </style>
+</head>
+
+<canvas id="canvas" width='1000' height='1000' style='opacity:1' resize hidpi="on"></canvas>
+<a id='save' href="">download</a>
+
+<script>
+
+    var qwq = document.getElementById('canvas')
+    var width = window.innerWidth - 100
+    var height = window.innerHeight - 100
+
+    qwq.setAttribute('width', width || 1000)
+    qwq.setAttribute('height', height || 1000)
+
+</script>
+
+<body>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src='./src/base64.js'></script>
+    <script src="./src/download.min.js"></script>
+    <script src="https://cdn.bootcss.com/paper.js/0.11.5/paper-full.min.js"></script>
+    <script src='./shaper.js' type="text/paperscript" canvas="canvas"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <style>
+        * {
+            user-select: none;
+        }
+    </style>
+</head>
+<canvas id='canvas' style='width:100px'></canvas>
+
+<body>
+    <script>
+        function HSLA() {
+            this.h = 0
+            this.s = 0
+            this.l = 0.5
+            this.a = 1
+        }
+
+        HSLA.prototype.toString = function () {
+            return `hsla(${this.h}, ${this.s * 100}%, ${this.l * 100}%, ${this.a})`
+        }
+
+        /**
+         * Particle
+         */
+        function Particle(x, y, color) {
+            this.x = x || configs.canvasSize.width * Math.random()
+            this.y = y || configs.canvasSize.height * Math.random()
+            this.color = color || new HSLA()
+            this.pastX = this.x
+            this.pastY = this.y
+        }
+    </script>
+    <script>
+        var configs = {
+            backgroundColor: '#eee9e9',
+            particleNum: 20,
+            step: 10,
+            base: 2500,
+            zInc: 0.0001,
+            canvasSize: {
+                width: 1000,
+                height: 1000
+            }
+        }
+
+        var baseImageData = []
+        var drawIt = false
+        var prec = 500
+        var brush = 60
+        var c
+
+        function monit() {
+            gui = new dat.GUI()
+            gui.add(configs, 'step', 1, 20)
+            gui.add(configs, 'base', 500, 3000)
+            gui.add(configs, 'zInc', 0.0001, 0.01)
+            gui.close()
+        }
+
+        function mouseClicked(e) {
+            if (e.target.nodeName != 'CANVAS') return
+            background(255)
+            drawIt = !drawIt
+            simplexNoise = new SimplexNoise()
+        }
+
+        function setup() {
+            c = createCanvas(configs.canvasSize.width, configs.canvasSize.height)
+            background(255)
+            stroke(0)
+            strokeWeight(1)
+            noFill()
+
+            var canvas = document.getElementById('canvas')
+            var ctx = canvas.getContext('2d')
+            canvas.width = width
+            canvas.height = height
+            var img = new Image()
+            img.crossOrigin = "anonymous"
+            img.src = './img/112.jpg'
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, width, height)
+                let originData = Array.from(ctx.getImageData(0, 0, width, height).data)
+                for (let i = 0; i < (originData.length / 4); i++) {
+                    baseImageData[i] = []
+                    for (let y = 0; y < 3; y++) {
+                        baseImageData[i].push(originData[i * 4 + y])
+                    }
+                }
+            }
+        }
+        function draw() {
+            if (!drawIt) {
+                return
+            }
+            for (var j = 0; j < 100; j ++) {
+                var step = configs.step,
+                base = configs.base,
+                originPostion, color,
+                i, p, angle
+
+            for (i = 0, len = particles.length; i < len; i++) {
+                p = particles[i]
+
+                p.pastX = p.x
+                p.pastY = p.y
+
+                originPostion = Math.floor(p.y) * width + Math.floor(p.x)
+
+                if (!baseImageData[originPostion]) return
+                let R = baseImageData[originPostion][0]
+                let G = baseImageData[originPostion][1]
+                let B = baseImageData[originPostion][2]
+
+                angle = simplexNoise.noise3D(p.x / base, p.y / base, zoff) * (280 - R) / 60
+                p.x += Math.cos(angle) * step
+                p.y += Math.sin(angle) * step
+
+                let pos = []
+                pos[0] = [p.pastX, p.pastY]
+                pos[1] = [p.pastX, p.pastY]
+                pos[2] = [p.x, p.y]
+                pos[3] = [p.x, p.y]
+
+
+
+                // stroke(`rgba(${R}, ${G}, ${B}, .8)`)
+
+                drawLine(pos, originPostion)
+                if (brush > 20) brush -= 0.1
+                if (prec > 50) prec -= 0.3
+
+                if (p.x < 0 || p.x > configs.canvasSize.width || p.y < 0 || p.y > configs.canvasSize.height) {
+                    p.x = p.pastX = configs.canvasSize.width * Math.random()
+                    p.y = p.pastY = configs.canvasSize.height * Math.random()
+                }
+            }
+
+            zoff += configs.zInc
+            }
+
+        }
+
+        var canvas,
+            context,
+            particles = [],
+            simplexNoise = new SimplexNoise(),
+            zoff = 0,
+            gui
+
+        function produceParticles() {
+            for (var i = 0; i < configs.particleNum; i++) {
+                particles[i] = new Particle()
+            }
+        }
+
+        function keyPressed() {
+            if (keyCode !== ENTER) return
+            if (!c) return
+            saveCanvas(c, 'myCanvas', 'jpg')
+            return false;
+        }
+        function init() {
+            produceParticles()
+            monit()
+        }
+        function drawLine(pos, originPostion) {
+
+            beginShape()
+
+            const scale = Math.round(Math.random() * brush)
+            for (let i = 0; i < 4; i++) {
+                curveVertex(pos[i][0], pos[i][1])
+            }
+            endShape()
+        }
+
+        init()
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src='../lib/rhill-voronoi-core.min.js'></script>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+</head>
+
+<body>
+    <canvas id='canvas' style='width: 300px'></canvas>
+    <script>
+        function monit() {
+            gui = new dat.GUI()
+            // gui.add(configs, 'step', 1, 20)
+            // gui.add(configs, 'base', 500, 3000)
+            // gui.add(configs, 'zInc', 0.0001, 0.01)
+            gui.close()
+        }
+
+        monit()
+
+        function keyPressed() {
+            if (keyCode !== ENTER) return
+            if (!p5Canvas) return
+            saveCanvas(p5Canvas, 'myCanvas', 'jpg')
+            return false;
+        }
+
+        function mouseClicked(e) {
+            if (e.target.nodeName != 'CANVAS') return
+            // background(255)
+            anim()
+        }
+
+
+
+        ;
+        var p5Canvas,
+            originData = [],
+            newData = [],
+            points = [],
+            pointNum = 20000,
+            simplex = new SimplexNoise(),
+            canvasSize = 600,
+            pixelsNum = canvasSize * canvasSize,
+            prec = 500,
+            brush = 100,
+            animIt,
+            bgColor = 255,
+            lineColor = 0,
+            lineWidth = 0.6
+
+        function setup() {
+            p5Canvas = createCanvas(canvasSize, canvasSize)
+            background(bgColor)
+            stroke(lineColor)
+            strokeWeight(lineWidth)
+            noFill()
+            var canvas = document.getElementById('canvas')
+            var ctx = canvas.getContext('2d')
+            canvas.width = canvasSize
+            canvas.height = canvasSize
+            var img = new Image()
+            img.crossOrigin = "anonymous"
+            img.src = './img/base3.jpg'
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, canvasSize, canvasSize)
+                originData = Array.from(ctx.getImageData(0, 0, canvasSize, canvasSize).data)
+                for (let i = 0; i < (originData.length / 4); i++) {
+                    newData[i] = originData[i * 4]
+                }
+            }
+        }
+        function anim() {
+            if (points.length >= pointNum) return
+            clearInterval(animIt)
+            animIt = setInterval(() => {
+                if (points.length >= pointNum) {
+                    clearInterval(animIt)
+                    return animIt = null
+                }
+                background(bgColor)
+                for (let i = 0; i < 800; i++) {
+                    const point = floor(pixelsNum * random())
+                    const color = newData[point]
+                    const chance = floor(random(200))
+                    if (color < chance) {
+                        const y = floor(point / canvasSize)
+                        const x = point % canvasSize
+                        points.push({ x, y })
+                    }
+                }
+                VoronoiDemo.init()
+            }, 60)
+        }
+        function draw() {
+
+        }
+
+
+
+        ;
+        var VoronoiDemo = {
+            voronoi: new Voronoi(),
+            diagram: null,
+            bbox: { xl: 0, xr: canvasSize, yt: 0, yb: canvasSize },
+
+            init() {
+                this.attachData()
+                this.render()
+            },
+
+            clearSites() {
+                points = [{ x: 0, y: 0 }];
+                this.diagram = this.voronoi.compute(points, this.bbox)
+            },
+
+            attachData() {
+                this.diagram = this.voronoi.compute(points, this.bbox)
+            },
+
+            addSite(x, y) {
+                points.push({ x: x, y: y });
+                this.diagram = this.voronoi.compute(points, this.bbox)
+            },
+
+            render() {
+                // voronoi
+                if (!this.diagram) return
+                // edges
+                var edges = this.diagram.edges,
+                    nEdges = edges.length,
+                    va, vb
+                if (nEdges) {
+                    var edge
+                    const scale = 10
+                    while (nEdges--) {
+                        edge = edges[nEdges]
+                        va = edge.va
+                        vb = edge.vb
+                        line(va.x, va.y, vb.x, vb.y)
+                    }
+                }
+                // var sites = points,
+                //     nSites = sites.length
+                // if (!nSites) return
+                // var site
+                // fill(0)
+                // while (nSites--) {
+                //     site = sites[nSites]
+                //     rect(site.x - 2 / 3, site.y - 2 / 3, 2, 2)
+                // }
+            },
+        };
+
+
+    </script>
+</body>
+
+</html>
