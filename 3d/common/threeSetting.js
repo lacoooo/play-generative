@@ -33,7 +33,7 @@ const threeSetting = {
 
         scene = new THREE.Scene()
         scene.background = new THREE.Color(this.data.bgColor)
-        const distance = 20
+        const distance = 200
         const width = window.innerWidth
         const height = window.innerHeight
         camera = this.data.camera || 
@@ -45,7 +45,7 @@ const threeSetting = {
 
     setup() {
         if (!window.setup) throw 'no setup function'
-        // window.setup()
+        window.setup()
     },
 
     aftSet() {

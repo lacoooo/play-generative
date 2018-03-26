@@ -11,11 +11,11 @@ threeSetting.setCamera(true)
 
 var canvas = document.getElementById('canvas')
 var ctx = canvas.getContext('2d')
-canvas.width = 40
-canvas.height = 40
+canvas.width = 80
+canvas.height = 80
 var img = new Image()
 img.crossOrigin = "anonymous"
-img.src = './img/timg.jpg'
+img.src = './1.jpg'
 img.onload = () => {
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
     let originData = Array.from(ctx.getImageData(0, 0, canvas.width, canvas.height).data)
@@ -48,7 +48,7 @@ function getLinePosition(avac) {
         geometry.vertices.push(
             direction.clone(),
         )
-        direction.z += avac
+        direction.z += avac / 10
     }
     return geometry
 }
@@ -60,13 +60,13 @@ function setup() {
             const color = baseImageData[i * canvas.height + j]
             const avac = (255 - (color[0] + color[1] + color[2]) / 3) / 10
 
-            let object = new THREE.Mesh(getLinePosition(avac), 
+            let object = new THREE.Line(getLinePosition(avac), 
             new THREE.MeshBasicMaterial({
                 color: new THREE.Color(`rgb(${color[0]},${color[1]},${color[2]})`),
             })
         )
-            object.position.x += i - canvas.width / 2
-            object.position.y -= j - canvas.height / 2
+            object.position.x -= j / 10 - canvas.width / 2
+            object.position.y -= i / 10 - canvas.height / 2
             object.position.z += avac
             parentTransform.add(object)
         }
@@ -75,7 +75,7 @@ function setup() {
 }
 
 function draw() {
-        // parentTransform.children.map((ele, index) => {
-        //     ele.rotation.z += 0.1
-        // })
+        parentTransform.children.map((ele, index) => {
+            ele.rotation.z += 0.1
+        })
 }
