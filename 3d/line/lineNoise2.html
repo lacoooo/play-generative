@@ -29,12 +29,14 @@
         let simplex = new SimplexNoise()
 
         let colors = colorPalettes[Math.round(Math.random() * colorPalettes.length)]
-
+        let time = 1
         let geometry = new THREE.Geometry()
         var baseImageData = []
         let materials = []
+        let distance = 300
+        parentTransform = new THREE.Object3D()
         let radius = 100, theta = 0
-        threeSetting.setCamera(true)
+        // threeSetting.setCamera(true)
 
         size = 20
 
@@ -45,43 +47,52 @@
             return color
         }
 
-        threeSetting.setBgColor(getBgColor())
+        threeSetting.setBgColor('#FFFEE3' || getBgColor())
 
         function setup() {
-            parentTransform = new THREE.Object3D()
+            scene.add(parentTransform)
+
+        }
+
+        function draw() {
+            // if (time > 100) return
             let direction = new THREE.Vector3()
-            const rate = 20
-            const scale = 200
-            const time = 300
-            for (let i = 0; i < time; i++) {
-                for (let j = 0; j < time; j++) {
-                    for (let o = 0; o < time; o++) {
+            const rate = 50
+            const scale = 80
+            const jj = 80
+            let final = Math.abs(Math.floor(Math.sin(time / 10) * jj)) + 10
+            geometry = new THREE.Geometry()
+            var x = 0
+            var y = 0
+            var z = 0
+            for (let j = 0; j < final; j++) {
+                for (let o = 0; o < final; o++) {
 
-                        const boom = simplex.noise3D(i / scale, j / scale, o / scale) * rate
-                        if (boom > 10) {
-                            geometry.vertices.push(
-                                { x: i, y: j, z: o }
-                            )
-                        }
+                    const boom = simplex.noise3D(time / scale, j / scale, o / scale) * rate
+                    var driftX = Math.sin(boom)
+                    var driftY = Math.cos(boom)
 
-                    }
+                    x += driftX
+                    y += driftY
+                    geometry.vertices.push(
+                        { x: x, y: y, z: time * 100 }
+                    )
+
                 }
             }
             let object = new THREE.Line(
                 geometry,
                 new THREE.MeshBasicMaterial({
                     color: '#000'
-                }
-                ))
+                })
+            )
             parentTransform.add(object)
-            parentTransform.position.x -= time / 2
-            parentTransform.position.y -= time / 2
-            parentTransform.position.z -= time / 2
-            scene.add(parentTransform)
-        }
+            if (parentTransform.children.length > 110) parentTransform.children.shift()
+            parentTransform.position.z -= 10
+            camera.position.set(0, Math.cos(time / 10) * distance, -200)
+            camera.lookAt(scene.position)
+            time += 0.1
 
-        function draw() {
-            // parentTransform.rotation.y += 0.01
         }
     </script>
 
