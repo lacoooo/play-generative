@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>4-tree</title>
+</head>
+
+<body>
+
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script>
+
+        var options = {
+            canvasSize: 1000,
+            baseRectSize: 300,
+            rectNum: 2
+        }
+
+        function monit() {
+            gui = new dat.GUI()
+            gui.add(options, 'canvasSize', 800, 1500)
+            gui.close()
+        }
+
+        monit()
+
+        class Node {
+            constructor() {
+                this.sub = [null, null, null, null]
+            }
+            setToTree(newNode) {
+                const random = Math.floor(Math.random() * 4)
+                // 为空
+                if (!this.sub[random]) {
+                    this.sub[random] = newNode
+                }
+                // 已有, 继续向下放
+                else {
+                    this.sub[random].setToTree(newNode)
+                }
+            }
+        }
+
+        var nodes = []
+        var nodeNull = new Node()
+
+        function initTree(num) {
+            for (var i = 0; i < num; i++) {
+                nodes.push(new Node())
+            }
+            while (nodes.length > 0) {
+                nodeNull.setToTree(nodes.pop())
+            }
+        }
+
+    </script>
+    <script>
+
+        function setup() {
+            createCanvas(options.canvasSize, options.canvasSize)
+            background(255)
+            noStroke()
+            fill(0)
+        }
+
+        function drawTree(node) {
+            node.sub.map((ele, i) => {
+                // 如果有此子节点
+                if (ele != null) {
+                    const existSub = ele.sub.some(eleSub => eleSub)
+                    // 如果没有更下一级子节点
+                    if (!existSub) {
+                        if (i < 2) {
+                            rect(
+                                i * options.baseRectSize,
+                                0,
+                                options.baseRectSize - 2,
+                                options.baseRectSize - 2
+                            )
+                        } else {
+                            rect(
+                                (i - 2) * options.baseRectSize,
+                                options.baseRectSize,
+                                options.baseRectSize - 2,
+                                options.baseRectSize - 2
+                            )
+                        }
+                    } else {
+                        ele.sub.map((eleSub, i) => {
+                            if (eleSub) drawTree(eleSub)
+                        })
+                    }
+                }
+            })
+        }
+
+        function draw() {
+            if (options.baseRectSize < 2) return
+            initTree(options.rectNum)
+
+            drawTree(nodeNull)
+
+            noLoop()
+        }
+
+    </script>
+</body>
+
+</html>

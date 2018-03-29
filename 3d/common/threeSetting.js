@@ -38,14 +38,14 @@ const threeSetting = {
         const height = window.innerHeight
         camera = this.data.camera || 
         new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000)
-        camera.position.set(distance, 0, 0)
+        camera.position.set(0, 0, distance)
         camera.lookAt(scene.position)
         
     },
 
     setup() {
         if (!window.setup) throw 'no setup function'
-        window.setup()
+        // window.setup()
     },
 
     aftSet() {
