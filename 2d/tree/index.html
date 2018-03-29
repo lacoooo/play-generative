@@ -17,7 +17,7 @@
         var options = {
             canvasSize: 1000,
             baseRectSize: 300,
-            rectNum: 2
+            rectNum: 3
         }
 
         function monit() {
@@ -53,7 +53,7 @@
                 nodes.push(new Node())
             }
             while (nodes.length > 0) {
-                nodeNull.setToTree(nodes.pop())
+                nodeNull.setToTree(nodes.pop(), 0)
             }
         }
 
@@ -63,36 +63,38 @@
         function setup() {
             createCanvas(options.canvasSize, options.canvasSize)
             background(255)
-            noStroke()
+            stroke(255)
+            strokeWeight(1)
             fill(0)
         }
 
-        function drawTree(node) {
+        function drawTree(node, deep) {
             node.sub.map((ele, i) => {
                 // 如果有此子节点
-                if (ele != null) {
-                    const existSub = ele.sub.some(eleSub => eleSub)
-                    // 如果没有更下一级子节点
-                    if (!existSub) {
+                if (ele) {
+                    if (!ele.sub.some(eleSub => eleSub)) {
+                        const log = Math.pow(2, deep)
+                        // row1
                         if (i < 2) {
                             rect(
                                 i * options.baseRectSize,
                                 0,
-                                options.baseRectSize - 2,
-                                options.baseRectSize - 2
+                                options.baseRectSize / log,
+                                options.baseRectSize / log
                             )
-                        } else {
+                        } 
+                        // row2
+                        else {
                             rect(
                                 (i - 2) * options.baseRectSize,
                                 options.baseRectSize,
-                                options.baseRectSize - 2,
-                                options.baseRectSize - 2
+                                options.baseRectSize / log,
+                                options.baseRectSize / log
                             )
                         }
                     } else {
-                        ele.sub.map((eleSub, i) => {
-                            if (eleSub) drawTree(eleSub)
-                        })
+                        // 递归当前子节点
+                        drawTree(ele, deep + 1)
                     }
                 }
             })
@@ -102,7 +104,7 @@
             if (options.baseRectSize < 2) return
             initTree(options.rectNum)
 
-            drawTree(nodeNull)
+            drawTree(nodeNull, 0)
 
             noLoop()
         }
