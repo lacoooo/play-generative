@@ -13,11 +13,31 @@
     <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
     <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
     <script>
-
+        var colors =
+            ['#929383',
+                '#bec0bf',
+                '#b4b4b4',
+                '#ececec',
+                '#47499e',
+                '#ef8ed2',
+                '#ffffff',
+                '#ee3f0b',
+                '#ddf2f3',
+                '#0a0f11',
+                '#5dbfc0',
+                '#4eb0b1',
+                '#b99314',
+                '#fbc303',
+                '#fba3dc',
+                '#ec370d',
+                '#195e98',
+                '#ffd63c',
+                '#bf3f11',
+                '#44467f']
         var options = {
             canvasSize: 1000,
             baseRectSize: 300,
-            rectNum: 3
+            rectNum: 2000000
         }
 
         function monit() {
@@ -27,12 +47,14 @@
         }
 
         monit()
-
+        var rate = 10
         class Node {
             constructor() {
                 this.sub = [null, null, null, null]
+                this.rate = Math.random() * rate
             }
             setToTree(newNode) {
+                if (this.rate > Math.random() * 7) return
                 const random = Math.floor(Math.random() * 4)
                 // 为空
                 if (!this.sub[random]) {
@@ -42,6 +64,7 @@
                 else {
                     this.sub[random].setToTree(newNode)
                 }
+                rate -= 0.1
             }
         }
 
@@ -64,39 +87,38 @@
             createCanvas(options.canvasSize, options.canvasSize)
             background(255)
             stroke(255)
-            strokeWeight(1)
+            strokeWeight(2)
+            // noStroke()
             fill(0)
         }
 
-        function drawTree(node, deep) {
+        function drawTree(node, deep, prevX, prevY) {
             node.sub.map((ele, i) => {
                 // 如果有此子节点
-                if (ele) {
-                    if (!ele.sub.some(eleSub => eleSub)) {
-                        const log = Math.pow(2, deep)
-                        // row1
-                        if (i < 2) {
-                            rect(
-                                i * options.baseRectSize,
-                                0,
-                                options.baseRectSize / log,
-                                options.baseRectSize / log
-                            )
-                        } 
-                        // row2
-                        else {
-                            rect(
-                                (i - 2) * options.baseRectSize,
-                                options.baseRectSize,
-                                options.baseRectSize / log,
-                                options.baseRectSize / log
-                            )
-                        }
-                    } else {
-                        // 递归当前子节点
-                        drawTree(ele, deep + 1)
-                    }
+                if (!ele) return
+
+                const log = Math.pow(2, deep)
+                var newX, newY
+                fill(colors[floor(random() * colors.length)])
+                if (i < 2) {
+                    newX = i * options.baseRectSize / log + prevX
+                    newY = prevY
+                } else {
+                    newX = (i - 2) * options.baseRectSize / log + prevX
+                    newY = options.baseRectSize / log + prevY
                 }
+                if (!ele.sub.some(eleSub => eleSub)) {
+                    rect(
+                        newX,
+                        newY,
+                        options.baseRectSize / log + 200,
+                        options.baseRectSize / log + 200
+                    )
+                } else {
+                    // 递归当前子节点
+                    drawTree(ele, deep + 1, newX, newY)
+                }
+
             })
         }
 
@@ -104,7 +126,7 @@
             if (options.baseRectSize < 2) return
             initTree(options.rectNum)
 
-            drawTree(nodeNull, 0)
+            drawTree(nodeNull, 0, 0, 0)
 
             noLoop()
         }
