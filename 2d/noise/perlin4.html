@@ -13,6 +13,7 @@
 	<script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
 	<script src="../../assets/colorPalettes100.js"></script>
 	<script>
+
 		var simplex = new SimplexNoise()
 		let colors =
 			colorPalettes[Math.floor(Math.random() * colorPalettes.length)]
@@ -43,7 +44,7 @@
 		const S = 1000
 		let index = -200
 		function newColor() {
-			return colors[floor(random(colors.length - 1))]
+			return color( colors[floor(random(colors.length - 1))] )
 		}
 		function setup() {
 			createCanvas(S, S)
@@ -58,12 +59,12 @@
 			}, 100)
 		}
 		function draw() {
-			var color1 = lerpColor(color(colorPair[0]), color(colorPair[1]), noise(frameCount / 100))
-			var color2 = lerpColor(color(colorPair2[0]), color(colorPair2[1]), noise(frameCount / 100))
+			var color1 = lerpColor(colorPair[0], colorPair[1], noise(frameCount / 100))
+			var color2 = lerpColor(colorPair2[0], colorPair2[1], noise(frameCount / 100))
 			for (let x = 0; x < width; x++) {
 				const y = simplex.noise2D((index + x) / 500, 0) * 300 * noise(frameCount / 200)
 				fill(lerpColor(color1, color2, noise(frameCount * 10)))
-				rect(x, index + y, 4, 6)
+				rect(x, index + y, 5, 6)
 			}
 			index += 2
 		}
