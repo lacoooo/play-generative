@@ -12,7 +12,10 @@
 
     <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
     <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="../../assets/colorPalettes100.js"></script>
     <script>
+        var simplex = new SimplexNoise()
         var colors =
             ['#929383',
                 '#bec0bf',
@@ -34,10 +37,11 @@
                 '#ffd63c',
                 '#bf3f11',
                 '#44467f']
+        // let colors = colorPalettes[Math.floor(Math.random() * colorPalettes.length)]
         var options = {
             canvasSize: 1000,
             baseRectSize: 300,
-            rectNum: 2000000
+            rectNum: 50000
         }
 
         function monit() {
@@ -47,14 +51,13 @@
         }
 
         monit()
-        var rate = 10
         class Node {
             constructor() {
                 this.sub = [null, null, null, null]
-                this.rate = Math.random() * rate
+                this.rate = Math.random()
             }
             setToTree(newNode) {
-                if (this.rate > Math.random() * 7) return
+                if (this.rate > 0.7) return
                 const random = Math.floor(Math.random() * 4)
                 // 为空
                 if (!this.sub[random]) {
@@ -64,7 +67,6 @@
                 else {
                     this.sub[random].setToTree(newNode)
                 }
-                rate -= 0.1
             }
         }
 
@@ -86,10 +88,7 @@
         function setup() {
             createCanvas(options.canvasSize, options.canvasSize)
             background(255)
-            stroke(255)
-            strokeWeight(2)
-            // noStroke()
-            fill(0)
+            strokeWeight(1)
         }
 
         function drawTree(node, deep, prevX, prevY) {
@@ -99,21 +98,46 @@
 
                 const log = Math.pow(2, deep)
                 var newX, newY
-                fill(colors[floor(random() * colors.length)])
+                var diameter = options.baseRectSize / log
+
+                if (random() > 0.5) {
+                    noFill()
+                    stroke(colors[floor(random() * colors.length)])
+                } else {
+                    noStroke()
+                    var color = colors[floor(random() * colors.length)]
+                    fill(color)
+                    stroke(color)
+                }
+
                 if (i < 2) {
-                    newX = i * options.baseRectSize / log + prevX
+                    newX = i * diameter + prevX
                     newY = prevY
                 } else {
-                    newX = (i - 2) * options.baseRectSize / log + prevX
-                    newY = options.baseRectSize / log + prevY
+                    newX = (i - 2) * diameter + prevX
+                    newY = diameter + prevY
                 }
                 if (!ele.sub.some(eleSub => eleSub)) {
-                    rect(
-                        newX,
-                        newY,
-                        options.baseRectSize / log + 200,
-                        options.baseRectSize / log + 200
-                    )
+                    push()
+                    translate(deep * 20, 0)
+                    rotate(PI / deep / 10)
+                    shearX(PI / deep / 10)
+                    if (random() > 0.5) {
+                        rect(
+                            newX + 200,
+                            newY + 200,
+                            diameter,
+                            diameter
+                        )
+                    } else {
+                        ellipse(
+                            newX + 200 + diameter / 2,
+                            newY + 200 + diameter / 2,
+                            diameter,
+                            diameter
+                        )
+                    }
+                    pop()
                 } else {
                     // 递归当前子节点
                     drawTree(ele, deep + 1, newX, newY)
