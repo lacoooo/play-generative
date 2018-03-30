@@ -14,23 +14,60 @@
 	<script src="../../assets/colorPalettes100.js"></script>
 	<script>
 		var simplex = new SimplexNoise()
-		let colors = colorPalettes[Math.floor(Math.random() * colorPalettes.length)]
-		const S = 1000
-		let index = - 20
+		let colors =
+			colorPalettes[Math.floor(Math.random() * colorPalettes.length)]
+				.concat(colorPalettes[Math.floor(Math.random() * colorPalettes.length)])
+				.concat(['#000', '#fff']).concat(['#000', '#fff']).concat(['#000', '#fff'])
+		// var colors =
+		// 	['#929383',
+		// 		'#bec0bf',
+		// 		'#b4b4b4',
+		// 		'#ececec',
+		// 		'#47499e',
+		// 		'#ef8ed2',
+		// 		'#ffffff',
+		// 		'#ee3f0b',
+		// 		'#ddf2f3',
+		// 		'#0a0f11',
+		// 		'#5dbfc0',
+		// 		'#4eb0b1',
+		// 		'#b99314',
+		// 		'#fbc303',
+		// 		'#fba3dc',
+		// 		'#ec370d',
+		// 		'#195e98',
+		// 		'#ffd63c',
+		// 		'#bf3f11',
+		// 		'#44467f']
 
+		const S = 1000
+		let index = -200
+		function newColor() {
+			return colors[floor(random(colors.length - 1))]
+		}
 		function setup() {
 			createCanvas(S, S)
 			background(255)
-			stroke(0)
-
+			noStroke()
+			colorPair = [ newColor(), newColor() ]
+			colorPair2 = [ newColor(), newColor() ]
+			setInterval(() => {
+				random() > 0.5 ?
+					colorPair[floor(random(0, 2))] = newColor() :
+					colorPair2[floor(random(0, 2))] = newColor()
+			}, 100)
 		}
 		function draw() {
-			for (let x = 0; x < width; x ++) {
-				const y = simplex.noise2D((index + x) * 0.0005, 0) * 100
-				point(x, index + y)
+			var color1 = lerpColor(color(colorPair[0]), color(colorPair[1]), noise(frameCount / 100))
+			var color2 = lerpColor(color(colorPair2[0]), color(colorPair2[1]), noise(frameCount / 100))
+			for (let x = 0; x < width; x++) {
+				const y = simplex.noise2D((index + x) / 500, 0) * 300 * noise(frameCount / 200)
+				fill(lerpColor(color1, color2, noise(frameCount * 10)))
+				rect(x, index + y, 4, 6)
 			}
-			index += 4
+			index += 2
 		}
+
 	</script>
 </body>
 
