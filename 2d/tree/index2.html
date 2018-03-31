@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>4-tree</title>
+</head>
+
+<body>
+
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="../../assets/colorPalettes100.js"></script>
+    <script>
+        var simplex = new SimplexNoise()
+        var colors =
+            ['#929383',
+                '#bec0bf',
+                '#b4b4b4',
+                '#ececec',
+                '#47499e',
+                '#ef8ed2',
+                '#ffffff',
+                '#ee3f0b',
+                '#ddf2f3',
+                '#0a0f11',
+                '#5dbfc0',
+                '#4eb0b1',
+                '#b99314',
+                '#fbc303',
+                '#fba3dc',
+                '#ec370d',
+                '#195e98',
+                '#ffd63c',
+                '#bf3f11',
+                '#44467f']
+        // let colors = colorPalettes[Math.floor(Math.random() * colorPalettes.length)]
+        var options = {
+            canvasSize: 1000,
+            baseRectSize: 300,
+            rectNum: 200
+        }
+
+        function monit() {
+            gui = new dat.GUI()
+            gui.add(options, 'canvasSize', 800, 1500)
+            gui.close()
+        }
+
+        monit()
+        class Node {
+            constructor() {
+                this.sub = [null, null, null, null]
+                this.rate = Math.random()
+            }
+            setToTree(newNode) {
+                if (this.rate > 0.7) return
+                const random = Math.floor(Math.random() * 4)
+                // 为空
+                if (!this.sub[random]) {
+                    this.sub[random] = newNode
+                }
+                // 已有, 继续向下放
+                else {
+                    this.sub[random].setToTree(newNode)
+                }
+            }
+        }
+
+        var nodes = []
+        var nodeNull = new Node()
+
+        function initTree(num) {
+            for (var i = 0; i < num; i++) {
+                nodes.push(new Node())
+            }
+            while (nodes.length > 0) {
+                nodeNull.setToTree(nodes.pop(), 0)
+            }
+        }
+
+    </script>
+    <script>
+
+        function setup() {
+            createCanvas(options.canvasSize, options.canvasSize)
+            background(0)
+            strokeWeight(1)
+        }
+
+        function drawTree(node, deep, prevX, prevY) {
+            node.sub.map((ele, i) => {
+                // 如果有此子节点
+                if (!ele) return
+
+                const log = Math.pow(2, deep)
+                var newX, newY
+                var diameter = options.baseRectSize / log
+
+                if (random() > 0.5) {
+                    noFill()
+                    stroke(colors[floor(random() * colors.length)])
+                } else {
+                    noStroke()
+                    var color = colors[floor(random() * colors.length)]
+                    fill(color)
+                    stroke(color)
+                }
+
+                if (i < 2) {
+                    newX = i * diameter + prevX
+                    newY = prevY
+                } else {
+                    newX = (i - 2) * diameter + prevX
+                    newY = diameter + prevY
+                }
+                if (!ele.sub.some(eleSub => eleSub)) {
+                    push()
+                    translate(noise(deep * frameCount) * frameCount, 0)
+                    // rotate(PI / noise(deep * frameCount) * frameCount)
+                    // shearX(PI / noise(deep * frameCount) * frameCount)
+                    if (random() > 0.5) {
+                        rect(
+                            newX + 200,
+                            newY + 200,
+                            diameter,
+                            diameter
+                        )
+                    } else {
+                        ellipse(
+                            newX + 200 + diameter / 2,
+                            newY + 200 + diameter / 2,
+                            diameter,
+                            diameter
+                        )
+                    }
+                    pop()
+                } else {
+                    // 递归当前子节点
+                    drawTree(ele, deep + 1, newX, newY)
+                }
+
+            })
+        }
+
+        function draw() {
+            if (options.baseRectSize < 2) return
+            initTree(options.rectNum)
+
+            drawTree(nodeNull, 0, 0, 0)
+
+            // noLoop()
+        }
+
+    </script>
+</body>
+
+</html>
