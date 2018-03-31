@@ -62,8 +62,8 @@
 			var color1 = lerpColor(colorPair[0], colorPair[1], noise(frameCount / 100))
 			var color2 = lerpColor(colorPair2[0], colorPair2[1], noise(frameCount / 100))
 			for (let x = 0; x < width; x++) {
-				const y = simplex.noise2D((index + x) / 500, 0) * 300 * noise(frameCount / 200)
-				fill(lerpColor(color1, color2, noise(frameCount * 10)))
+				const y = simplex.noise2D((index + x) / 800, 0) * 300 * noise(frameCount / 200)
+				(lerpColor(color1, color2, noise(frameCount)))
 				rect(x, index + y, 5, 6)
 			}
 			index += 2
