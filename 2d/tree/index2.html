@@ -119,9 +119,9 @@
                 }
                 if (!ele.sub.some(eleSub => eleSub)) {
                     push()
-                    translate(noise(deep * frameCount) * frameCount, 0)
-                    // rotate(PI / noise(deep * frameCount) * frameCount)
-                    // shearX(PI / noise(deep * frameCount) * frameCount)
+                    translate(noise(deep * frameCount) * frameCount, noise(deep * frameCount) * frameCount)
+                    rotate(PI / noise(deep * frameCount) * frameCount)
+                    shearX(PI / noise(deep * frameCount) * frameCount)
                     if (random() > 0.5) {
                         rect(
                             newX + 200,
