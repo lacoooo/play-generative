@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>kd</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="../../../assets/colorPalettes100.js"></script>
+    <script>
+
+        canvasSize = {
+            width: 1000,
+            height: 1000
+        }
+
+        class Node {
+            constructor(dir) {
+                this.sub = [null, null]
+                this.dir = dir || false
+            }
+
+            setToTree(newNode, dir) {
+                this.dir = dir || this.dir
+                const random = Math.floor(Math.random() * 2)
+                if (!this.sub[random]) {
+                    this.sub[random] = newNode
+                }
+                else {
+                    this.sub[random].setToTree(newNode, !this.dir)
+                }
+            }
+        }
+
+        var nodes = []
+        var nodeNull = new Node(true)
+
+        function initTree(num) {
+            for (var i = 0; i < num; i++) {
+                nodes.push(new Node())
+            }
+            while (nodes.length > 0) {
+                nodeNull.setToTree(nodes.pop())
+            }
+        }
+        
+        initTree(20)
+    </script>
+</body>
+
+</html>
