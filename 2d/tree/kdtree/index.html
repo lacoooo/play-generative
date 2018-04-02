@@ -13,17 +13,22 @@
     <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
     <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
     <script src="../../../assets/colorPalettes100.js"></script>
+    <script src="../../../assets/tombola.js"></script>
     <script>
 
-        canvasSize = {
+        var canvasSize = {
             width: 1000,
             height: 1000
         }
+        var range = tombola.range
 
         class Node {
-            constructor(dir) {
+            constructor(dir, x, y) {
                 this.sub = [null, null]
                 this.dir = dir || false
+                if ( x && y ) {
+                    this.pos = { x: x, y: y }
+                }
             }
 
             setToTree(newNode, dir) {
@@ -39,7 +44,7 @@
         }
 
         var nodes = []
-        var nodeNull = new Node(true)
+        var nodeNull = new Node(true, range(0, canvasSize.width - 1), range(0, canvasSize.height - 1))
 
         function initTree(num) {
             for (var i = 0; i < num; i++) {
@@ -49,7 +54,7 @@
                 nodeNull.setToTree(nodes.pop())
             }
         }
-        
+
         initTree(20)
     </script>
 </body>
