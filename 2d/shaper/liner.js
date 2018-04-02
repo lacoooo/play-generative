@@ -13,7 +13,7 @@ function onMouseDown(event) {
 
 function onMouseDrag(event) {
     for (var i = 0; i < paths.length; i++) {
-        
+
         paths[i].add( event.point + [Math.random() * scale, Math.random() * scale] )
     }
 }
