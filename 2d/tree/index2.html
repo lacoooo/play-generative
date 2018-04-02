@@ -41,7 +41,7 @@
         var options = {
             canvasSize: 1000,
             baseRectSize: 300,
-            rectNum: 100
+            rectNum: 200
         }
 
         function monit() {
@@ -85,11 +85,6 @@
     </script>
     <script>
 
-        function preload() {
-            img = loadImage('./1.jpg')
-
-        }
-
         function setup() {
             createCanvas(options.canvasSize, options.canvasSize)
             background(0)
@@ -104,11 +99,16 @@
                 const log = Math.pow(2, deep)
                 var newX, newY
                 var diameter = options.baseRectSize / log
-                noStroke()
-                var color = colors[floor(random() * colors.length)]
-                fill(color)
-                stroke(color)
 
+                if (random() > 0.5) {
+                    noFill()
+                    stroke(colors[floor(random() * colors.length)])
+                } else {
+                    noStroke()
+                    var color = colors[floor(random() * colors.length)]
+                    fill(color)
+                    stroke(color)
+                }
 
                 if (i < 2) {
                     newX = i * diameter + prevX
@@ -119,18 +119,24 @@
                 }
                 if (!ele.sub.some(eleSub => eleSub)) {
                     push()
-                    // translate(noise(deep * frameCount) * frameCount, noise(deep * frameCount) * frameCount)
-                    // rotate(PI / noise(deep * frameCount) * frameCount)
-                    // shearX(PI / noise(deep * frameCount) * frameCount)
-                    image(  img,
+                    translate(noise(deep * frameCount) * frameCount, noise(deep * frameCount) * frameCount)
+                    rotate(PI / noise(deep * frameCount) * frameCount)
+                    shearX(PI / noise(deep * frameCount) * frameCount)
+                    if (random() > 0.5) {
+                        rect(
                             newX + 200,
                             newY + 200,
                             diameter,
-                            diameter,
-                            random()* 1000,
-                            random()* 1000
+                            diameter
                         )
-
+                    } else {
+                        ellipse(
+                            newX + 200 + diameter / 2,
+                            newY + 200 + diameter / 2,
+                            diameter,
+                            diameter
+                        )
+                    }
                     pop()
                 } else {
                     // 递归当前子节点

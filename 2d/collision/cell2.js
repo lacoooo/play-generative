@@ -8,16 +8,10 @@ function Ball(radius, position, vector) {
 	this.boundOffset = [];
 	this.sidePoints = [];
 	this.path = new Path({
-		fillColor: {
-			hue: Math.random() * 360,
-			saturation: 0,
-			brightness: 0
-		},
-		// strokeColor: 'black',
-		closed: true,
-		blendMode: 'normal'
+		fillColor: 'black',
+		blendMode: 'xor'
 	});
-	this.path.opacity = 0.1
+	// this.path.opacity = 0.1
 	// this.path.selection = true
 
 	for (var i = 0; i < this.numSegment; i++) {
@@ -57,7 +51,7 @@ Ball.prototype = {
 			segments[i].point = this.getSidePoint(i);
 		}
 
-		// this.path.smooth();
+		this.path.smooth();
 		for (var i = 0; i < this.numSegment; i++) {
 			if (this.boundOffset[i] > this.radius / 4) {
 				this.boundOffset[i] = this.radius / 4;
