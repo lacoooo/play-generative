@@ -1,153 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>kd</title>
+    <title>kd-tree</title>
 </head>
-
 <body>
-    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
-    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
-    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
-    <script src="../../../assets/colorPalettes100.js"></script>
-    <script src="../../../assets/tombola.js"></script>
+    <script src='./kdtree.js'></script>
     <script>
-
-        var canvasSize = {
-            width: 1000,
-            height: 1000
-        }
-        var range = tombola.rangeFloat
-
-        class Node {
-            constructor(x, y, deep) {
-                this.sub = [null, null]
-                if (x && y) {
-                    this.pos = { x: x, y: y }
-                } else {
-                    this.pos = undefined
-                }
-                if (deep !== undefined) this.setDirection(this.setDeep(deep))
-            }
-
-            setDirection(deep) {
-                if (!(deep % 2)) this.dir = true
-                else this.dir = false
-            }
-            setDeep(deep) {
-                this.deep = deep
-                return deep
-            }
-            setPosition(prePos, preprePos, hand) {
-                this.prePos = prePos
-                // 最左子树
-                if (hand == 0) {
-                    let x, y
-                    if (!this.dir) {
-                        x = prePos && prePos.x
-                        y = preprePos && preprePos.y || canvasSize.height
-                    } else {
-                        x = preprePos && preprePos.x || canvasSize.width
-                        y = prePos && prePos.y
-                    }
-                    const currentX = range(0, x)
-                    const currentY = range(0, y)
-                    if (x == undefined || y == undefined) return
-                    if (currentX == 0 || currentX == x) return
-                    if (currentY == 0 || currentY == y) return
-                    this.pos = {
-                        x: currentX,
-                        y: currentY
-                    }
-                }
-
-                // 最右子树
-                else if (hand == 1) {
-                    let x, y
-                    if (!this.dir) {
-                        x = prePos && prePos.x
-                        y = preprePos && preprePos.y || 0
-                    } else {
-                        x = preprePos && preprePos.x || 0
-                        y = prePos && prePos.y
-                    }
-                    const currentX = range(x, canvasSize.width)
-                    const currentY = range(y, canvasSize.height)
-                    if (x == undefined || y == undefined) return
-                    if (currentX == canvasSize.width || currentX == x) return
-                    if (currentY == canvasSize.height || currentY == y) return
-                    this.pos = {
-                        x: currentX,
-                        y: currentY
-                    }
-                }
-
-            }
-
-            setToTree(newNode, deep, hand) {
-                // const random = Math.floor(Math.random() * 2)
-                const random = 1
-                if (!this.sub[random]) {
-                    this.sub[random] = newNode
-                    newNode.setDirection(newNode.setDeep(deep))
-                    newNode.setPosition(this.pos, this.prePos, hand)
-                }
-                else {
-                    this.sub[random].setToTree(newNode, deep + 1, random)
-                }
-            }
-        }
-
-        var nodes = []
-        var nodeNull = new Node(range(1, canvasSize.width - 1), range(1, canvasSize.height - 1), 0)
-
-        function initTree(num) {
-            for (var i = 0; i < num; i++) {
-                nodes.push(new Node())
-            }
-            while (nodes.length > 0) {
-                nodeNull.setToTree(nodes.pop(), 1, 1)
-            }
-        }
-
-        // initTree(20)
-    </script>
-    <script>
-
-        function setup() {
-            createCanvas(canvasSize.width, canvasSize.height)
-            background(255)
-            noStroke()
-            strokeWeight(1)
-            fill(0)
-        }
-
-        function drawTree(node, hand) {
-            if (!node.pos) return
-            fill(0)
-            rect(node.pos.x - 2, node.pos.y - 2, 4, 4)
-            noFill()
-            stroke(0)
-            if (hand == 0) {
-                if (node.dir) line(node.pos.x, 0, node.pos.x, node.prePos && node.prePos.y || canvasSize.height)
-                else line(0, node.pos.y, node.prePos && node.prePos.x || canvasSize.width, node.pos.y)
-            } else {
-                if (node.dir) line(node.pos.x, node.prePos && node.prePos.y || 0, node.pos.x, canvasSize.height)
-                else line(node.prePos && node.prePos.x || canvasSize.width, node.pos.y, canvasSize.width, node.pos.y)
-            }
-            if (node.sub[0]) drawTree(node.sub[0], 0)
-            if (node.sub[1]) drawTree(node.sub[1], 1)
-        }
-
-        function draw() {
-            drawTree(nodeNull)
-            noLoop()
-        }
-
+        
     </script>
 </body>
-
 </html>
