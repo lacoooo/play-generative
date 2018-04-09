@@ -1,15 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>kd-tree</title>
 </head>
+
 <body>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
     <script src='./kdtree.js'></script>
     <script>
-        
+        let tree
+        const canvasSize = 1000
+        function setup() {
+            createCanvas(canvasSize, canvasSize)
+            background(200)
+            stroke(255)
+            strokeWeight(1)
+            fill(0)
+            tree = new Kdtree(canvasSize, canvasSize).produceNodes(200)
+            tree.getNode(0)
+        }
+
+        function drawTree(node, bounds) {
+            var leftBounds = []
+            leftBounds[0] = bounds[0].slice(0)
+            leftBounds[1] = bounds[1].slice(0)
+
+            var rightBounds = []
+            rightBounds[0] = bounds[0].slice(0)
+            rightBounds[1] = bounds[1].slice(0)
+
+            strokeWeight(4)
+            stroke(255)
+            if (node.left) {
+                line(node.x, node.y, node.left.x, node.left.y)
+            }
+            if (node.right) {
+                line(node.x, node.y, node.right.x, node.right.y)
+            }
+
+            stroke(0)
+            strokeWeight(3)
+            if (node.dimension == 0) {
+                line(node.x, bounds[1][0], node.x, bounds[1][1])
+                leftBounds[0][1] = node.x
+                rightBounds[0][0] = node.x
+            } else {
+                line(bounds[0][0], node.y, bounds[0][1], node.y)
+                leftBounds[1][1] = node.y
+                rightBounds[1][0] = node.y
+            }
+            if (node.left) {
+                drawTree(node.left, leftBounds)
+            }
+            if (node.right) {
+                drawTree(node.right, rightBounds)
+            }
+        }
+
+        function draw() {
+            drawTree(tree.root, [[0, canvasSize], [0, canvasSize]])
+            noLoop()
+        }
     </script>
 </body>
+
 </html>

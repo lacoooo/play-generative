@@ -10,10 +10,12 @@ class Node {
         this.collectionLeft = []
         this.collectionRight = []
         this.parent = ''
+        this.deep = 0
     }
 
-    add() {
-        let dimension = 0
+    add(dimension, deep) {
+        this.deep = deep
+        if (this.dimension == null) this.dimension = dimension
         if (this.dimension) dimension = 0
         else dimension = 1
         let centerLeft = tree.getCenter(this.collectionLeft, dimension)
@@ -22,7 +24,7 @@ class Node {
             if (!this.left) {
                 this.left = centerLeft
             }
-            this.left.add()
+            this.left.add(dimension, deep + 1)
         }
 
         let centerRight = tree.getCenter(this.collectionRight, dimension)
@@ -31,7 +33,7 @@ class Node {
             if (!this.right) {
                 this.right = centerRight
             }
-            this.right.add()
+            this.right.add(dimension, deep + 1)
         }
 
     }
@@ -60,7 +62,7 @@ class Kdtree {
 
     getCenter(collection, dimension) {
         const len = collection.length
-        if (!len || len < 2) return false
+        if (!len || len < 1) return false
         let total = 0
         for (let i = 0; i < len; i++) {
             if (dimension == 0) total += collection[i].x
@@ -89,7 +91,6 @@ class Kdtree {
             if (ele[num] < center[num]) center.collectionLeft.push(ele)
             else if (ele[num] > center[num]) center.collectionRight.push(ele)
         })
-        // center.centerNum = centerNum + ', ' + center[num]
         return center
     }
 
@@ -101,9 +102,9 @@ class Kdtree {
     addToTree(newNode, dimension) {
         newNode.dimension = dimension
         this.root = newNode
-        this.root.add()
+        this.root.add(1, 1)
     }
 
 }
 
-let tree = new Kdtree(1000, 1000).produceNodes(100)
+
