@@ -1,7 +1,7 @@
 ;
 class Node {
 
-    constructor(x, y) {
+    constructor(x, y, color) {
         this.x = x
         this.y = y
         this.left = null
@@ -11,6 +11,7 @@ class Node {
         this.collectionRight = []
         this.parent = ''
         this.deep = 0
+        this.color = color || ''
     }
 
     add(dimension, deep) {
@@ -51,13 +52,24 @@ class Kdtree {
         this.collection = []
     }
 
-    produceNodes(num = 10) {
+    randomNodes(num = 10) {
         for (let i = 0; i < num; i++) {
             const x = Math.random() * this.size.sizeX
             const y = Math.random() * this.size.sizeY
-            this.collection.push(new Node(x, y))
+            this.putNode(x, y)
         }
         return this
+    }
+
+    getNodes(data) {
+        for (let i = 0; i < data.length; i ++) {
+            this.putNode(data[i].x, data[i].y, data[i].color)
+        }
+        return this
+    }
+
+    putNode(x, y, color) {
+        this.collection.push(new Node(x, y, color))
     }
 
     getCenter(collection, dimension) {
@@ -70,7 +82,7 @@ class Kdtree {
         }
         const centerNum = total / len
         let center = null
-        let defferMin = 99999999999999
+        let defferMin = Number.POSITIVE_INFINITY
         let index = 0
 
         let num
@@ -94,9 +106,10 @@ class Kdtree {
         return center
     }
 
-    getNode(dimension) {
+    initTree(dimension) {
         let center = this.getCenter(this.collection, dimension)
         this.addToTree(center, dimension)
+        return this
     }
 
     addToTree(newNode, dimension) {
