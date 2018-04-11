@@ -46,7 +46,7 @@
             const area = canvasSize * canvasSize
             for (let i = 0; i < 100000; i++) {
                 let pos = floor(random() * area)
-                if (pixelData[pos][3] > 220) continue
+                if (pixelData[pos][3] < 100) continue
                 const x = pos % canvasSize
                 const y = (pos - x) / canvasSize
                 list.push({ x, y, color: pixelData[pos] })
