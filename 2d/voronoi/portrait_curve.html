@@ -146,7 +146,7 @@
                         vb = edge.vb
                         beginShape()
                         vertex(va.x, va.y);
-                        quadraticVertex(vb.x + (Math.random() - 0.5) * 20, vb.y + (Math.random() - 0.5) * 20, vb.x, vb.y)
+                        quadraticVertex(va.x + random(-20, 20), va.y + random(-20, 20), vb.x, vb.y)
                         endShape()
                     }
                 }
