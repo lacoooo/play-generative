@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src='./voronoi.js'></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+</head>
+
+<body>
+    <input type="file" id="file" multiple="multiple" accept="image/png,image/jpeg,image/jpg" onchange="selectImage(this);" />
+    <button onclick="stop(this)">不再增加新节点</button>
+    <button onclick="stopDrawIt(this)">停止绘画</button>
+    <button onclick="download(this)">下载当前帧</button>
+    <div id="point">节点数: 0</div>
+    <canvas id='canvas' style='display: none;width: 300px'></canvas>
+
+    <script>        
+        ;
+        function Options() {
+            this.distance = 200
+        }
+
+        var options = new Options()
+
+        function monit() {
+            var gui = new dat.GUI()
+            gui.add(options, 'distance', 10, 500)
+        }
+        monit()
+
+        var p5Canvas,
+            originData = [],
+            newData = [],
+            points = [],
+            pointNum = 20000,
+            canvasSize = 1000,
+            pixelsNum = canvasSize * canvasSize,
+            prec = 500,
+            brush = 100,
+            animIt,
+            bgColor = 255,
+            lineColor = 0,
+            lineWidth = 0.6,
+            image = '',
+            stopDraw = false,
+            adding = true
+        var pointDom = document.getElementById('point')
+        function stop(ss) {
+            adding = !adding
+            if (adding) {
+                ss.innerHTML = '不再增加新节点'
+            } else {
+                ss.innerHTML = '后台继续增加新节点'
+            }
+        }
+
+        function stopDrawIt(ss) {
+            stopDraw = !stopDraw
+            if (stopDraw) {
+                ss.innerHTML = '继续绘画'
+            } else {
+                ss.innerHTML = '停止绘画'
+            }
+        }
+
+        function download() {
+            save('sketch.jpg')
+        }
+
+        function selectImage(file) {
+            if (!file.files || !file.files[0]) {
+                return
+            }
+
+            originData = []
+            newData = []
+            points = []
+
+            var reader = new FileReader()
+            reader.onload = function (evt) {
+                image = evt.target.result;
+
+                var canvas = document.getElementById('canvas')
+                var ctx = canvas.getContext('2d')
+                canvas.width = canvasSize
+                canvas.height = canvasSize
+                var img = new Image()
+                img.crossOrigin = "anonymous"
+                img.src = image
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, canvasSize, canvasSize)
+                    originData = Array.from(ctx.getImageData(0, 0, canvasSize, canvasSize).data)
+                    for (let i = 0; i < (originData.length / 4); i++) {
+                        newData[i] = originData[i * 4]
+                    }
+                    background(255)
+                    anim()
+                    this.files = ''
+                }
+
+            }
+            reader.readAsDataURL(file.files[0])
+        }
+    </script>
+
+    <script>
+
+
+        function keyPressed() {
+            if (keyCode !== ENTER) return
+            if (!p5Canvas) return
+            saveCanvas(p5Canvas, 'myCanvas', 'jpg')
+            return false;
+        }
+
+        function mouseClicked(e) {
+            if (e.target.nodeName != 'CANVAS') return
+
+
+        }
+
+
+
+
+
+        function setup() {
+            p5Canvas = createCanvas(canvasSize, canvasSize)
+            background(bgColor)
+            stroke(lineColor)
+            strokeWeight(lineWidth)
+            strokeCap(ROUND)
+            noFill()
+
+        }
+        function anim() {
+            if (points.length >= pointNum) return
+            if (animIt) clearInterval(animIt)
+
+            animIt = setInterval(() => {
+                if (points.length >= pointNum) {
+                    clearInterval(animIt)
+                    return animIt = null
+                }
+                if (!adding) return
+                for (let i = 0; i < 1500; i++) {
+                    const point = floor(pixelsNum * random())
+                    const color = newData[point]
+                    const chance = floor(random(200))
+                    if (color < chance) {
+                        const y = floor(point / canvasSize)
+                        const x = point % canvasSize
+                        points.push({ x, y })
+                    }
+                }
+            }, 500)
+
+        }
+        function draw() {
+
+        }
+
+        setInterval(() => {
+            pointDom.innerHTML = '节点数: ' + points.length
+            if (stopDraw) return
+            background(bgColor)
+            VoronoiDemo.init()
+        }, 1000)
+
+        var VoronoiDemo = {
+            voronoi: new Voronoi(),
+            diagram: null,
+            bbox: { xl: 0, xr: canvasSize, yt: 0, yb: canvasSize },
+
+            init() {
+                this.attachData()
+                this.render()
+            },
+
+            clearSites() {
+                points = [{ x: 0, y: 0 }];
+                this.diagram = this.voronoi.compute(points, this.bbox)
+            },
+
+            attachData() {
+                this.diagram = this.voronoi.compute(points, this.bbox)
+            },
+
+            addSite(x, y) {
+                points.push({ x: x, y: y });
+                this.diagram = this.voronoi.compute(points, this.bbox)
+            },
+
+            render() {
+                // voronoi
+                if (!this.diagram) return
+                // edges
+                var edges = this.diagram.edges,
+                    nEdges = edges.length,
+                    va, vb
+                if (nEdges) {
+                    var edge
+                    const scale = 10
+                    while (nEdges--) {
+                        edge = edges[nEdges]
+                        va = edge.va
+                        vb = edge.vb
+                        var distR = dist(va.x, va.y, vb.x, vb.y)
+                        if (distR < options.distance) {
+                            var weight = 30 / distR
+                            if (weight > 4) weight = 4
+                            if (distR > 40) {
+                                fill(`rgba(${floor(random(255))}, ${floor(random(255))}, ${floor(random(255))}, ${20 / distR})`)
+                            } else {
+                                strokeWeight(weight)
+                                stroke(random(0, 100))
+                            }
+                            beginShape()
+                            vertex(va.x, va.y);
+                            quadraticVertex(vb.x + random(-distR, distR), vb.y + random(-distR, distR), vb.x, vb.y)
+                            endShape()
+                        }
+                    }
+                }
+
+            },
+        };
+
+
+    </script>
+</body>
+
+</html>
