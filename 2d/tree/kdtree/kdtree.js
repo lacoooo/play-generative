@@ -62,7 +62,7 @@ class Kdtree {
     }
 
     getNodes(data) {
-        for (let i = 0; i < data.length; i ++) {
+        for (let i = 0; i < data.length; i++) {
             this.putNode(data[i].x, data[i].y, data[i].color)
         }
         return this
@@ -106,8 +106,36 @@ class Kdtree {
         return center
     }
 
+    getRandom(collection, dimension) {
+        const len = collection.length
+        if (!len || len < 1) return false
+        let total = 0
+        for (let i = 0; i < len; i++) {
+            if (dimension == 0) total += collection[i].x
+            else if (dimension == 1) total += collection[i].y
+        }
+        const centerNum = total / len
+        let center = null
+        let index = 0
+
+        let num
+        if (dimension == 0) num = 'x'
+        else if (dimension == 1) num = 'y'
+
+        index = Math.floor(Math.random() * len)
+        center = collection[index]
+
+        collection.map((ele, i) => {
+            if (i == index) return
+            if (!ele[num] || !center[num]) return
+            if (ele[num] < center[num]) center.collectionLeft.push(ele)
+            else if (ele[num] > center[num]) center.collectionRight.push(ele)
+        })
+        return center
+    }
+
     initTree(dimension) {
-        let center = this.getCenter(this.collection, dimension)
+        let center = this.getRandom(this.collection, dimension)
         this.addToTree(center, dimension)
         return this
     }

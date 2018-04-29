@@ -24,7 +24,7 @@
         var ctx
 
         function preload() {
-            img = loadImage('./2.jpg')
+            img = loadImage('./1.jpg')
         }
 
         function setup() {
@@ -33,7 +33,7 @@
             img.loadPixels()
             background(255)
             stroke(0)
-            strokeWeight(1.5)
+            strokeWeight(1)
             // noStroke()
             fill(255)
             const pixels = img.pixels
@@ -44,9 +44,9 @@
                 ])
             }
             const area = canvasSize * canvasSize
-            for (let i = 0; i < 100000; i++) {
+            for (let i = 0; i < 14000; i++) {
                 let pos = floor(random() * area)
-                if (pixelData[pos][3] > 220) continue
+                if (pixelData[pos][3] > 180) continue
                 const x = pos % canvasSize
                 const y = (pos - x) / canvasSize
                 list.push({ x, y, color: pixelData[pos] })
@@ -66,9 +66,26 @@
             rightBounds[0] = bounds[0].slice(0)
             rightBounds[1] = bounds[1].slice(0)
 
-
             var co = colors[floor(random() * colors.length)]
-            // stroke(`rgb(${node.color[0]}, ${node.color[1]}, ${node.color[2]})`)
+
+            // console.log(co)
+            noStroke()
+            // fill(`rgb(${node.color[0]}, ${node.color[1]}, ${node.color[2]})`)
+            var sr = 50
+            var gradient = ctx.createLinearGradient(
+                node.x + floor(random(-sr, sr)),
+                node.y + floor(random(-sr, sr)),
+                node.x + floor(random(-sr, sr)),
+                node.y + floor(random(-sr, sr))
+            );
+            gradient.addColorStop(0, `rgb(${node.color[0]}, ${node.color[1]}, ${node.color[2]})`);
+            gradient.addColorStop(1, co || `rgb(${floor(random(0, 255))}, ${floor(random(0, 255))}, ${floor(random(0, 255))})`);
+            ctx.fillStyle = gradient
+            ellipseMode(CORNER)
+            if (random() > 0.7) rect(bounds[0][0], bounds[1][0], bounds[0][1] - bounds[0][0], bounds[1][1] - bounds[1][0])
+            else ellipse(bounds[0][0], bounds[1][0], bounds[0][1] - bounds[0][0], bounds[1][1] - bounds[1][0])
+
+            stroke(`rgb(${floor(random(0, 255))}, ${floor(random(0, 255))}, ${floor(random(0, 255))})`)
             if (node.dimension == 0) {
                 line(node.x, bounds[1][0], node.x, bounds[1][1])
                 leftBounds[0][1] = node.x
@@ -77,23 +94,6 @@
                 line(bounds[0][0], node.y, bounds[0][1], node.y)
                 leftBounds[1][1] = node.y
                 rightBounds[1][0] = node.y
-            }
-            // console.log(co)
-            noStroke()
-            // fill(`rgb(${node.color[0]}, ${node.color[1]}, ${node.color[2]})`)
-            var gradient = ctx.createRadialGradient(node.x, node.y, 0, node.x + floor(random(-200, 200)), node.y, floor(random(0, 300)));
-            gradient.addColorStop(0, `rgb(${node.color[0]}, ${node.color[1]}, ${node.color[2]})`);
-            gradient.addColorStop(1, `rgb(${node.color[0] + floor(random(-200, 200))}, ${node.color[1] + floor(random(-200, 200))}, ${node.color[2] + floor(random(-200, 200))})`);
-            ctx.fillStyle = gradient
-            ellipseMode(CORNER)
-            if (random() > 0.7) rect(bounds[0][0], bounds[1][0], bounds[0][1] - bounds[0][0] - 2, bounds[1][1] - bounds[1][0] - 2)
-            else ellipse(bounds[0][0], bounds[1][0], bounds[0][1] - bounds[0][0] - 2, bounds[1][1] - bounds[1][0] - 2)
-
-            if (node.left) {
-                line(node.x, node.y, node.left.x, node.left.y)
-            }
-            if (node.right) {
-                line(node.x, node.y, node.right.x, node.right.y)
             }
 
             if (node.left) {
