@@ -6,47 +6,63 @@ var oldSize = view.size;
 var black = new Color('black');
 var white = new Color('white')
 var mousePos = view.center;
-var selected = false;
-
+var simplex = new SimplexNoise()
+var ee = 0
+var index = 0
+var final = document.getElementById('canvas')
+var save = document.getElementById('save')
 onResize();
 
 function onMouseDown(event) {
 	renderDiagram();
 }
 
-function onFrame() {
-	for (var i = 0; i < 100; i++) {
-		var x = Math.floor(Math.random() * 1000)
-		var y = Math.floor(Math.random() * 1000)
-		var pixel = raster.getPixel(x, y)
-		if (pixel.gray < 0.2 && Math.random() < 0.98) continue
-		var color = {
-			origin: [x, y],
-			destination: [x + tombola.range(-200, 300), y + tombola.range(-300, 100)],
-			gradient: {
-				stops: [
-					new Color(pixel.red, pixel.green, pixel.blue),
-					new Color(
-						pixel.red + tombola.range(-1, 1),
-						pixel.green + tombola.range(-1, 1),
-						pixel.blue + tombola.range(-1, 1)
-					)
-				],
-				radial: false
-			}
+function go() {
+	if (index < 100) {
+		for (var i = 0; i < 20; i++) {
+			var x = Math.floor(Math.random() * 1000)
+			var y = Math.floor(Math.random() * 1000)
+			var pixel = raster.getPixel(x, y)
+			var color = white
+			generateBeeHivePoints(x, y, color, pixel.gray);
 		}
-		generateBeeHivePoints(x, y, color, pixel.gray);
+	} else {
+		for (var i = 0; i < 20; i++) {
+			sites.shift()
+		}
 	}
+
+	for (var i = 0; i < sites.length; i++) {
+		sites[i].x += (simplex.noise2D(i, ee) - 0.5) * 10
+		sites[i].y += (simplex.noise2D(i, ee)) * 5
+		if (sites[i].x < 0) sites[i].x = 1000
+	}
+	ee += 0.001
+	renderDiagram();
+
 }
 
-setInterval(function() {
-	renderDiagram();
-}, 5000)
+function saveIt() {
+	var base64 = final.toDataURL('image/png', 1)
+	save.setAttribute('href', base64)
+	save.setAttribute('download', index + ".png")
+	save.click()
+}
+
+setInterval(function () {
+	if (index > 200) return
+	index++
+	go()
+	saveIt()
+}, 1500)
 
 function renderDiagram() {
 	project.activeLayer.children = [];
 	var diagram = voronoi.compute(sites, bbox);
 	if (diagram) {
+		var rectangle = new Rectangle(new Point(0, 0), new Point(1000, 1000));
+		var path = new Path.Rectangle(rectangle);
+		path.fillColor = black;
 		for (var i = 0, l = sites.length; i < l; i++) {
 			var cell = diagram.cells[sites[i].voronoiId];
 			if (cell) {
@@ -83,25 +99,19 @@ function generateBeeHivePoints(i, j, color, gray) {
 	var points = [];
 	var point = new Point(i, j)
 	point.color = color
-	point.selected = function() {
-		if (gray < 0.04) return true
-		else if (gray < 0.08 && Math.random() < 0.3) {
-			return true
-		}
-		return false
-	}()
+	point.gray = gray
 	points.push(point);
 	sites = sites.concat(points)
 }
 
 function createPath(points, center) {
 	var path = new Path();
-	if (!center.selected) {
-		var color = center.color
-		path.fillColor = color
-	} else {
-		path.fullySelected = true;
-	}
+
+	var color = center.color
+	path.strokeColor = color
+	var gray = raster.getPixel(center.x, center.y).gray
+	var width = gray * 6
+	path.strokeWidth = width
 	path.closed = true;
 
 	for (var i = 0, l = points.length; i < l; i++) {
@@ -114,12 +124,7 @@ function createPath(points, center) {
 			handleOut: vector
 		});
 	}
-	if (tombola.rangeFloat(0, 1) > 0.3) {
-
-		path.scale(0.95);
-	} else {
-		path.scale(1.1);
-	}
+	path.scale(gray + gray * index / 200);
 	removeSmallBits(path);
 	return path;
 }
@@ -137,11 +142,4 @@ function onResize() {
 	}
 	oldSize = view.size;
 	renderDiagram();
-}
-
-function onKeyDown(event) {
-	if (event.key == 'space') {
-		selected = !selected;
-		renderDiagram();
-	}
 }
