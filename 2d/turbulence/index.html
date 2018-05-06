@@ -32,7 +32,7 @@
                 stroke(`rgb(${img.pixels[pos]}, ${img.pixels[pos + 1]}, ${img.pixels[pos + 2]})`)
                 point(i, index)
             }
-            posY  =  abs(round( index / 1.5 + simplex.noise2D(0, index / 200) * 100 ))
+            posY  =  abs(round( index / 5 + simplex.noise2D(0, index / 300) * 200 ))
             // console.log(posY)
             index ++
         }
