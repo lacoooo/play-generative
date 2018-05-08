@@ -88,7 +88,7 @@
             canvas.height = height
             var img = new Image()
             img.crossOrigin = "anonymous"
-            img.src = './img/112.jpg'
+            img.src = './1.jpg'
             img.onload = () => {
                 ctx.drawImage(img, 0, 0, width, height)
                 let originData = Array.from(ctx.getImageData(0, 0, width, height).data)
@@ -99,7 +99,9 @@
                     }
                 }
             }
+
         }
+        
         function draw() {
             if (!drawIt) {
                 return
@@ -149,7 +151,6 @@
 
             zoff += configs.zInc
             }
-
         }
 
         var canvas,
