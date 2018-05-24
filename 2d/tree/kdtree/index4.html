@@ -24,7 +24,7 @@
         var ctx
 
         function preload() {
-            img = loadImage('./2.jpg')
+            img = loadImage('./3.jpg')
         }
 
         function setup() {
@@ -67,7 +67,7 @@
             rightBounds[1] = bounds[1].slice(0)
 
             var co = colors[floor(random() * colors.length)]
-            stroke(`rgb(${node.color[0]}, ${node.color[1]}, ${node.color[2]})`)
+            // stroke(`rgb(${node.color[0]}, ${node.color[1]}, ${node.color[2]})`)
             if (node.dimension == 0) {
                 // line(node.x, bounds[1][0], node.x, bounds[1][1])
                 leftBounds[0][1] = node.x
@@ -81,22 +81,20 @@
             noStroke()
             // fill(`rgb(${node.color[0]}, ${node.color[1]}, ${node.color[2]})`)
             var gradient = ctx.createLinearGradient(node.x, node.y, node.x, height);
-            gradient.addColorStop(0, `rgba(${node.color[0]}, ${node.color[1]}, ${node.color[2]}, ${random() / 2})`);
+            gradient.addColorStop(0, `rgba(${node.color[0]}, ${node.color[1]}, ${node.color[2]}, 0.2)`);
             gradient.addColorStop(1, `rgba(${0}, ${0}, ${0}, 1)`);
             ctx.fillStyle = gradient
-            push()
-            rotate(0.0005 * node.x / node.y)
             ellipseMode(CORNER)
             // rect(bounds[0][0], bounds[1][0], bounds[0][1] - bounds[0][0] - 2, bounds[1][1] - bounds[1][0] - 2)
-            ellipse(bounds[0][0], bounds[1][0], bounds[0][1] - bounds[0][0] - 2, sin(node.color[3]/100 - 30) * 100)
+            ellipse(bounds[0][0], bounds[1][0], bounds[0][1] - bounds[0][0] - 2, height)
 
             if (node.left) {
-                line(node.x, node.y, node.left.x, node.left.y)
+                // line(node.x, node.y, node.left.x, node.left.y)
             }
             if (node.right) {
-                line(node.x, node.y, node.right.x, node.right.y)
+                // line(node.x, node.y, node.right.x, node.right.y)
             }
-            pop()
+
             if (node.left) {
                 drawTree(node.left, leftBounds)
             }
