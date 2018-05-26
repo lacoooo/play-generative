@@ -4,7 +4,7 @@ let poles = []
 let sn = new SimplexNoise()
 let baseImageData = []
 function setup() {
-    createCanvas(1000, 1000)
+    createCanvas(800, 800)
     // noLoop()
     background(0)
     fill(255)
@@ -15,7 +15,7 @@ function setup() {
     canvas.height = height
     var img = new Image()
     img.crossOrigin = "anonymous"
-    img.src = './1.jpg'
+    img.src = './2.jpg'
     img.onload = () => {
         ctx.drawImage(img, 0, 0, width, height)
         let originData = Array.from(ctx.getImageData(0, 0, width, height).data)
@@ -31,7 +31,7 @@ function setup() {
 
 }
 function draw() {
-    fill(`rgba(0, 0, 0, 0.01)`)
+    fill(`rgba(0, 0, 0, 0.008)`)
     rect(0, 0, width, height)
 
     pars.map(ele => {
@@ -55,7 +55,7 @@ function keyPressed() {
 
 function addP() {
 
-    for (let i = 0; i < 2000; i++) {
+    for (let i = 0; i < 1000; i++) {
         pars.push(new Particle())
     }
 

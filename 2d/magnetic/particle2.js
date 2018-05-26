@@ -7,34 +7,31 @@ class Particle {
         this.v = random(1, 10)
         this.vx = random(1, 10)
         this.vy = random(1, 10)
-        this.c = baseImageData[floor(this.x) + floor(this.y) * width][3]
+        // this.c = baseImageData[floor(this.x) + floor(this.y) * width][3]
     }
 
     magic(poles) {
         let dists = []
         let totalGravity = 0
-        // const d = dist(this.x, this.y, poles[0].x, poles[0].y)
+        const d = dist(this.x, this.y, poles[0].x, poles[0].y)
         poles.map(ele => {
-            const d = dist(this.x, this.y, ele.x, ele.y)
-            // if (d < 200) {
-                dists.push(d)
-                totalGravity += abs(ele.gravity)
-            // }
+            dists.push(dist(this.x, this.y, ele.x, ele.y))
+            totalGravity += abs(ele.gravity)
         })
         if (dists.every(ele => ele > random(1, 40)) && random() < 0.999) {
             let x, y
-            dists.map((ele, i) => {
-                ele = poles[i].gravity / totalGravity / ele * 3
+            dists.map( (ele, i) => {
+                ele = poles[i].gravity / totalGravity / (ele) * 10
                 x = poles[i].x - this.x
                 y = poles[i].y - this.y
                 this.x += x * ele
                 this.y += y * ele
             })
             let c = baseImageData[floor(this.x) + floor(this.y) * width]
-            let v = c && c[3] / 50 || 0.2
-            this.x += sn.noise2D(this.x / 100) * 100 + sin(v) / 2
-            this.y += sn.noise2D(this.y / 100) * 100 + cos(v) / 2
-            if (random() > 0.9) this.c = c && c[3]
+            let v = c&&c[3] / 50 || 0.2
+            this.x += sn.noise2D(this.x / 100) * 100 + sin(v) / 3
+            this.y += sn.noise2D(this.y / 100) * 100 + cos(v) / 3
+            if (random() > 0.9) this.c = c&&c[3]
         } else {
             this.x = floor(random() * width)
             this.y = floor(random() * height)
@@ -45,8 +42,8 @@ class Particle {
 
     draw(poles) {
         if (poles.length > 0) this.magic(poles)
-        fill(this.c || random() * 255)
-        ellipse(this.x, this.y, 2.5, 2.5)
+        fill(this.c || 255)
+        ellipse(this.x, this.y, 1.5, 1.5)
     }
 
 }
