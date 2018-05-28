@@ -7,7 +7,7 @@ class Particle {
         this.v = random(1, 10)
         this.vx = random(1, 10)
         this.vy = random(1, 10)
-        this.c = baseImageData[floor(this.x) + floor(this.y) * width][3]
+        // this.c = baseImageData[floor(this.x) + floor(this.y) * width]
     }
 
     magic(poles) {
@@ -26,7 +26,7 @@ class Particle {
         else {
             let x, y
             dists.map( (ele, i) => {
-                ele.d = ele.g / totalGravity / (ele.d) * 14
+                ele.d = ele.g / totalGravity / (ele.d) * 4
                 x = poles[i].x - this.x
                 y = poles[i].y - this.y
                 this.x += x * ele.d
@@ -34,9 +34,9 @@ class Particle {
             })
             let c = baseImageData[floor(this.x) + floor(this.y) * width]
             let v = c && c[3] / 50 || 0.2
-            this.x += sn.noise2D(this.x / 100) * 100 + sin(v) / 2
-            this.y += sn.noise2D(this.y / 100) * 100 + cos(v) / 2
-            if (random() > 0.9) this.c = c && c[3]
+            this.x += sin(v)
+            this.y += cos(v)
+            if (random() > 0.92) this.c = c && `rgba(${c[0]}, ${c[1]}, ${c[2]}, 1)`
         }
 
         if (this.x >= width) this.x = 0
@@ -46,7 +46,7 @@ class Particle {
     draw(poles) {
         if (poles.length > 0) this.magic(poles)
         fill(this.c || random() * 255)
-        ellipse(this.x, this.y, 2.5, 2.5)
+        ellipse(this.x, this.y, 5, 5)
     }
 
 }

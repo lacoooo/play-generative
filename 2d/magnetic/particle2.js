@@ -25,7 +25,7 @@ class Particle {
         else {
             let x, y
             dists.map( (ele, i) => {
-                ele.d = ele.g / totalGravity / (ele.d) * 14
+                ele.d = ele.g / totalGravity / (ele.d / 2) * 4
                 x = poles[i].x - this.x
                 y = poles[i].y - this.y
                 this.x += x * ele.d
