@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script>
+
+        var json = ['陈佩斯']
+
+        var img
+        var c
+        var ctx
+        var index = 0
+
+        function preload() {
+            img = loadImage('./1.jpg')
+        }
+
+        function setup() {
+            c = createCanvas(img.width, img.height)
+            ctx = c.drawingContext
+            background(0)
+            noStroke()
+            fill(255)
+            noLoop()
+        }
+
+        function draw() {
+            setInterval(function() {
+                drawData()
+                index ++
+            }, 1000)
+        }
+        
+        function drawData() {
+            if (!json[index]) return
+            image(img, 0, 0)
+            textSize(140)
+            ctx.textAlign = "center"
+            text(json[index], width / 2, height / 2 - 40)
+            saveCanvas(c, json[index], 'jpg')
+        }
+
+    </script>
+</body>
+
+</html>
