@@ -33,14 +33,14 @@
         }
 
         function draw() {
-            setInterval(function() {
+            setInterval(function () {
+                if (!json[index]) return console.log('搞定')
                 drawData()
-                index ++
+                index++
             }, 1000)
         }
-        
+
         function drawData() {
-            if (!json[index]) return
             image(img, 0, 0)
             textSize(140)
             ctx.textAlign = "center"
