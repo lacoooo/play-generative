@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>turbulence</title>
+</head>
+<body>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>    
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script>
+    
+        var simplex = new SimplexNoise()
+        
+        var posY = 0
+        var index = 0
+        function preload() {
+            img = loadImage('./1.jpg')
+        }
+
+        function setup() {
+            img.loadPixels()
+            createCanvas(1000, 1300)
+            background(0)
+        }
+
+        function draw() {
+            for (let i = 0; i < img.width; i ++) {
+                var pos = (posY * img.width + i) * 4
+                stroke(`rgb(${img.pixels[pos]}, ${img.pixels[pos + 1]}, ${img.pixels[pos + 2]})`)
+                point(i, index)
+            }
+            posY  =  abs(round( index / 5 + simplex.noise2D(0, index / 300) * 200 ))
+            // console.log(posY)
+            index ++
+        }
+
+    </script>
+</body>
+</html>
