@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+</head>
+
+<body>
+	<script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+	<script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+	<script src="../../assets/colorPalettes100.js"></script>
+	<script>
+
+		var simplex = new SimplexNoise()
+		let colors =
+			colorPalettes[Math.floor(Math.random() * colorPalettes.length)]
+				.concat(colorPalettes[Math.floor(Math.random() * colorPalettes.length)])
+				.concat(['#000', '#fff']).concat(['#000', '#fff']).concat(['#000', '#fff'])
+		colors =
+			['#929383',
+				'#bec0bf',
+				'#b4b4b4',
+				'#ececec',
+				'#47499e',
+				'#ef8ed2',
+				'#ffffff',
+				'#ee3f0b',
+				'#ddf2f3',
+				'#0a0f11',
+				'#5dbfc0',
+				'#4eb0b1',
+				'#b99314',
+				'#fbc303',
+				'#fba3dc',
+				'#ec370d',
+				'#195e98',
+				'#ffd63c',
+				'#bf3f11',
+				'#44467f']
+
+		const S = 1200
+		let index = -200
+		function newColor() {
+			return color(colors[floor(random(colors.length - 1))])
+		}
+		function setup() {
+			createCanvas(S, S * 2)
+			background(255)
+			noStroke()
+			colorPair = [newColor(), newColor()]
+			setInterval(() => {
+				colorPair[floor(random(0, 2))] = newColor()
+			}, 1000)
+		}
+		function draw() {
+			var color1 = lerpColor(colorPair[0], colorPair[1], noise(frameCount / 4))
+			for (let x = 0; x < width + 10; x++) {
+				const y =
+					simplex.noise2D(
+						(index * 20 + x) / 3000,
+						(index + x) / 100
+					)
+					* 300 * noise(frameCount / 30)
+				fill(color1)
+				ellipse(x - 10, index + y, noise(frameCount / 3) * 10, noise(frameCount / 3) * 10)
+			}
+			index += 4
+		}
+
+	</script>
+</body>
+
+</html>

@@ -2,11 +2,9 @@
 class Particle {
 
     constructor(x, y) {
-        this.x = x || floor(random() * width)
-        this.y = y || floor(random() * height)
-        this.v = random(1, 10)
-        this.vx = random(1, 10)
-        this.vy = random(1, 10)
+        this.x = x || floor(random(0, width))
+        this.y = y || floor(random(0, height))
+        this.f = random(60, 200)
     }
 
     magic(poles) {
@@ -25,11 +23,11 @@ class Particle {
         else {
             let x, y
             dists.map( (ele, i) => {
-                ele.d = ele.g / totalGravity / (ele.d / 2) * 4
+                const d = ele.g / totalGravity / ele.d * 4
                 x = poles[i].x - this.x
                 y = poles[i].y - this.y
-                this.x += x * ele.d
-                this.y += y * ele.d
+                this.x += x * d
+                this.y += y * d
             })
         }
         if (this.x >= width) this.x = 0

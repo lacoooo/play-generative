@@ -6,15 +6,15 @@ let baseImageData = []
 function setup() {
     createCanvas(1200, 1200)
     // noLoop()
-    background(255)
-    fill(255)
+    background(0)
+    fill(0)
     noStroke()
     addP()
 
 }
 function draw() {
-    // fill(`rgba(255, 255, 255, 0.002)`)
-    // rect(0, 0, width, height)
+    fill(`rgba(0, 0, 0, 0.02)`)
+    rect(0, 0, width, height)
 
     pars.map(ele => {
         ele.draw(poles)
