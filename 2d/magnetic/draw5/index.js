@@ -5,17 +5,17 @@ let sn = new SimplexNoise()
 let baseImageData = []
 
 function preload() {
-    img2 = loadImage('./2.jpg');
+    img2 = loadImage('./10.jpg');
 }
 
 
 function setup() {
     c = createCanvas(1000, 1000)
-    // ctx = c.drawingContext
-    // ctx.shadowBlur=12
-    // ctx.shadowColor="rgba(0,0,0,0.4)"
+    ctx = c.drawingContext
+    ctx.shadowBlur=8
+    ctx.shadowColor="rgba(0,0,0,0.1)"
     // noLoop()
-    background(0)
+    // background(0)
     fill(0)
     noStroke()
     var canvas = document.getElementById('canvas')
@@ -24,7 +24,7 @@ function setup() {
     canvas.height = height
     var img = new Image()
     img.crossOrigin = "anonymous"
-    img.src = './1.jpg'
+    img.src = './9.jpg'
     img.onload = () => {
         ctx.drawImage(img, 0, 0, width, height)
         image(img2,0,0,width,height)
@@ -64,6 +64,10 @@ function keyPressed() {
         addP()
     }
 
+    else if (keyCode  === 52) {
+        addPr()
+    }
+
 }
 var stop = null
 function addP() {
@@ -81,6 +85,24 @@ function addP() {
         // rect(mouseX + sin(seed) * 100, mouseY + cos(seed) * 100, 10, 10)
         poles.push(new Pole(mouseX + sin(seed) * 100, mouseY + cos(seed) * 100, random(10, -10)))
     }
+
+    if (stop) return
+    stop = setTimeout(() => {
+        pars = []
+        // poles = []
+        clearTimeout(stop)
+        stop = null
+    }, 5000)
+
+}
+
+function addPr() {
+
+    pars = []
+    // poles = []
+    clearTimeout(stop)
+    stop = null
+
     for (let i = 0; i < 200; i++) {
         pars.push(new Particle(mouseX + random(-100, 100), mouseY + random(-100, 100)))
     }
