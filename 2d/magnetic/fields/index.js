@@ -4,16 +4,16 @@ let poles = []
 let sn = new SimplexNoise()
 let baseImageData = []
 function setup() {
-    createCanvas(1200, 1200)
+    createCanvas(1000, 1000)
     // noLoop()
-    background(0)
+    background(00)
     fill(0)
     noStroke()
     addP()
 
 }
 function draw() {
-    fill(`rgba(0, 0, 0, 0.02)`)
+    fill(`rgba(00, 00, 00, 0.02)`)
     rect(0, 0, width, height)
 
     pars.map(ele => {
@@ -37,7 +37,7 @@ function keyPressed() {
 
 function addP() {
 
-    for (let i = 0; i < 1500; i++) {
+    for (let i = 0; i < 5000; i++) {
         pars.push(new Particle())
     }
 
