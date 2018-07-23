@@ -9,6 +9,7 @@ class Particle {
         this.vx = random(1, 10)
         this.vy = random(1, 10)
         this.c = baseImageData[floor(this.x) + floor(this.y) * width]
+        this.o = 255
     }
 
     magic(poles) {
@@ -31,17 +32,34 @@ class Particle {
             dists.map((ele, i) => {
                 if (ele.g < 0) ele.g = ele.g / ele.d * 60
                 else ele.g = ele.g / ele.d * 260
-                const d = ele.g / totalGravity / ele.d * 4
+                const d = ele.g / totalGravity / ele.d
                 x = poles[i].x - this.x
                 y = poles[i].y - this.y
                 this.x += x * d
                 this.y += y * d
             })
             let c = baseImageData[floor(this.x) + floor(this.y) * width]
-            let v = c && c[3] / 50 || 0.2
-            this.x += cos(v) * 2
-            this.y += sin(v) * 2
-            if (random() > 0.9) this.c = c && `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${opacity})`
+            // let v = c && c[3] / 50 || 0.2
+            // this.x += cos(v) * 2
+            // this.y += sin(v) * 2
+            if (!c || !c[0]) return
+            if (c[0] < 30) {
+                this.c = [0, 0, 0, this.o]
+                this.o = 255
+            }
+            else if (c[0] > 30 && random() > 0.99) {
+                this.o = 255
+                this.c = c && [255, 255, 255, this.o]
+            }
+            else if (c[0] > 30 && random() > 0.1) {
+                this.o -= 2
+                if (!this.c||!this.c[3]) return
+                this.c[3] = this.o
+            }
+            else {
+                this.o -= 2
+                // this.c = [0, 0, 0, this.o]
+            }
         }
 
         if (this.x >= width || this.x <= 0) {
@@ -59,7 +77,7 @@ class Particle {
     draw(poles) {
         if (poles.length > 0) this.magic(poles)
         fill(this.c || 0)
-        ellipse(this.x, this.y, 2, 2)
+        ellipse(this.x, this.y, 1, 1)
     }
 
 }

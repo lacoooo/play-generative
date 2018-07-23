@@ -5,8 +5,8 @@ let sn = new SimplexNoise()
 let baseImageData = []
 
 function preload() {
-    img = loadImage('./1.jpg')
-    img2 = loadImage('./2.jpg')
+    img = loadImage('./0.jpg')
+    // img2 = loadImage('./2.jpg')
 }
 
 
@@ -24,7 +24,7 @@ function setup() {
     canvas.width = width
     canvas.height = height
     ctx.drawImage(img.canvas, 0, 0, width, height)
-    image(img2, 0, 0, width, height)
+    // image(img2, 0, 0, width, height)
     let originData = Array.from(ctx.getImageData(0, 0, width, height).data)
     for (let i = 0; i < (originData.length / 4); i++) {
         baseImageData[i] = []
