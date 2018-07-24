@@ -15,8 +15,6 @@ function setup() {
     ctx = c.drawingContext
     ctx.shadowBlur = 8
     ctx.shadowColor = "rgba(0,0,0,0.05)"
-    // noLoop()
-    // background(0)
     fill(0)
     noStroke()
     var canvas = document.getElementById('canvas')

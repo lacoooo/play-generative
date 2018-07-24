@@ -19,8 +19,8 @@
         var posY = 0
         var index = 0
         var ps = []
-        var scale = 0.98
-        var cc = Math.floor(Math.random() * 230)
+        var scaleA = 12
+        var cc = Math.floor(Math.random() * 180)
         var colors =
             ['#929383',
                 '#bec0bf',
@@ -49,7 +49,7 @@
 
         function setup() {
             t = createCanvas(1500, 1500)
-            for (var i = 0; i < 2; i++) {
+            for (var i = 0; i < 20; i++) {
                 ps.push(new Par())
             }
             var c = colors[floor(random(colors.length))]
@@ -58,35 +58,35 @@
         }
 
         function draw() {
-            ps.map(ele => {
-                var dx = simplex.noise2D(frameCount / 500, ele.seed)
-                var dy = simplex.noise2D(frameCount / 500, ele.seed + 50)
+            ps.map( (ele, i) => {
+                var dx = simplex.noise2D(frameCount / 500, ele.seed) * scaleA
+                var dy = simplex.noise2D(frameCount / 500, ele.seed + 50) * scaleA
                 ele.p.add(createVector(dx, dy))
 
-                ele.s = simplex.noise2D(frameCount / 1000, ele.seed + 100) * 1000 + 10
+                ele.s = simplex.noise2D(frameCount / 100, ele.seed + 100) * ele.seed * ele.seed * ele.seed / 1000
                 ele.s = abs(floor(ele.s))
 
-                ele.c[0] = simplex.noise2D(frameCount / 1000, ele.seed + 150) * 360
+                ele.c[0] = simplex.noise2D(frameCount / 500, ele.seed + 150) * 180 + cc
                 ele.c[0] = abs(floor(ele.c[0]))
 
-                ele.c[1] = simplex.noise2D(frameCount / 1000, ele.seed + 200) * 51 + 50
+                ele.c[1] = simplex.noise2D(frameCount / 1000, ele.seed + 200) * 40 + 40
                 ele.c[1] = abs(floor(ele.c[1]))
 
-                ele.c[2] = simplex.noise2D(frameCount / 1000, ele.seed + 250) * 41 + 60
+                ele.c[2] = simplex.noise2D(frameCount / 1000, ele.seed + 250) * 50 + 50
                 ele.c[2] = abs(floor(ele.c[2]))
 
-                ele.c[3] = simplex.noise2D(frameCount / 400, ele.seed + 300) / 20
+                ele.c[3] = simplex.noise2D(frameCount / 400, ele.seed + 300) / ele.seed * 100 + 0.2
                 ele.c[3] = abs(ele.c[3])
                 var c = color(`hsla(${ele.c[0]}, ${ele.c[1]}%, ${ele.c[2]}%, ${ele.c[3]})`)
                 fill(c)
-                ellipse(ele.p.x, ele.p.y, ele.s, ele.s)
+                ellipse(width / ps.length * i, ele.p.y, ele.s, ele.s)
             })
         }
 
         class Par {
             constructor(x, y) {
                 this.p = createVector(random(width), random(height))
-                this.seed = floor(random(1000))
+                this.seed = floor(random(10, 70))
                 this.c = [0, 0, 0, 0]
                 this.s = 0
                 this.o = random(0.01)
@@ -99,7 +99,7 @@
 
         function mouseClicked() {
             ps = []
-            for (var i = 0; i < 2; i++) {
+            for (var i = 0; i < 20; i++) {
                 ps.push(new Par())
             }
         }
