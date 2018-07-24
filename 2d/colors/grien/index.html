@@ -20,7 +20,7 @@
         var index = 0
         var ps = []
         var scale = 0.98
-        var cc = Math.floor(Math.random() * 360)
+        var cc = Math.floor(Math.random() * 230)
         var colors =
             ['#929383',
                 '#bec0bf',
@@ -48,33 +48,34 @@
         }
 
         function setup() {
-            createCanvas(3000, 3000)
-            for (var i = 0; i < 200; i++) {
+            t = createCanvas(1500, 1500)
+            for (var i = 0; i < 2; i++) {
                 ps.push(new Par())
             }
-            background(255)
+            var c = colors[floor(random(colors.length))]
+            background(250)
             noStroke()
         }
 
         function draw() {
             ps.map(ele => {
-                var dx = simplex.noise2D(frameCount / 500, ele.seed) * ele.scale.x
-                var dy = simplex.noise2D(frameCount / 500, ele.seed + 50) * ele.scale.y
+                var dx = simplex.noise2D(frameCount / 500, ele.seed)
+                var dy = simplex.noise2D(frameCount / 500, ele.seed + 50)
                 ele.p.add(createVector(dx, dy))
 
-                ele.s = simplex.noise2D(frameCount / 5000, ele.seed + 100) * 200 + 40
+                ele.s = simplex.noise2D(frameCount / 1000, ele.seed + 100) * 1000 + 10
                 ele.s = abs(floor(ele.s))
 
-                ele.c[0] = simplex.noise2D(frameCount / 1000, ele.seed + 150) * 130 + cc
+                ele.c[0] = simplex.noise2D(frameCount / 1000, ele.seed + 150) * 360
                 ele.c[0] = abs(floor(ele.c[0]))
 
-                ele.c[1] = simplex.noise2D(frameCount / 1000, ele.seed + 200) * 81 + 20
+                ele.c[1] = simplex.noise2D(frameCount / 1000, ele.seed + 200) * 51 + 50
                 ele.c[1] = abs(floor(ele.c[1]))
 
-                ele.c[2] = simplex.noise2D(frameCount / 1000, ele.seed + 250) * 56 + 50
+                ele.c[2] = simplex.noise2D(frameCount / 1000, ele.seed + 250) * 41 + 60
                 ele.c[2] = abs(floor(ele.c[2]))
 
-                ele.c[3] = simplex.noise2D(frameCount / 400, ele.seed + 300) / 2
+                ele.c[3] = simplex.noise2D(frameCount / 400, ele.seed + 300) / 20
                 ele.c[3] = abs(ele.c[3])
                 var c = color(`hsla(${ele.c[0]}, ${ele.c[1]}%, ${ele.c[2]}%, ${ele.c[3]})`)
                 fill(c)
@@ -88,6 +89,7 @@
                 this.seed = floor(random(1000))
                 this.c = [0, 0, 0, 0]
                 this.s = 0
+                this.o = random(0.01)
                 this.scale = {
                     x: random(0.5),
                     y: random(2)
@@ -97,10 +99,20 @@
 
         function mouseClicked() {
             ps = []
-            for (var i = 0; i < 200; i++) {
+            for (var i = 0; i < 2; i++) {
                 ps.push(new Par())
             }
         }
+
+        function keyPressed() {
+            console.log(keyCode)
+
+            if (keyCode === 49) {
+                saveCanvas(t, 'myCanvas', 'jpg');
+            }
+
+        }
+
 
     </script>
 </body>
