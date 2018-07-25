@@ -24,23 +24,23 @@
         var posY = 0
         var index = 0
         var ps = []
-        var scaleA = 2
+        var scaleA = 8
         var cc = Math.floor(Math.random() * 300)
-        const grid = 14
+        const grid = 5
         let as = ['💗', '💗', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
-        // as = ['爱', '与', '和', '平', '💗']
+        as = ['爱', '与', '和', '平', '💗']
 
         function preload() {
 
         }
 
         function setup() {
-            t = createCanvas(600, 1800)
+            t = createCanvas(1200, 1200)
             for (var i = 0; i < grid; i++) {
                 for (var j = 0; j < grid; j++) {
                     const x = width / grid * (i + 1) - width / grid / 2
-                    const y = height / grid * (j + 1) - height / grid / 2 + 800
+                    const y = height / grid * (j + 1) - height / grid / 2
                     ps.push(new Par(x, y))
                 }
             }
@@ -51,11 +51,11 @@
 
         function draw() {
             ps.map((ele, i) => {
-                var dx = simplex.noise2D(frameCount / ele.seed / 4, ele.seed) * scaleA
-                var dy = simplex.noise2D(frameCount / ele.seed / 4, ele.seed + 50) * scaleA
+                var dx = simplex.noise2D(frameCount / ele.seed / 1, ele.seed) * scaleA
+                var dy = simplex.noise2D(frameCount / ele.seed / 1, ele.seed + 50) * scaleA
                 ele.p.add(createVector(dx, dy))
 
-                ele.s = simplex.noise2D(frameCount / 500, ele.seed + 100) * ele.seed / 20 + 8
+                ele.s = simplex.noise2D(frameCount / 500, ele.seed + 100) * ele.seed / 5 + 8
                 ele.s = abs(floor(ele.s))
                 ele.s < 2 ? ele.s = 2 : ''
 
@@ -71,16 +71,18 @@
                 ele.c[3] = 1 / (ele.s)
                 ele.c[3] = abs(ele.c[3])
                 var c = color(`hsla(${ele.c[0]}, ${ele.c[1]}%, ${ele.c[2]}%, ${0.15||ele.c[3]})`)
-                if (ele.type) {
-                    noStroke()
-                    fill(c)
-                }
-                else {
-                    noFill()
-                    strokeWeight(ele.seed / 300)
-                    stroke(c)
-                }
-                
+                // if (ele.type) {
+                //     noStroke()
+                //     fill(c)
+                // }
+                // else {
+                //     noFill()
+                //     strokeWeight(ele.seed / 300)
+                //     stroke(c)
+                // }
+                stroke(0)
+                strokeWeight(5)
+                fill(255)
                 textSize(ele.s)
                 text(ele.n, ele.p.x, ele.p.y)
                 // ellipse(ele.p.x, ele.p.y, ele.s, ele.s)
