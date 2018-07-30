@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            width: 400px !important;
+            height: auto !important;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            display: block;
+            margin-top: 60px;
+        }
+
+        textarea,
+        button {
+            display: block;
+            margin: 20px auto;
+        }
+
+        textarea {
+            width: 500px;
+            height: 300px;
+            margin-left: 60px;
+        }
+        .op {
+            float: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class='op'>
+            <textarea name="" id="text" onkeyup="go()"></textarea>
+            <button onclick='saveIt()'>
+                来吧宝贝儿
+            </button>
+        </div>
+
+    </div>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script>
+        var img
+        var text
+        var h = 530
+        var c = {
+            w: 940,
+            h: null
+        }
+        function go() {
+            window.goFlag = true
+            redraw()
+        }
+
+        function preload() {
+            img = loadImage('./1.jpg')
+        }
+
+        function setup() {
+            t = createCanvas(1000, h)
+            background(255)
+            image(img, 0, 0, 1000, 200, 0, 0, 1000, 200)
+            image(img, 0, height - 282, 1000, 282, 0, 240, 1000, 282)
+            noLoop()
+        }
+
+        function draw() {
+            if (!window.goFlag) return
+            textContent = document.querySelector('#text').value
+            const textSlice = textContent.split(/\n/)
+            const lineNum = textSlice.length
+            createCanvas(1000, h + 100 + lineNum * 70)
+            background(255)
+            fill(240)
+            stroke(240)
+            strokeWeight(20)
+            strokeJoin(ROUND)
+            rect((1000 - c.w) / 2, 260, c.w, lineNum * 70 + 30)
+            fill(0)
+            noStroke()
+            textSize(38)
+            textFont('Microsoft YaHei')
+            for (var i = 0; i < lineNum; i++) {
+                text(textSlice[i], (1000 - (c.w - 60)) / 2, 320 + 70 * i)
+            }
+            image(img, 0, 0, 1000, 200, 0, 0, 1000, 200)
+            image(img, 0, height - 282, 1000, 282, 0, 240, 1000, 282)
+        }
+        
+        function saveIt() {
+            saveCanvas(t, 'hb.io-快讯', 'jpg')
+        }
+    </script>
+</body>
+
+</html>
