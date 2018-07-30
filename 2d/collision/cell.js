@@ -1,14 +1,37 @@
 
+var colors = [
+	'#929383',
+	'#bec0bf',
+	'#b4b4b4',
+	'#ececec',
+	'#47499e',
+	'#ef8ed2',
+	'#ffffff',
+	'#ee3f0b',
+	'#ddf2f3',
+	'#0a0f11',
+	'#5dbfc0',
+	'#4eb0b1',
+	'#b99314',
+	'#fbc303',
+	'#fba3dc',
+	'#ec370d',
+	'#195e98',
+	'#ffd63c',
+	'#bf3f11',
+	'#44467f'
+]
+
 function Ball(radius, position, vector) {
 	this.radius = radius;
 	this.point = position;
 	this.vector = vector;
 	this.maxVec = 15;
-	this.numSegment = Math.floor(radius / 30 + 2);
+	this.numSegment = 3;
 	this.boundOffset = [];
 	this.sidePoints = [];
 	this.path = new Path({
-		fillColor: 'black',
+		fillColor: colors[Math.floor(Math.random() * colors.length)],
 		blendMode: 'xor',
 		closed: true
 	});
@@ -47,7 +70,7 @@ Ball.prototype = {
 			var prev = (i > 0) ? i - 1 : this.numSegment - 1;
 			var offset = this.boundOffset[i];
 			offset += (this.radius - offset) / 15;
-			offset += ((this.boundOffset[next] + this.boundOffset[prev]) / 2 - offset) / 3;
+			offset += ((this.boundOffset[next] + this.boundOffset[prev]) / 2 - offset) / 1.1;
 			this.boundOffset[i] = offset;
 		}
 	},
@@ -61,8 +84,8 @@ Ball.prototype = {
 			var overlap = this.radius + b.radius - dist;
 			// 方向
 			var direc = (this.point - b.point).normalize(overlap * 0.015);
-			this.vector -= direc / 40;
-			b.vector += direc / 40;
+			this.vector -= direc / 200;
+			b.vector += direc / 200;
 
 			this.calcBounds(b);
 			b.calcBounds(this);

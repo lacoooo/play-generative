@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+
+    <script>
+
+        n = new SimplexNoise()
+        w = 1000
+        h = 1000
+        co = 0
+
+        function preload() {
+            img = loadImage('./2.jpg')
+        }
+
+        function setup() {
+            c = createCanvas(w, h)
+            ctx = c.drawingContext
+            noStroke()
+        }
+
+        function draw() {
+            background(255)
+            var num = 30
+            var slicei = floor(w / (num + 4))
+            var slicej = floor(h / (num + 4))
+            for (var i = 0; i < slicei; i++) {
+                for (var j = 0; j < slicej; j++) {
+                    // rect(i * slice, j * slice, slice, slice)
+                    const x = n.noise2D((i * 100000 + co) / 2000000 + 10, j / 100) * 200
+                    const y = n.noise2D((i * 100000 + co) / 2000000, j / 100) * 400
+                    image(
+                        img,
+                        i * slicei + 2, j * slicej + 2,
+                        slicei, slicej,
+                        i * slicei + x,
+                        j * slicej + y,
+                        slicei,
+                        slicej,
+                    )
+                    co+=5
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>
