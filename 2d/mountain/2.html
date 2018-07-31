@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script>
+
+        n = new SimplexNoise()
+
+        pos = {
+            x: 0, y: 0
+        }
+
+        cg = 255
+
+        function setup() {
+            c = createCanvas(1000, 1000)
+            ctx = c.drawingContext
+            noStroke()
+            frameRate(10)
+            background(220)
+            var gradient = ctx.createLinearGradient(
+                0, 0,
+                0, 200
+            )
+            const ch = 0
+            gradient.addColorStop(0, `rgba(${ch},${ch},${ch}, 1)`)
+            gradient.addColorStop(1, `rgba(250,250,250, 1)`)
+            ctx.fillStyle = gradient
+            ellipse(700, 120, 50, 50)
+        }
+
+        function draw() {
+            var gradient = ctx.createLinearGradient(
+                0, -cg + 200,
+                0, 1300
+            )
+            const ch = cg < 0 ? 0 : cg
+            gradient.addColorStop(0, `rgba(${ch},${ch},${ch}, 1)`)
+            gradient.addColorStop(1, `rgba(240,240,240, 1)`)
+            ctx.fillStyle = gradient
+            beginShape()
+            curveVertex(0, 1300)
+            curveVertex(0, 1300)
+            for (var i = -10; i < 1100; i++) {
+                const x = i * 1
+                const y =
+                    (
+                        n.noise2D(x / 1200, frameCount / 30)
+                        + n.noise2D(x / 200, frameCount / 30) / 5
+                    )
+                    * 800
+                    - cg + 800
+                curveVertex(x, y)
+            }
+            curveVertex(1000, 1300)
+            curveVertex(1000, 1300)
+            endShape()
+            cg -= frameCount * frameCount / 70
+        }
+
+        function keyPressed() {
+            console.log(keyCode)
+
+            if (keyCode === 49) {
+                saveCanvas(c, 'myCanvas', 'jpg');
+            }
+
+        }
+    </script>
+</body>
+
+</html>
