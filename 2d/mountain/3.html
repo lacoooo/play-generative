@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="../../assets/colorPalettes100.js"></script>
+    <script>
+
+        n = new SimplexNoise()
+        let colors =
+			colorPalettes[Math.floor(Math.random() * colorPalettes.length)]
+				.concat(colorPalettes[Math.floor(Math.random() * colorPalettes.length)])
+        colors =
+            [
+                '#929383',
+                '#bec0bf',
+                '#b4b4b4',
+                '#ececec',
+                '#47499e',
+                '#ef8ed2',
+                '#ffffff',
+                '#ee3f0b',
+                '#ddf2f3',
+                '#0a0f11',
+                '#5dbfc0',
+                '#4eb0b1',
+                '#b99314',
+                '#fbc303',
+                '#fba3dc',
+                '#ec370d',
+                '#195e98',
+                '#ffd63c',
+                '#bf3f11',
+                '#44467f'
+            ]
+        pos = {
+            x: 0, y: 0
+        }
+
+        cg = 255
+        function newColor() {
+            return color(colors[floor(random(colors.length - 1))])
+        }
+        function setup() {
+            c = createCanvas(1100, 1000)
+            ctx = c.drawingContext
+            noStroke()
+            // frameRate(10)
+            background(50)
+            var gradient = ctx.createLinearGradient(
+                0, 0,
+                0, 200
+            )
+            const ch = 0
+            gradient.addColorStop(0, newColor())
+            gradient.addColorStop(1, `rgba(250,250,250, 1)`)
+            ctx.fillStyle = gradient
+            ellipse(700, 120, 50, 50)
+            shuffle(colors, true)
+            colorPair = [newColor(), newColor()]
+            setInterval(() => {
+                colorPair[floor(random(0, 2))] = newColor()
+            }, noise(frameCount / 4)*1000)
+        }
+
+        function draw() {
+            var color1 = lerpColor(colorPair[0], color('rgba(50,50,50,1)'), noise(frameCount / 300))
+            if (random() > 0) {
+                noFill()
+                stroke(color1)
+                strokeWeight(4)
+            }
+            else {
+                noStroke()
+                noFill()
+                // fill(color1)
+            }
+            beginShape()
+            curveVertex(-200, 900)
+            curveVertex(-200, 900)
+            for (var i = -10; i < 110; i++) {
+                const x = i * 18
+                const y =
+                    (
+                        n.noise2D(x / 1100, frameCount / 800)
+                        + n.noise2D(x / 400, frameCount / 600) / 8
+                    )
+                    * 800
+                    + 900
+                curveVertex(x, y)
+            }
+            curveVertex(1900, 900)
+            curveVertex(1900, 900)
+            endShape()
+        }
+
+        function keyPressed() {
+            console.log(keyCode)
+
+            if (keyCode === 49) {
+                saveCanvas(c, 'myCanvas', 'jpg');
+            }
+
+        }
+    </script>
+</body>
+
+</html>
