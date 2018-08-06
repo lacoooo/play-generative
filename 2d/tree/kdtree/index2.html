@@ -24,7 +24,7 @@
         var ctx
 
         function preload() {
-            img = loadImage('./1.jpg')
+            img = loadImage('./3.jpg')
         }
 
         function setup() {
@@ -44,7 +44,7 @@
                 ])
             }
             const area = canvasSize * canvasSize
-            for (let i = 0; i < 1000; i++) {
+            for (let i = 0; i < 100000; i++) {
                 let pos = floor(random() * area)
                 if (pixelData[pos][3] < random(0, 255) + 20) continue
                 const x = pos % canvasSize
