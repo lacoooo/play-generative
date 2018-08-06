@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script>
+
+        var n = new SimplexNoise()
+
+        function preload() {
+
+        }
+
+        function setup() {
+            window.ca = createCanvas(1000, 1000)
+            background(255)
+            stroke(10)
+            strokeWeight(1)
+            noLoop()
+        }
+
+        function draw() {
+            let e = floor(random(200))
+            // blendMode(DIFFERENCE)
+            for (var i = -100; i < height + 60; i += 20) {
+                for (var j = -100; j < width; j += 16) {
+                    push()
+                    translate(j + n.noise2D(j / 1000, i / 100) * 20, i + n.noise2D(j / 1000 + 20, i / 100) * 80)
+                    rotate(n.noise2D(j / 1000, i / 200))
+                    var col =
+                        color(
+                            `hsla(
+                            ${floor(abs(n.noise2D(j / 4000, i / 200) * 60) + random(100) + e)},
+                            ${floor(abs(n.noise2D(j / 4000, i / 200) * 20 + 50))}%,
+                            ${floor(abs(n.noise2D(j / 3000, i / 200) * 20 + n.noise2D(j / 10, i / 2) * 20 + 50))}%,
+                            1)`)
+                            // random() > 0 ? col = '#fff' : ''
+                    fill(col)
+                    var col2 =
+                        color(
+                            `hsla(
+                            ${floor(abs(n.noise2D(j / 4000, i / 200) * 100) + random(100) + e + i / 8)},
+                            ${floor(abs(n.noise2D(j / 4000, i / 200) * 20 + 50))}%,
+                            ${floor(abs(n.noise2D(j / 3000, i / 200) * 20 + n.noise2D(j / 10, i / 2) * 20 + 70))}%,
+                            1)`)
+                    stroke(col2)
+                    rect(0, 0, 30 + abs(n.noise2D(j / 1000, i / 100)) * 100, abs(n.noise2D(j / 1000, i / 100)) * 6 + 2)
+                    pop()
+                }
+                if (random() > 0.5) e = floor(random(300))
+            }
+        }
+
+    </script>
+</body>
+
+</html>

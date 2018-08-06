@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script>
+
+        imgData = null
+
+        function preload() {
+            img = loadImage('./2.jpg')
+            // img = null
+        }
+
+        function setup() {
+            window.ca = createCanvas(1500, 1500)
+            background(255)
+            noFill()
+            strokeWeight(6)
+            strokeCap(ROUND)
+            // noLoop()
+            blendMode(DIFFERENCE)
+            frameRate(1)
+            // image(img, 0, 0)
+            img.loadPixels()
+            imgData = []
+            img.p = []
+            for (var i = 0; i < img.pixels.length; i += 4) {
+                img.p.push([
+                    img.pixels[i],
+                    img.pixels[i + 1],
+                    img.pixels[i + 2],
+                    img.pixels[i + 3]
+                ])
+            }
+            for (var i = 0; i < height; i++) {
+                imgData[i] = []
+                for (var j = 0; j < width; j++) {
+                    imgData[i][j] = img.p[i * width + j]
+                }
+            }
+        }
+
+        function draw() {
+            for (var i = 0; i < height; i += 20) {
+                for (var j = 0; j < width; j += 24) {
+                    let c
+                    const r = random()
+                    if (r > .98) {
+                        let r = floor(random(3))
+                        if (r == 0) {
+                            c = [imgData[i][j][0], 0, 0, 255]
+                        }
+                        else if (r == 1) {
+                            c = [0, imgData[i][j][1], 0, 255]
+                        }
+                        else if (r == 2) {
+                            c = [0, 0, imgData[i][j][2], 255]
+                        }
+                    }
+                    else 
+                    if (r > .6) {
+                        // continue
+                        c = imgData[i][j]
+                        c[3] = 220
+                    }
+                    else {
+                        continue
+                    }
+                    stroke(...c)
+                    strokeWeight(random(4, 28))
+                    const drift = floor(randomGaussian(-60, 60))
+                    // line(j, i, j, i + floor(randomGaussian(40, 90)))
+                    line(j, i, j + (random() > .5 ? drift : -drift), i + (random() > .5 ? drift : -drift))
+                    // line(j, i, j + floor(randomGaussian(20, 60)), i + floor(randomGaussian(20, 60)))
+                }
+            }
+        }
+        
+        function mouseClicked() {
+            saveCanvas(ca, 'myCanvas', 'jpg');
+        }
+    </script>
+</body>
+
+</html>

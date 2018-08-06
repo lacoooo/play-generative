@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script>
+
+        imgData = null
+
+        function preload() {
+            img = loadImage('./1.jpg')
+            // img = null
+        }
+
+        function setup() {
+            window.ca = createCanvas(1000, 1000)
+            background(0)
+            noFill()
+            strokeWeight(6)
+            strokeCap(ROUND)
+            noLoop()
+            img.loadPixels()
+            imgData = []
+            img.p = []
+            for (var i = 0; i < img.pixels.length; i += 4) {
+                img.p.push([
+                    img.pixels[i],
+                    img.pixels[i + 1],
+                    img.pixels[i + 2],
+                    img.pixels[i + 3]
+                ])
+            }
+            for (var i = 0; i < height; i++) {
+                imgData[i] = []
+                for (var j = 0; j < width; j++) {
+                    imgData[i][j] = img.p[i * width + j]
+                }
+            }
+        }
+
+        function draw() {
+            for (var i = 0; i < height; i += 10) {
+                for (var j = 0; j < width; j += 10) {
+                    if (random() > .4) continue
+                    stroke(...imgData[i][j])
+                    line(j, i, j + 50, i)
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>
