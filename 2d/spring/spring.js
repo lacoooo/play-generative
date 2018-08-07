@@ -42,9 +42,9 @@ class Spring {
         const distance = this.dist || options.dist || 100
         if (this._distR == distance) return
         if (this._distR < distance) {
-            this.stretch(nextP, 0.5)
+            this.stretch(nextP, 0.2)
         } else {
-            this.pull(nextP, 0.2)
+            this.pull(nextP, 0.1)
         }
 
     }

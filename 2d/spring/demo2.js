@@ -2,72 +2,49 @@
 
 var log = console.log
 
-var textA = [
-    '前方到站',
-    '前方到站,',
-    '世界尽头。',
-    '请准备下车的旅客,',
-    '排队等候。'
-]
+var text = '是诸法空相不生不灭不垢不净不增不减是故空中无色无受想行识无眼耳鼻舌身意无色声香味触法无眼界乃至无意识界无无明亦无无明尽乃至无老死亦无老死尽'
+var texx = text.split('')
+function getText() {
+    return texx[Math.floor(Math.random() * text.length)]
+}
 
 let points = []
 
 var sketch = function (p) {
-    const scale = 200
+    const scale = 800
     const circleSize = 6
     let selectedPoint = null
-
-    function initpoint(t) {
+    function initpoint() {
         let point = new Spring()
-        point.x = p.mouseX + p.floor(p.random(-20, 20))
-        point.y = p.mouseY + p.floor(p.random(-20, 20))
-        point.dist = p.floor(p.random(50))
-        point.distLine = p.floor(p.random(80)) + 120
-        point.text = t
-        point.textSize = p.floor(p.random() * 20) + 22
+        point.x = p.random(-scale, scale) + p.width / 2
+        point.y = p.random(-scale, scale) + p.height / 2
+        point.text = getText()
+        point.textSize = p.floor(p.random() * 20) + 16
         return point
     }
 
     function initTree(points) {
         for (var j = 0; j < points.length - 1; j++) {
-            if (p.random() > 0.9) {
-                var r = p.floor(p.random(j + 1, points.length));
-                points[j].nextPoint = points[r]
-            }
-            else {
-                points[j].nextPoint = points[points.length - 1]
-            }
-            
+            var r = p.floor(p.random(j + 1, points.length));
+            points[j].nextPoint = points[r]
         }
     }
 
-    p.initData = function(t) {
-        // points = []
-        for (let i = 0; i < 1; i++) {
-            points.push(initpoint(t))
+    p.initData = function() {
+        points = []
+        for (let i = 0; i < 50; i++) {
+            points.push(initpoint())
         }
         initTree(points)
     }
 
     p.setup = function () {
         p.createCanvas(p.windowWidth - 20, p.windowHeight - 20)
-        var index = 0
-        setInterval(() => {
-            if (index > 4) return
-            var i = 0
-            setInterval(() => {
-                if (index > 4) return
-                if (i < textA[index].length) {
-                    p.initData(textA[index][i])
-                }
-                i++
-            }, 130)
-            index ++
-        }, textA[index].length * 170 + 1400)
+        p.initData()
     }
 
     p.draw = function () {
-        p.background(`rgba(255,255,255,0.5)`)
+        p.background(255)
         p.fill(0)
 
         for (let i = 0; i < points.length; i++) {
@@ -78,14 +55,14 @@ var sketch = function (p) {
             }
         }
 
-        // p.stroke(0)
-        // p.strokeWeight(0.1)
-        // for (let i = 0; i < points.length; i++) {
-        //     const pt = points[i]
-        //     if (pt.nextPoint) {
-        //         p.line(pt.x, pt.y, pt.nextPoint.x, pt.nextPoint.y)
-        //     }
-        // }
+        p.stroke(0)
+        p.strokeWeight(0.1)
+        for (let i = 0; i < points.length; i++) {
+            const pt = points[i]
+            if (pt.nextPoint) {
+                p.line(pt.x, pt.y, pt.nextPoint.x, pt.nextPoint.y)
+            }
+        }
 
         p.noStroke()
         p.textFont('宋体')
