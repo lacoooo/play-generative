@@ -12,6 +12,7 @@
     <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
     <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
     <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script src='../../../assets/p5.sound.min.js'></script>
     <script>
 
         var simplex = new SimplexNoise()
@@ -20,7 +21,9 @@
         var index = 0
         var ps = []
         var scaleA = 4
-        var cc = Math.floor(Math.random() * 180)
+        var ms
+        var am
+        var cc = Math.floor(Math.random() * 260)
         var colors =
             ['#929383',
                 '#bec0bf',
@@ -44,48 +47,59 @@
                 '#44467f']
 
         function preload() {
-
+            soundFormats('mp3', 'ogg')
+            ms = loadSound('./1.mp3')
         }
 
         function setup() {
-            t = createCanvas(2000, 1500)
-            for (var i = 0; i < 25; i++) {
+            ms.setVolume(0.3)
+            ms.play()
+            am = new p5.Amplitude()
+            smooth(1)
+            t = createCanvas(1000, 2000)
+            for (var i = 0; i < 1; i++) {
                 ps.push(new Par())
             }
             var c = colors[floor(random(colors.length))]
             background(255)
             noStroke()
+            strokeWeight(2)
         }
 
         function draw() {
             ps.map((ele, i) => {
-                var dx = simplex.noise2D(frameCount / 500, ele.seed) * scaleA / 3
-                var dy = simplex.noise2D(frameCount / 500, ele.seed + 50) * scaleA
-                ele.p.add(createVector(dx, dy))
-
-                ele.s = simplex.noise2D(frameCount / 400, ele.seed + 100) * ele.seed * ele.seed * ele.seed / 1000
-                ele.s = abs(floor(ele.s)) + 10
-
-                ele.c[0] = simplex.noise2D(frameCount / 500, ele.seed + 150) * 180 + cc
+                if (frameCount % 6) return
+                ele.c[0] = simplex.noise2D(frameCount / 50, ele.seed) * 100 + cc
                 ele.c[0] = abs(floor(ele.c[0]))
 
-                ele.c[1] = simplex.noise2D(frameCount / 1000, ele.seed + 200) * 40 + 40
-                ele.c[1] = abs(floor(ele.c[1]))
+                ele.c[1] = 0
 
-                ele.c[2] = simplex.noise2D(frameCount / 1000, ele.seed + 250) * 50 + 50
-                ele.c[2] = abs(floor(ele.c[2]))
+                ele.c[2] = 0
 
                 ele.c[3] = simplex.noise2D(frameCount / 400, ele.seed + 300) / ele.seed * 100 + 0.2
                 ele.c[3] = abs(ele.c[3])
-                var c = color(`hsla(${ele.c[0]}, ${ele.c[1]}%, ${ele.c[2]}%, ${ele.c[3]})`)
-                fill(c)
-                ellipse(ele.p.x, ele.p.y, ele.s, ele.s)
+
+                var level = am.getLevel()
+                var size = map(level, 0, 1, 0, 1000)
+                var colorS = map(level, 0, 1, 0, 600)
+                var colorL = map(level, 0, 1, 0, 800)
+                if (ele.p.x + 100 > width) {
+                    ele.p.x = 100
+                    ele.p.y += 90
+                }
+
+                stroke(`hsla(${ele.c[0]}, ${ele.c[1] + colorS}%, ${ele.c[2] + 100 - colorL}%, ${1})`)
+                fill(`hsla(${ele.c[0]}, ${ele.c[1] + colorS}%, ${ele.c[2] + 110 - colorL}%, ${0.8})`)
+                ele.p.add(createVector(size * 0.125, 0))
+                ellipse(ele.p.x, ele.p.y, size * size * 0.009, size * size * 0.009)
+                ele.p.add(createVector(size * 0.125, 0))
             })
+
         }
 
         class Par {
             constructor(x, y) {
-                this.p = createVector(random(width), random(height))
+                this.p = createVector(100, 100)
                 this.seed = floor(random(10, 70))
                 this.c = Array.from([0, 0, 0, 0])
                 this.s = 0
