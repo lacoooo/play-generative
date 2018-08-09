@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>turbulence</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script src='../../../assets/p5.sound.min.js'></script>
+    <script>
+
+        var simplex = new SimplexNoise()
+
+        var posY = 0
+        var index = 0
+        var ps = []
+        var scaleA = 4
+        var ms
+        var am
+        var cc = Math.floor(Math.random() * 260)
+        var colors =
+            ['#929383',
+                '#bec0bf',
+                '#b4b4b4',
+                '#ececec',
+                '#47499e',
+                '#ef8ed2',
+                '#ffffff',
+                '#ee3f0b',
+                '#ddf2f3',
+                '#0a0f11',
+                '#5dbfc0',
+                '#4eb0b1',
+                '#b99314',
+                '#fbc303',
+                '#fba3dc',
+                '#ec370d',
+                '#195e98',
+                '#ffd63c',
+                '#bf3f11',
+                '#44467f']
+
+        function preload() {
+            soundFormats('mp3', 'ogg')
+            ms = loadSound('./1.mp3')
+        }
+
+        function setup() {
+            ms.setVolume(0.5)
+            ms.play()
+            am = new p5.Amplitude()
+            smooth(1)
+            t = createCanvas(2000, 2000)
+            for (var i = 0; i < 1; i++) {
+                ps.push(new Par())
+            }
+            var c = colors[floor(random(colors.length))]
+            background(255)
+            noStroke()
+            strokeWeight(2)
+        }
+
+        function draw() {
+            ps.map((ele, i) => {
+                if (frameCount % 6) return
+                ele.c[0] = simplex.noise2D(frameCount / 50, ele.seed) * 100 + cc
+                ele.c[0] = abs(floor(ele.c[0]))
+
+                ele.c[1] = 0
+
+                ele.c[2] = 0
+
+                ele.c[3] = simplex.noise2D(frameCount / 400, ele.seed + 300) / ele.seed * 100 + 0.2
+                ele.c[3] = abs(ele.c[3])
+
+                var level = am.getLevel()
+                var size = map(level, 0, 1, 0, 1000)
+                var colorS = map(level, 0, 1, 0, 600)
+                var colorL = map(level, 0, 1, 0, 800)
+                if (ele.p.x + 100 > width) {
+                    ele.p.x = 100
+                    ele.p.y += 90
+                }
+
+                stroke(`hsla(${ele.c[0]}, ${ele.c[1] + colorS}%, ${ele.c[2] + 100 - colorL}%, ${1})`)
+                fill(`hsla(${ele.c[0]}, ${ele.c[1] + colorS}%, ${ele.c[2] + 110 - colorL}%, ${0.8})`)
+                ellipse(ele.p.x, ele.p.y, size * size * 0.005, size * size * 0.005)
+                ele.p.x = sin(frameCount / 70) * ele.r + width / 2
+                ele.p.y = cos(frameCount / 70) * ele.r + height / 2
+                ele.r += 1
+            })
+
+        }
+
+        class Par {
+            constructor(x, y) {
+                this.p = createVector(0, 0)
+                this.r = 0
+                this.seed = floor(random(10, 70))
+                this.c = Array.from([0, 0, 0, 0])
+                this.s = 0
+                this.o = random(0.01)
+                this.scale = {
+                    x: random(1),
+                    y: random(4)
+                }
+            }
+        }
+
+        // function mouseClicked() {
+        //     ps = []
+        //     for (var i = 0; i < 20; i++) {
+        //         ps.push(new Par())
+        //     }
+        // }
+
+        function keyPressed() {
+            console.log(keyCode)
+
+            if (keyCode === 49) {
+                saveCanvas(t, 'myCanvas', 'jpg');
+            }
+
+        }
+
+
+    </script>
+</body>
+
+</html>
