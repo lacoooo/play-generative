@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>turbulence</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script>
+
+        s = new SimplexNoise()
+
+        t = '鱼是谁发明的？为什么要发明刺？'
+        index = 0
+        x = 100
+        function setup() {
+            createCanvas(1000, 1000)
+            background(255)
+            textFont('宋体')
+            // noLoop()
+            frameRate(1)
+        }
+
+        function draw() {
+            background('rgba(255,255,255,1)')
+            for (let i = 0; i < t.length; i++) {
+                let fs = ~~random(10, 50)
+                textSize(fs)
+                text(t[index], x, 300)
+                x += fs + 10
+                index ++
+            }
+            index = 0
+            x = 100
+        }
+
+    </script>
+</body>
+
+</html>
