@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script>
+
+        var img
+        var cv
+        var ctx
+
+        function preload() {
+            img = loadImage('./1.jpg')
+        }
+
+        function setup() {
+            cv = createCanvas(1000, 1000)
+            ctx = cv.drawingContext
+            noLoop()
+        }
+
+        function draw() {
+            image(img, 0, 0)
+        }
+
+        function mouseDragged() {
+            image(cv.canvas, 0, 0)
+        }
+
+        function mouseReleased() {
+
+        }
+
+    </script>
+</body>
+
+</html>

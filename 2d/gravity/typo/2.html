@@ -45,10 +45,10 @@
             fill(0)
             var wall = Bodies.rectangle(0, 900, 2000, 400, { isStatic: true })
             World.add(world, wall)
-            var wall2 = Bodies.rectangle(100, 0, 200, 2000, { isStatic: true })
-            World.add(world, wall2)
-            var wall3 = Bodies.rectangle(700, 0, 200, 2000, { isStatic: true })
-            World.add(world, wall3)
+            // var wall2 = Bodies.rectangle(100, 0, 200, 2000, { isStatic: true })
+            // World.add(world, wall2)
+            // var wall3 = Bodies.rectangle(700, 0, 200, 2000, { isStatic: true })
+            // World.add(world, wall3)
             // for (var i = 0; i < 50; i++) {
             //     pars.push(new Particle(mouseX + random(-90, 90), mouseY + random(-90, 90), floor(random(10, 60))))
             // }
@@ -56,9 +56,9 @@
         }
 
         function draw() {
-            if (frameCount % 4 == 0) {
-                pars.push(new Particle(mouseX + random(-10, 10), mouseY, floor(random(10, 60))))
-            }
+            // if (frameCount % 4 == 0) {
+            //     pars.push(new Particle(mouseX + random(-10, 10), mouseY, floor(random(10, 60))))
+            // }
             Engine.update(engine)
             if (frameCount % 2) return
             background(255)
@@ -69,12 +69,12 @@
         }
 
         class Particle {
-            constructor(x, y, r) {
+            constructor(x, y, r, t) {
                 this.r = r
                 this.index = pars.length - 1
                 this.body = Bodies.rectangle(x, y, r, r)
                 World.add(world, this.body)
-                this.text = gettext()
+                this.text = t || gettext()
             }
 
             show() {
@@ -92,6 +92,12 @@
                 text(this.text, 0, this.r / 2)
                 pop()
             }
+        }
+        var teq = 'LESSIS猫.'
+        var ie = 0
+        function mouseClicked() {
+            pars.push(new Particle(mouseX + random(-10, 10), mouseY, floor(random(30, 60)), teq[ie]))
+            ie ++
         }
 
     </script>
