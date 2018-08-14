@@ -6,6 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>kd-tree</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,68 +27,65 @@
     <script>
         let colors = colorPalettes[Math.round(Math.random() * colorPalettes.length)]
         let tree
-        const canvasSize = 1000
+        const cs = { x: 1366, y: 768 }
 
         let list = []
-        let pixelData = []
         var posY = 0
         var index = 0
         var ctx
+        var r = []
+
+        var drift = 50
+
+        var sleep = async (duration) => {
+            return new Promise((resolve, reject) => {
+                setTimeout(resolve, duration);
+            });
+        };
 
         function preload() {
-            img = loadImage('./1.jpg')
+            cloo = loadImage('./1.png')
+            bg = loadImage('./1.jpg')
+            er = loadImage('./3.jpg')
+            er2 = loadImage('./4.jpg')
+            er3 = loadImage('./5.jpg')
+            er4 = loadImage('./6.jpg')
         }
 
         function setup() {
-            c = createCanvas(canvasSize, canvasSize)
+            c = createCanvas(cs.x, cs.y)
             ctx = c.drawingContext
-            // ctx.shadowBlur = 20
-            // ctx.shadowColor = "rgba(0,0,0,0.4)"
-            img.loadPixels()
-            background(255)
-            blendMode(DIFFERENCE)
-            stroke(0)
-            strokeWeight(1.5)
-            // noStroke()
-            fill(255)
-            const pixels = img.pixels
-            for (let i = 0; i < pixels.length; i += 4) {
-                pixelData.push([
-                    pixels[i], pixels[i + 1], pixels[i + 2],
-                    Math.floor(0.34 * pixels[i] + 0.5 * pixels[i + 1] + 0.16 * pixels[i + 2])
-                ])
-            }
+            strokeWeight(1)
+            noFill()
+            noLoop()
         }
 
-        function drawTree(node, bounds) {
-            var leftBounds = []
+        async function drawTree(node, bounds) {
+            let leftBounds = []
             leftBounds[0] = bounds[0].slice(0)
             leftBounds[1] = bounds[1].slice(0)
 
-            var rightBounds = []
+            let rightBounds = []
             rightBounds[0] = bounds[0].slice(0)
             rightBounds[1] = bounds[1].slice(0)
 
-            var co = colors[floor(random() * colors.length)]
-            // stroke(`rgb(${node.color[0]}, ${node.color[1]}, ${node.color[2]})`)
             if (node.dimension == 0) {
-                // line(node.x, bounds[1][0], node.x, bounds[1][1])
                 leftBounds[0][1] = node.x
                 rightBounds[0][0] = node.x
             } else {
-                // line(bounds[0][0], node.y, bounds[0][1], node.y)
                 leftBounds[1][1] = node.y
                 rightBounds[1][0] = node.y
             }
-            noStroke()
 
-            rect(bounds[0][0], bounds[1][0], bounds[0][1] - bounds[0][0], bounds[1][1] - bounds[1][0])
+            if (!node.left && !node.right) {
+                const x = bounds[0][0] + 2 + drift
+                const y = bounds[1][0] + 2 + drift
+                const w = bounds[0][1] - bounds[0][0] - 4
+                const h = bounds[1][1] - bounds[1][0] - 4
 
-            if (node.left) {
-                // line(node.x, node.y, node.left.x, node.left.y)
-            }
-            if (node.right) {
-                // line(node.x, node.y, node.right.x, node.right.y)
+                r.push({
+                    x: x, y: y, w: w, h: h
+                })
             }
 
             if (node.left) {
@@ -88,23 +97,67 @@
         }
 
         function draw() {
+            imageMode(CORNER)
+            image(bg, 0, 0)
             list = []
-            const area = canvasSize * canvasSize
-            for (let i = 0; i < 20000; i++) {
-                let pos = floor(random() * area)
-                if (pixelData[pos][3] < random(0, 255) + 1) continue
-                const x = pos % canvasSize
-                const y = (pos - x) / canvasSize
-                list.push({ x, y, color: pixelData[pos] })
+            r = []
+            for (let i = 0; i < 200; i++) {
+                list.push({ x: ~~random(cs.x - drift * 2), y: ~~random(cs.y - drift * 2), color: 1 })
             }
 
-            tree = new Kdtree(canvasSize, canvasSize)
+            tree = new Kdtree(cs.x - drift * 2, cs.y - drift * 2)
                 .getNodes(list)
             tree.initTree(0)
-            drawTree(tree.root, [[0, canvasSize], [0, canvasSize]])
-            noLoop()
+            drawTree(tree.root, [[0, cs.x - drift * 2], [0, cs.y - drift * 2]])
+            setTimeout(() => {
+                var i = 0
+                if (r.length > 0) {
+                    setInterval(() => {
+                        drawItem(r[i].x, r[i].y, r[i].w, r[i].h)
+                        i++
+                    }, 10)
+                }
+            }, 1000);
         }
+
+        function drawItem(x, y, w, h) {
+            
+            if (h < 30 || w < 30) return
+            noStroke()
+            fill(240)
+            rect(x, y, w, h)
+            noStroke()
+            fill('#20637e')
+            rect(x, y, w, 30)
+            fill(255)
+            imageMode(CENTER)
+            if (w > 60) {
+                text('VS code', x + 10, y + 20)
+            }
+            if (w > 100) {
+                image(cloo, x + w - 15, y + 15)
+            }
+            if (w > 124 && h > 72) {
+                image(er, x + w / 2, y + (h - 30) / 2 + 30)
+            } 
+            else if (w > 90 && h > 72) {
+                image(er2, x + w / 2, y + (h - 30) / 2 + 30)
+            }
+            else if (w < 91 && w > 85 && h > 85) {
+                image(er4, x + w / 2, y + (h - 30) / 2 + 30)
+            }
+            else if(w > 40 && h > 72) {
+                image(er3, x + w / 2, y + (h - 30) / 2 + 30)
+            }
+            noFill()
+            stroke('#20637e')
+            rect(x, y, w, h)
+        }
+
         function mouseClicked() {
+            redraw()
+        }
+        function keyPressed() {
             redraw()
         }
     </script>
