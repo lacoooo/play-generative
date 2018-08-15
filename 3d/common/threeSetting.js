@@ -34,18 +34,16 @@ const threeSetting = {
         scene = new THREE.Scene()
         scene.background = new THREE.Color(this.data.bgColor)
         const distance = 200
-        const width = window.innerWidth
-        const height = window.innerHeight
         camera = this.data.camera ||
         new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000)
         camera.position.set(0, 0, distance)
         camera.lookAt(scene.position)
-        
+
     },
 
     setup() {
         if (!window.setup) throw 'no setup function'
-        // window.setup()
+        window.setup()
     },
 
     aftSet() {
@@ -54,8 +52,8 @@ const threeSetting = {
         renderer.setSize(window.innerWidth, window.innerHeight)
 
         container.appendChild(renderer.domElement)
-        stats = new Stats()
-        container.appendChild(stats.dom)
+        // stats = new Stats()
+        // container.appendChild(stats.dom)
         controls = new THREE.OrbitControls( camera, renderer.domElement )
     },
 
@@ -63,7 +61,7 @@ const threeSetting = {
         if (!window.draw) throw 'no draw function'
         draw(a)
         renderer.render(scene, camera)
-        stats.update()
+        // stats.update()
         requestAnimationFrame(threeSetting.draw);
     }
 }
