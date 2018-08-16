@@ -15,7 +15,7 @@
         * {
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            /* overflow: hidden; */
         }
     </style>
 </head>
@@ -72,21 +72,28 @@
             if (node.dimension == 0) {
                 leftBounds[0][1] = node.x
                 rightBounds[0][0] = node.x
-            } else {
+            }
+            else {
                 leftBounds[1][1] = node.y
                 rightBounds[1][0] = node.y
             }
 
-            if (!node.left && !node.right) {
-                const x = bounds[0][0] + 2 + drift
-                const y = bounds[1][0] + 2 + drift
-                const w = bounds[0][1] - bounds[0][0] - 4
-                const h = bounds[1][1] - bounds[1][0] - 4
+            const x = bounds[0][0] + drift
+            const y = bounds[1][0] + drift
+            const w = bounds[0][1] - bounds[0][0]
+            const h = bounds[1][1] - bounds[1][0]
 
+            if (!node.left && !node.right) {
                 r.push({
                     x: x, y: y, w: w, h: h
                 })
             }
+
+            if (!node.left || !node.right) {
+                correct(bounds, x, y, w, h)
+            }
+
+            leftBounds[2] = rightBounds[2] = [x, y, w, h]
 
             if (node.left) {
                 drawTree(node.left, leftBounds)
@@ -101,18 +108,19 @@
             // image(bg, 0, 0)
             list = []
             r = []
-            for (let i = 0; i < 200; i++) {
+            for (let i = 0; i < 100; i++) {
                 list.push({ x: ~~random(cs.x - drift * 2), y: ~~random(cs.y - drift * 2), color: 1 })
             }
 
             tree = new Kdtree(cs.x - drift * 2, cs.y - drift * 2)
                 .getNodes(list)
             tree.initTree(0)
-            drawTree(tree.root, [[0, cs.x - drift * 2], [0, cs.y - drift * 2]])
+            drawTree(tree.root, [[0, cs.x - drift * 2], [0, cs.y - drift * 2], [0, 0, width, height]])
             setTimeout(() => {
                 var i = 0
                 if (r.length > 0) {
                     setInterval(() => {
+                        if (!r[i]) return
                         drawItem(r[i].x, r[i].y, r[i].w, r[i].h)
                         i++
                     }, 10)
@@ -120,9 +128,35 @@
             }, 1000);
         }
 
+        function correct(bounds, x, y, w, h) {
+            if (y + h >= 950) return
+            let pr = bounds[2]
+            console.log(y + h)
+            if (x == pr[0] && w == pr[2]) {
+                r.push({
+                    x: x, y: y + h, w: w, h: pr[3] - h
+                })
+            }
+            else if (x == pr[0] && h == pr[3]) {
+                r.push({
+                    x: x + w, y: y, w: pr[2] - w, h: h
+                })
+            }
+            if (x != pr[0] && w == pr[2]) {
+                r.push({
+                    x: pr[0], y: pr[1], w: w, h: pr[3] - h
+                })
+            }
+            else if (x != pr[0] && h == pr[3]) {
+                r.push({
+                    x: pr[0], y: pr[1], w: pr[2] - w, h: h
+                })
+            }
+        }
+
         function drawItem(x, y, w, h) {
-            
-            if (h < 30 || w < 30) return
+
+            // if (h < 30 || w < 30) return
             noStroke()
             fill(240)
             rect(x, y, w, h)
@@ -139,14 +173,14 @@
             }
             if (w > 124 && h > 72) {
                 image(er, x + w / 2, y + (h - 30) / 2 + 30)
-            } 
+            }
             else if (w > 90 && h > 72) {
                 image(er2, x + w / 2, y + (h - 30) / 2 + 30)
             }
             else if (w < 91 && w > 85 && h > 85) {
                 image(er4, x + w / 2, y + (h - 30) / 2 + 30)
             }
-            else if(w > 40 && h > 72) {
+            else if (w > 40 && h > 72) {
                 image(er3, x + w / 2, y + (h - 30) / 2 + 30)
             }
             noFill()
