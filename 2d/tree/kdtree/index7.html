@@ -27,7 +27,7 @@
     <script>
         let colors = colorPalettes[Math.round(Math.random() * colorPalettes.length)]
         let tree
-        const cs = { x: 1000, y: 1000 }
+        const cs = { x: 1200, y: 1200 }
 
         let list = []
         var posY = 0
@@ -105,11 +105,12 @@
         }
 
         function draw() {
+            background(255)
             imageMode(CORNER)
             // image(bg, 0, 0)
             list = []
             r = []
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 300; i++) {
                 list.push({ x: ~~random(cs.x - drift * 2), y: ~~random(cs.y - drift * 2), color: 1 })
             }
 
@@ -139,7 +140,7 @@
                         if (!q[i]) return
                         drawItem(q[i].x, q[i].y, q[i].w, q[i].h)
                         i++
-                    }, 300)
+                    }, 10)
                 }
             }, 600);
         }
