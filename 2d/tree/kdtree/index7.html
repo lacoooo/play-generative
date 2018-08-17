@@ -85,11 +85,12 @@
 
             if (!node.left && !node.right) {
                 r.push({
-                    x: x, y: y, w: w, h: h
+                    x: x, y: y, w: w, h: h, type: 0
                 })
             }
 
             if (!node.left || !node.right) {
+                //     console.log(8)
                 correct(bounds, x, y, w, h)
             }
 
@@ -108,7 +109,7 @@
             // image(bg, 0, 0)
             list = []
             r = []
-            for (let i = 0; i < 100; i++) {
+            for (let i = 0; i < 30; i++) {
                 list.push({ x: ~~random(cs.x - drift * 2), y: ~~random(cs.y - drift * 2), color: 1 })
             }
 
@@ -119,81 +120,96 @@
             setTimeout(() => {
                 var i = 0
                 if (r.length > 0) {
+                    q = []
+                    r.map((ele, i) => {
+                        var t = true
+                        q.map((e, index) => {
+                            if (!e) return
+                            if (ele.x == e.x && ele.y == e.y) {
+                                if (ele.w < e.w || ele.h < e.h) {
+                                    q[index] = null
+                                }
+                                else t = false
+                            }
+                        })
+                        if (t) q.push(ele)
+                    })
+                    q = q.filter(e => !!e)
                     setInterval(() => {
-                        if (!r[i]) return
-                        drawItem(r[i].x, r[i].y, r[i].w, r[i].h)
+                        if (!q[i]) return
+                        drawItem(q[i].x, q[i].y, q[i].w, q[i].h)
                         i++
-                    }, 10)
+                    }, 300)
                 }
-            }, 1000);
+            }, 600);
         }
 
         function correct(bounds, x, y, w, h) {
-            if (y + h >= 950) return
             let pr = bounds[2]
-            console.log(y + h)
-            if (x == pr[0] && w == pr[2]) {
+            if (y == pr[1] && w == pr[2]) {
                 r.push({
-                    x: x, y: y + h, w: w, h: pr[3] - h
+                    x: x, y: y + h, w: w, h: pr[3] - h, type: 1
                 })
             }
             else if (x == pr[0] && h == pr[3]) {
                 r.push({
-                    x: x + w, y: y, w: pr[2] - w, h: h
+                    x: x + w, y: y, w: pr[2] - w, h: h, type: 1
                 })
             }
-            if (x != pr[0] && w == pr[2]) {
+            else if (y != pr[1] && w == pr[2]) {
                 r.push({
-                    x: pr[0], y: pr[1], w: w, h: pr[3] - h
+                    x: pr[0], y: pr[1], w: w, h: pr[3] - h, type: 1
                 })
             }
             else if (x != pr[0] && h == pr[3]) {
                 r.push({
-                    x: pr[0], y: pr[1], w: pr[2] - w, h: h
+                    x: pr[0], y: pr[1], w: pr[2] - w, h: h, type: 1
                 })
             }
         }
 
         function drawItem(x, y, w, h) {
-
-            // if (h < 30 || w < 30) return
+            const back = 6
             noStroke()
             fill(240)
-            rect(x, y, w, h)
-            noStroke()
-            fill('#20637e')
-            rect(x, y, w, 30)
-            fill(255)
+            rect(x, y, w - back, h - back)
+            if (h > 30) {
+                noStroke()
+                fill('#fff')
+                rect(x, y, w - back, 30)
+            }
+            fill(0)
             imageMode(CENTER)
-            if (w > 60) {
+            if (w > 80 && h > 30) {
                 text('VS code', x + 10, y + 20)
             }
-            if (w > 100) {
-                image(cloo, x + w - 15, y + 15)
+            if (w > 18 && h > 30) {
+                image(cloo, ~~(x + w) - 13, ~~y + 15)
             }
+            var ww = ~~(x + w / 2)
+            var hh = ~~(y + (h - 30) / 2 + 30)
             if (w > 124 && h > 72) {
-                image(er, x + w / 2, y + (h - 30) / 2 + 30)
+                image(er, ww, hh)
             }
-            else if (w > 90 && h > 72) {
-                image(er2, x + w / 2, y + (h - 30) / 2 + 30)
+            else if (w > 90 && h > 72 && h < 86) {
+                image(er2, ww, hh)
             }
-            else if (w < 91 && w > 85 && h > 85) {
-                image(er4, x + w / 2, y + (h - 30) / 2 + 30)
+            else if (w > 90 && h > 85) {
+                image(er4, ww, hh)
             }
             else if (w > 40 && h > 72) {
-                image(er3, x + w / 2, y + (h - 30) / 2 + 30)
+                image(er3, ww, hh)
             }
             noFill()
-            stroke('#20637e')
-            rect(x, y, w, h)
+            stroke(200)
+            rect(x, y, w - back, h - back)
+        }
+        var iq = 0
+        function mouseClicked() {
+            drawItem(r[iq].x, r[iq].y, r[iq].w, r[iq].h)
+            iq++
         }
 
-        function mouseClicked() {
-            redraw()
-        }
-        function keyPressed() {
-            redraw()
-        }
     </script>
 </body>
 
