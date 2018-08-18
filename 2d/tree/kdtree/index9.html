@@ -36,13 +36,37 @@
         var r = []
 
         var drift = 50
-
+        colors =
+            [
+                '#929383',
+                '#bec0bf',
+                '#b4b4b4',
+                '#ececec',
+                '#47499e',
+                '#ef8ed2',
+                '#ffffff',
+                '#ee3f0b',
+                '#ddf2f3',
+                '#0a0f11',
+                '#5dbfc0',
+                '#4eb0b1',
+                '#b99314',
+                '#fbc303',
+                '#fba3dc',
+                '#ec370d',
+                '#195e98',
+                '#ffd63c',
+                '#bf3f11',
+                '#44467f'
+            ]
         var sleep = async (duration) => {
             return new Promise((resolve, reject) => {
                 setTimeout(resolve, duration);
             });
         };
-
+        function getColor() {
+            return colors[~~(Math.random() * colors.length)]
+        }
         function preload() {
             cloo = loadImage('./1.png')
             // bg = loadImage('./1.jpg')
@@ -105,12 +129,12 @@
         }
 
         function draw() {
-            background(255)
+            background(244)
             imageMode(CORNER)
             // image(bg, 0, 0)
             list = []
             r = []
-            for (let i = 0; i < 300; i++) {
+            for (let i = 0; i < 200; i++) {
                 list.push({ x: ~~random(cs.x - drift * 2), y: ~~random(cs.y - drift * 2), color: 1 })
             }
 
@@ -169,38 +193,34 @@
             }
         }
 
+
+
         function drawItem(x, y, w, h) {
+            var cr = getColor()
+            var ct = getColor()
+
+            ellipseMode(CORNER)
             const back = 6
             if (w <= back || h <= back) return
             noStroke()
-            fill(240)
-            rect(x, y, w - back, h - back)
+            gradient = ctx.createLinearGradient(
+                x, y + h / 2,
+                x, y + h * 2
+            )
+            gradient.addColorStop(0, cr)
+            gradient.addColorStop(1, ct)
+            fill(0)
+            ctx.fillStyle = gradient
+            // rect(x, y, w - back, h - back)
+            if (random() > 0.6) rect(x, y, w - back, h - back)
             if (h > 30) {
                 noStroke()
                 fill('#fff')
                 rect(x, y, w - back, 30)
             }
             fill(0)
-            imageMode(CENTER)
-            if (w > 80 && h > 30) {
-                text('VS code', x + 10, y + 20)
-            }
-            if (w > 18 && h > 30) {
-                image(cloo, ~~(x + w) - 13, ~~y + 15)
-            }
-            var ww = ~~(x + w / 2 - back / 2)
-            var hh = ~~(y + (h - 30) / 2 + 30 - back / 2)
-            if (w > 124 && h > 72) {
-                image(er, ww, hh)
-            }
-            else if (w > 90 && h > 72 && h < 86) {
-                image(er2, ww, hh)
-            }
-            else if (w > 90 && h > 85) {
-                image(er4, ww, hh)
-            }
-            else if (w > 40 && h > 72) {
-                image(er3, ww, hh)
+            if (w > 70 && h > 30) {
+                text(cr, x + 10, y + 20)
             }
             noFill()
             stroke(200)

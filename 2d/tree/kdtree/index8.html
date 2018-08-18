@@ -36,6 +36,32 @@
         var r = []
 
         var drift = 50
+        colors =
+            [
+                '#929383',
+                '#bec0bf',
+                '#b4b4b4',
+                '#ececec',
+                '#47499e',
+                '#ef8ed2',
+                '#ffffff',
+                '#ee3f0b',
+                '#ddf2f3',
+                '#0a0f11',
+                '#5dbfc0',
+                '#4eb0b1',
+                '#b99314',
+                '#fbc303',
+                '#fba3dc',
+                '#ec370d',
+                '#195e98',
+                '#ffd63c',
+                '#bf3f11',
+                '#44467f'
+            ]
+        function getColor() {
+            return colors[~~(Math.random() * colors.length)]
+        }
 
         var sleep = async (duration) => {
             return new Promise((resolve, reject) => {
@@ -44,73 +70,49 @@
         };
 
         function preload() {
-            cloo = loadImage('./1.png')
-            // bg = loadImage('./1.jpg')
-            er = loadImage('./3.jpg')
-            er2 = loadImage('./4.jpg')
-            er3 = loadImage('./5.jpg')
-            er4 = loadImage('./6.jpg')
+
         }
 
         function setup() {
             c = createCanvas(cs.x, cs.y)
             ctx = c.drawingContext
-            strokeWeight(1)
-            noFill()
+            strokeWeight(2)
+            strokeJoin(ROUND)
+            ellipseMode(CORNER)
+            // noFill()
             noLoop()
         }
+        var cr = getColor()
+        var ct = getColor()
+        function drawItem(x, y, w, h) {
+            const back = 2
 
-        async function drawTree(node, bounds) {
-            let leftBounds = []
-            leftBounds[0] = bounds[0].slice(0)
-            leftBounds[1] = bounds[1].slice(0)
+            gradient = ctx.createLinearGradient(
+                x, y,
+                x, y + h
+            )
+            gradient.addColorStop(0, cr)
+            gradient.addColorStop(1, ct)
+            fill(0)
+            ctx.fillStyle = gradient
 
-            let rightBounds = []
-            rightBounds[0] = bounds[0].slice(0)
-            rightBounds[1] = bounds[1].slice(0)
+            noStroke()
+            // var c = getColor()
 
-            if (node.dimension == 0) {
-                leftBounds[0][1] = node.x
-                rightBounds[0][0] = node.x
-            }
-            else {
-                leftBounds[1][1] = node.y
-                rightBounds[1][0] = node.y
-            }
-
-            const x = bounds[0][0] + drift
-            const y = bounds[1][0] + drift
-            const w = bounds[0][1] - bounds[0][0]
-            const h = bounds[1][1] - bounds[1][0]
-
-            if (!node.left && !node.right) {
-                r.push({
-                    x: x, y: y, w: w, h: h, type: 0
-                })
-            }
-
-            if (!node.left || !node.right) {
-                //     console.log(8)
-                correct(bounds, x, y, w, h)
-            }
-
-            leftBounds[2] = rightBounds[2] = [x, y, w, h]
-
-            if (node.left) {
-                drawTree(node.left, leftBounds)
-            }
-            if (node.right) {
-                drawTree(node.right, rightBounds)
-            }
+            if (random() > 0.5) rect(x, y, w - back, h - back)
+            else ellipse(x, y, w - back, h - back, 3)
+            // if (w <= back) return
+            // if (h <= back) return
+            // noFill()
+            // stroke(255)
+            // rect(x, y, w, h)
         }
 
         function draw() {
             background(255)
-            imageMode(CORNER)
-            // image(bg, 0, 0)
             list = []
             r = []
-            for (let i = 0; i < 300; i++) {
+            for (let i = 0; i < 600; i++) {
                 list.push({ x: ~~random(cs.x - drift * 2), y: ~~random(cs.y - drift * 2), color: 1 })
             }
 
@@ -169,47 +171,54 @@
             }
         }
 
-        function drawItem(x, y, w, h) {
-            const back = 6
-            if (w <= back || h <= back) return
-            noStroke()
-            fill(240)
-            rect(x, y, w - back, h - back)
-            if (h > 30) {
-                noStroke()
-                fill('#fff')
-                rect(x, y, w - back, 30)
-            }
-            fill(0)
-            imageMode(CENTER)
-            if (w > 80 && h > 30) {
-                text('VS code', x + 10, y + 20)
-            }
-            if (w > 18 && h > 30) {
-                image(cloo, ~~(x + w) - 13, ~~y + 15)
-            }
-            var ww = ~~(x + w / 2 - back / 2)
-            var hh = ~~(y + (h - 30) / 2 + 30 - back / 2)
-            if (w > 124 && h > 72) {
-                image(er, ww, hh)
-            }
-            else if (w > 90 && h > 72 && h < 86) {
-                image(er2, ww, hh)
-            }
-            else if (w > 90 && h > 85) {
-                image(er4, ww, hh)
-            }
-            else if (w > 40 && h > 72) {
-                image(er3, ww, hh)
-            }
-            noFill()
-            stroke(200)
-            rect(x, y, w - back, h - back)
-        }
         var iq = 0
         function mouseClicked() {
             drawItem(r[iq].x, r[iq].y, r[iq].w, r[iq].h)
             iq++
+        }
+
+        function drawTree(node, bounds) {
+            let leftBounds = []
+            leftBounds[0] = bounds[0].slice(0)
+            leftBounds[1] = bounds[1].slice(0)
+
+            let rightBounds = []
+            rightBounds[0] = bounds[0].slice(0)
+            rightBounds[1] = bounds[1].slice(0)
+
+            if (node.dimension == 0) {
+                leftBounds[0][1] = node.x
+                rightBounds[0][0] = node.x
+            }
+            else {
+                leftBounds[1][1] = node.y
+                rightBounds[1][0] = node.y
+            }
+
+            const x = bounds[0][0] + drift
+            const y = bounds[1][0] + drift
+            const w = bounds[0][1] - bounds[0][0]
+            const h = bounds[1][1] - bounds[1][0]
+
+            if (!node.left && !node.right) {
+                r.push({
+                    x: x, y: y, w: w, h: h, type: 0
+                })
+            }
+
+            if (!node.left || !node.right) {
+                //     console.log(8)
+                correct(bounds, x, y, w, h)
+            }
+
+            leftBounds[2] = rightBounds[2] = [x, y, w, h]
+
+            if (node.left) {
+                drawTree(node.left, leftBounds)
+            }
+            if (node.right) {
+                drawTree(node.right, rightBounds)
+            }
         }
 
     </script>
