@@ -33,6 +33,10 @@
             Common = Matter.Common
         var engine
         var world
+        var timeScale
+
+        var timeScaleTarget = 1,
+            counter2 = 0
 
         var pars = []
         var imgs = []
@@ -45,7 +49,7 @@
         }
 
         function setup() {
-            createCanvas(1000, 1000)
+            createCanvas(1200, 1200)
             engine = Engine.create()
             world = engine.world
             world.gravity.x = 0
@@ -53,12 +57,21 @@
             noStroke()
             noFill()
             imageMode(CENTER)
-            var wall = Bodies.rectangle(0, 1020, 3000, 500, { isStatic: true })
+            var wall = Bodies.rectangle(0, 1340, 3000, 500, { isStatic: true })
+            World.add(world, wall)
+            wall = Bodies.rectangle(-50, 0, 100, 3000, { isStatic: true })
+            World.add(world, wall)
+            wall = Bodies.rectangle(1200, 0, 100, 3000, { isStatic: true })
             World.add(world, wall)
         }
 
         function draw() {
             Engine.update(engine)
+            if (timeScale) engine.timing.timeScale -= 0.01
+            if (engine.timing.timeScale <= 0.05) {
+                timeScale = false
+                engine.timing.timeScale = 1
+            }
             // if (!(frameCount % 3)) return
             clear()
             pars.map(ele => {
@@ -67,11 +80,11 @@
         }
 
         class Particle {
-            constructor(x, y, t) {
+            constructor(x, y) {
                 this.index = pars.length - 1
-                this.t = t
+                this.time = 0
                 this.r = {
-                    w: 18
+                    w: 27
                 }
                 this.body = Bodies.circle(x, y, this.r.w)
                 this.img = imgs[~~random(56)]
@@ -83,8 +96,13 @@
                 push()
                 translate(pos.x, pos.y)
                 rotate(this.body.angle)
-                image(this.img, 0, 0, 40, 40)
+                image(this.img, 0, 0)
                 pop()
+                if (this.time <= 0) return
+                if (this.time == 1) {
+                    this.img = imgs[~~random(56)]
+                }
+                this.time--
             }
         }
 
@@ -95,7 +113,7 @@
                 var body = bodies[i];
 
                 if (!body.isStatic) {
-                    var forceMagnitude = 0.04 * body.mass;
+                    var forceMagnitude = 0.03 * body.mass;
 
                     Body.applyForce(body, body.position, {
                         x: (forceMagnitude + Common.random() * forceMagnitude) * Common.choose([1, -1]),
@@ -103,13 +121,19 @@
                     });
                 }
             }
+            pars.map(ele => {
+                ele.img = imgs[49]
+                ele.time = ~~random(50, 100)
+            })
         };
 
         function mouseDragged() {
-            pars.push(new Particle(mouseX, mouseY, random(1) > 0.4))
+            pars.push(new Particle(mouseX, mouseY))
         }
 
-        function mouseClicked() {
+        function doubleClicked() {
+            if (keyIsPressed) return
+            timeScale = true
             explosion(engine)
         }
 
