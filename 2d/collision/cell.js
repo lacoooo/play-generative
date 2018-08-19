@@ -21,17 +21,23 @@ var colors = [
 	'#bf3f11',
 	'#44467f'
 ]
-
+var u = ['normal', 'multiply', 'screen', 'overlay', 'soft-light',
+        'hard- light', 'color-dodge', 'color-burn', 'darken',
+        'lighten', 'exclusion', 'hue', 'saturation',
+        'luminosity', 'color', 'add', 'subtract', 'average', 'pin-light',
+        'negation', 'source- over', 'source-in', 'source-out', 'source-atop',
+        'destination-over', 'destination-in', 'destination-out',
+        'destination-atop', 'lighter', 'darker', 'copy', 'xor']
 function Ball(radius, position, vector) {
 	this.radius = radius;
 	this.point = position;
 	this.vector = vector;
 	this.maxVec = 15;
-	this.numSegment = 3;
+	this.numSegment = 4;
 	this.boundOffset = [];
 	this.sidePoints = [];
 	this.path = new Path({
-		fillColor: colors[Math.floor(Math.random() * colors.length)],
+		fillColor: 'black',
 		blendMode: 'xor',
 		closed: true
 	});
@@ -121,7 +127,7 @@ Ball.prototype = {
 //--------------------- main ---------------------
 
 var balls = [];
-var numBalls = 30;
+var numBalls = 40;
 for (var i = 0; i < numBalls; i++) {
 	var position = Point.random() * view.size;
 	var vector = new Point({

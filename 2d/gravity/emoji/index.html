@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/matter-js/0.12.0/matter.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script>
+
+        var Engine = Matter.Engine,
+            World = Matter.World,
+            Bodies = Matter.Bodies,
+            Body = Matter.Body,
+            Composite = Matter.Composite,
+            Common = Matter.Common
+        var engine
+        var world
+
+        var pars = []
+        var imgs = []
+
+        function preload() {
+            img = loadImage('./img/1 (1).png')
+            for (var i = 1; i < 57; i++) {
+                imgs.push(loadImage(`./img/1 (${i}).png`))
+            }
+        }
+
+        function setup() {
+            createCanvas(1000, 1000)
+            engine = Engine.create()
+            world = engine.world
+            world.gravity.x = 0
+            world.gravity.y = 1
+            noStroke()
+            noFill()
+            imageMode(CENTER)
+            var wall = Bodies.rectangle(0, 1020, 3000, 500, { isStatic: true })
+            World.add(world, wall)
+        }
+
+        function draw() {
+            Engine.update(engine)
+            // if (!(frameCount % 3)) return
+            clear()
+            pars.map(ele => {
+                ele.show()
+            })
+        }
+
+        class Particle {
+            constructor(x, y, t) {
+                this.index = pars.length - 1
+                this.t = t
+                this.r = {
+                    w: 18
+                }
+                this.body = Bodies.circle(x, y, this.r.w)
+                this.img = imgs[~~random(56)]
+                World.add(world, this.body)
+            }
+
+            show() {
+                var pos = this.body.position
+                push()
+                translate(pos.x, pos.y)
+                rotate(this.body.angle)
+                image(this.img, 0, 0, 40, 40)
+                pop()
+            }
+        }
+
+        function explosion(engine) {
+            var bodies = Composite.allBodies(engine.world);
+
+            for (var i = 0; i < bodies.length; i++) {
+                var body = bodies[i];
+
+                if (!body.isStatic) {
+                    var forceMagnitude = 0.04 * body.mass;
+
+                    Body.applyForce(body, body.position, {
+                        x: (forceMagnitude + Common.random() * forceMagnitude) * Common.choose([1, -1]),
+                        y: -forceMagnitude + Common.random() * -forceMagnitude
+                    });
+                }
+            }
+        };
+
+        function mouseDragged() {
+            pars.push(new Particle(mouseX, mouseY, random(1) > 0.4))
+        }
+
+        function mouseClicked() {
+            explosion(engine)
+        }
+
+    </script>
+</body>
+
+</html>
