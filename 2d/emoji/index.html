@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script>
+        var s = new SimplexNoise()
+
+        var num = 1475
+        var emojis = []
+        var eSize = 10
+        var mar = 2
+        function preload() {
+            for (var i = 1; i < num; i++) {
+                emojis.push(
+                    loadImage(`./emojis/1 (${i}).png`)
+                )
+            }
+        }
+
+        function setup() {
+            createCanvas(2600, 1300)
+            background(255)
+            noStroke()
+            fill(0)
+            noLoop()
+        }
+
+        function draw() {
+            for (let i = -50; i < height - 180; i += mar * mar + mar) {
+                for (let j = -100; j < width + 60; j += mar * mar * mar + mar) {
+                    if (random() > 0.9) continue
+                    const img = emojis[~~random(num - 1)]
+                    const x = j + s.noise2D(j / 700, i / 700) * 50 + random(20)
+                    const y = i + s.noise2D(j / 700, i / 700 + 100) * 50 + random(20)
+                    const ss = eSize + s.noise2D(j / 700, i / 700) * 10
+                    image(img, x, y, ss, ss)
+                }
+                eSize += 1.5 + eSize / 60
+                mar += 0.04
+            }
+        }
+    </script>
+</body>
+
+</html>
