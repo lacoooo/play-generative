@@ -28,7 +28,7 @@ function Ball(radius, position, vector, smooth) {
 	this.point = position;
 	this.vector = vector;
 	this.smooth = smooth;
-	this.maxVec = 15;
+	this.maxVec = 30;
 	this.numSegment = Math.floor((radius / (!smooth ? tombola.range(30, 100) : 30)) + 2);
 	this.boundOffset = [];
 	this.sidePoints = [];
@@ -174,7 +174,7 @@ Ball.prototype = {
 //--------------------- main ---------------------
 
 var balls = [];
-var numBalls = 40;
+var numBalls = 10;
 for (var i = 0; i < numBalls; i++) {
 	var position = Point.random() * view.size;
 	var vector = new Point({

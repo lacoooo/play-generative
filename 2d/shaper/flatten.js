@@ -1,7 +1,6 @@
 ;
 var sn = new SimplexNoise()
 var paths = []
-var frameCount = 0
 var options = (function () {
 
     document.onkeydown = function (event) {
@@ -21,7 +20,7 @@ var options = (function () {
     function Options() {
         this.lineColor = window.localStorage.lineColor ? JSON.parse(window.localStorage.lineColor) : [150, 150, 150]
         this.fillColor = window.localStorage.fillColor ? JSON.parse(window.localStorage.fillColor) : [150, 150, 150]
-        this.blendMode = 'xor'
+        this.blendMode = 'normal'
         this.fill = true
         this.line = false
         this.lineWidth = 1
@@ -35,7 +34,6 @@ var options = (function () {
             var current = project.activeLayer.children[project.activeLayer.children.length - 1]
             if (!current) return
             current.remove()
-            paths.pop()
         }
         this.download_png = function () {
             var base64 = canvas.toDataURL('image/png', 1)
@@ -64,7 +62,6 @@ var options = (function () {
         }
         this.clear = function () {
             project.activeLayer.children = []
-            paths = []
         }
     }
 
@@ -113,7 +110,6 @@ var error
 
 function onMouseDown(event) {
     path = new Path()
-    paths.push(path)
     path.blendMode = options.blendMode
     path.strokeWidth = options.line ? options.lineWidth : 1
     if (options.line) {
@@ -156,24 +152,18 @@ function onMouseUp(event) {
         path.fillColor = 'rgb(' + options.fillColor[0] + ',' + options.fillColor[1] + ',' + options.fillColor[2] + ')'
     }
     path.selection = false
+    paths.push(path)
     console.log(paths)
 };
 function anime() {
     paths.forEach(function (e) {
         e.segments.forEach(function (ele) {
-            if (!ele._point) {
-                ele._point = {}
-                ele._point.x = ele.point.x
-                ele._point.y = ele.point.y
-            }
-            ele.point = new Point(ele._point.x, ele._point.y) + 
-            new Point(sn.noise2D(ele.point._x / 200, frameCount + 100)/3,
-            sn.noise2D(ele.point._y / 200, frameCount + 100)/3)
+            ele.point += new Point(sn.noise2D(ele.point._x / 10, 100),
+            sn.noise2D(ele.point._y / 10, 100))
         })
     })
 }
 
 function onFrame() {
     anime()
-    frameCount += 0.1
 }
