@@ -5,13 +5,15 @@ function Ball(r, p, v) {
 	this.point = p;
 	this.vector = v;
 	this.maxVec = 15;
-	this.numSegment = Math.floor(r / 3 + 2);
+	this.numSegment = Math.floor(r / 6);
 	this.boundOffset = [];
 	this.boundOffsetBuff = [];
 	this.sidePoints = [];
 	this.path = new Path({
-		fillColor: 'black',
-		blendMode: 'normal'
+		strokeColor: 'black',
+		// fillColor: 'white',
+		closed: true
+		// blendMode: 'normal'
 	});
 
 	for (var i = 0; i < this.numSegment; i ++) {
@@ -61,8 +63,7 @@ Ball.prototype = {
 			offset += ((this.boundOffset[next] + this.boundOffset[prev]) / 2 - offset) / 3;
 			this.boundOffsetBuff[i] = this.boundOffset[i] = offset;
         }
-        
-		this.path.smooth();
+		// this.path.smooth();
 	},
 
 	react: function(b) {
@@ -110,14 +111,14 @@ Ball.prototype = {
 //--------------------- main ---------------------
 
 var balls = [];
-var numBalls = 18;
+var numBalls = 40;
 for (var i = 0; i < numBalls; i++) {
 	var position = Point.random() * view.size;
 	var vector = new Point({
 		angle: 360 * Math.random(),
 		length: Math.random() * 10
 	});
-	var radius = Math.random() * 60 + 200;
+	var radius = Math.random() * 60 + 130;
 	balls.push(new Ball(radius, position, vector));
 }
 
