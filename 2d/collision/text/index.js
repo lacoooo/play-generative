@@ -1,18 +1,26 @@
 // kynd.info 2014
-
+var t = new Path({
+	fillColor: 'blue',
+	close: true
+})
+var inde = 0
+t.add(new Point([0, 0]))
+t.add(new Point([1000, 0]))
+t.add(new Point([1000, 1000]))
+t.add(new Point([0, 1000]))
 function Ball(r, p, v) {
 	this.radius = r;
 	this.point = p;
 	this.vector = v;
 	this.maxVec = 15;
-	this.numSegment = Math.floor(r / 6);
+	this.numSegment = Math.floor(r / 5);
 	this.boundOffset = [];
 	this.boundOffsetBuff = [];
 	this.sidePoints = [];
 	this.path = new Path({
-		strokeColor: 'white',
-		// fillColor: 'white',
-		closed: true
+		// strokeColor: 'blue',
+		// fillColor: 'black',
+		// closed: true
 		// blendMode: 'normal'
 	});
 	this.texts = []
@@ -22,8 +30,10 @@ function Ball(r, p, v) {
 		this.boundOffsetBuff.push(this.radius)
 		var p = new Point()
 		this.path.add(p)
-		var te = new PointText(p)
-		te.fillColor = 'black'
+		var te = new PointText({
+			fontSize: 18 + ~~(Math.random() * 25)
+		})
+		te.fillColor = 'white'
 		te.content = (Math.random() * 100 + '')[0]
 		this.texts.push(te)
 		this.sidePoints.push(new Point({
@@ -71,10 +81,10 @@ Ball.prototype = {
 		}
 		// this.path.smooth();
 		var _this = this
-		this.texts.forEach(function(ele, i) {
-			ele.point = _this.path.segments[i].point
+		this.texts.forEach(function (ele, i) {
+			ele.point = _this.path.segments[i].point + [-7, 15]
 			ele.rotation = 0
-			ele.rotate(360 / _this.texts.length * i + 90, ele.point)
+			ele.rotate(360 / _this.texts.length * i + 90, _this.path.segments[i].point - [-3, 6])
 		});
 	},
 
@@ -123,14 +133,14 @@ Ball.prototype = {
 //--------------------- main ---------------------
 
 var balls = [];
-var numBalls = 24;
+var numBalls = 40;
 for (var i = 0; i < numBalls; i++) {
 	var position = Point.random() * view.size;
 	var vector = new Point({
 		angle: 360 * Math.random(),
 		length: Math.random() * 10
 	});
-	var radius = Math.random() * 60 + 130;
+	var radius = Math.random() * 90 + 110;
 	balls.push(new Ball(radius, position, vector));
 }
 
@@ -143,4 +153,9 @@ function onFrame() {
 	for (var i = 0, l = balls.length; i < l; i++) {
 		balls[i].iterate();
 	}
+	var base64 = canvas.toDataURL('image/png', 1)
+	save.setAttribute('href', base64)
+	save.setAttribute('download', inde + ".png")
+	save.click()
+	inde ++
 }

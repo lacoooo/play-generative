@@ -36,8 +36,8 @@
         var r = []
         const im = new Image()
         im.src = './1.jpg'
-        const im2 = new Image()
-        im2.src = './2.jpg'
+        // const im2 = new Image()
+        // im2.src = './2.jpg'
         var drift = 50
         colors =
             [
@@ -197,7 +197,7 @@
             // if (random() > 0.5) return
             var cr = getColor()
             var ct = getColor()
-            const back = -6
+            const back = 2
             if (w <= back || h <= back) return
             noStroke()
             gradient = ctx.createLinearGradient(
@@ -211,7 +211,7 @@
             // if (random() > 0.6)
             // rect(x, y, w - back, h - back)
             let rm = random
-            const u = 8
+            const u = 5
             let x1 = x + rm(-u, u)
             let y1 = y + rm(-u, u)
             let x2 = x + w - back + rm(-u, u)
@@ -221,16 +221,44 @@
             let x4 = x + rm(-u, u)
             let y4 = y + h - back + rm(-u, u)
             ctx.fillStyle = ctx.createPattern(im, 'repeat')
+            push()
             blendMode(NORMAL)
             beginShape()
             vertex(x1, y1)
             vertex(x2, y2)
             vertex(x3, y3)
+            translate(random(10), random(10))
             vertex(x4, y4)
             endShape(CLOSE)
+            pop()
+            // var uu = random()
+            // if (uu > 0.75)
+            //     gradient2 = ctx.createLinearGradient(
+            //         x, y,
+            //         x, y + h
+            //     )
+            // else if (uu > 0.5)
+            //     gradient2 = ctx.createLinearGradient(
+            //         x, y,
+            //         x + w, y
+            //     )
+            // else if (uu > 0.25)
+            //     gradient2 = ctx.createLinearGradient(
+            //         x, y + h,
+            //         x, y
+            //     )
+            // else
+            //     gradient2 = ctx.createLinearGradient(
+            //         x + h, y,
+            //         x, y
+            //     )
+            // var qq = random(255)
+            // var ww = random(255)
+            // gradient2.addColorStop(0, `rgb(${qq},${qq},${qq})`)
+            // gradient2.addColorStop(1, `rgb(${ww},${ww},${ww})`)
 
-            // ctx.fillStyle = gradient
-            // blendMode(EXCLUSION)
+            // ctx.fillStyle = gradient2
+            // blendMode(MULTIPLY)
             // beginShape()
             // vertex(x1, y1)
             // vertex(x2, y2)
@@ -238,18 +266,28 @@
             // vertex(x4, y4)
             // endShape(CLOSE)
 
-            ctx.fillStyle = ctx.createPattern(im2, 'repeat')
-            push()
-            blendMode(OVERLAY)
+            if (random() > 0.5) return
+            ctx.fillStyle = gradient
+            blendMode(EXCLUSION)
             beginShape()
-            ctx.moveTo(x1, y1)
-            ctx.lineTo(x2, y2)
-            ctx.lineTo(x3, y3)
-            ctx.lineTo(x4, y4)
-            translate(random(500), random(500))
-            ctx.fill()
+            vertex(x1, y1)
+            vertex(x2, y2)
+            vertex(x3, y3)
+            vertex(x4, y4)
             endShape(CLOSE)
-            pop()
+
+            // ctx.fillStyle = ctx.createPattern(im2, 'repeat')
+            // push()
+            // blendMode(OVERLAY)
+            // beginShape()
+            // ctx.moveTo(x1, y1)
+            // ctx.lineTo(x2, y2)
+            // ctx.lineTo(x3, y3)
+            // ctx.lineTo(x4, y4)
+            // translate(random(500), random(500))
+            // ctx.fill()
+            // endShape(CLOSE)
+            // pop()
             // noFill()
             // stroke(200)
             // beginShape()
