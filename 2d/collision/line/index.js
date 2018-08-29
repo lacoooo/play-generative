@@ -10,31 +10,25 @@ function Ball(r, p, v) {
 	this.boundOffsetBuff = [];
 	this.sidePoints = [];
 	this.path = new Path({
-		strokeColor: 'white',
+		strokeColor: 'black',
 		// fillColor: 'white',
 		closed: true
 		// blendMode: 'normal'
 	});
-	this.texts = []
 
-	for (var i = 0; i < this.numSegment; i++) {
-		this.boundOffset.push(this.radius)
-		this.boundOffsetBuff.push(this.radius)
-		var p = new Point()
-		this.path.add(p)
-		var te = new PointText(p)
-		te.fillColor = 'black'
-		te.content = (Math.random() * 100 + '')[0]
-		this.texts.push(te)
+	for (var i = 0; i < this.numSegment; i ++) {
+		this.boundOffset.push(this.radius);
+		this.boundOffsetBuff.push(this.radius);
+		this.path.add(new Point());
 		this.sidePoints.push(new Point({
 			angle: 360 / this.numSegment * i,
 			length: 1
-		}))
+		}));
 	}
 }
 
 Ball.prototype = {
-	iterate: function () {
+	iterate: function() {
 		this.checkBorders();
 		if (this.vector.length > this.maxVec)
 			this.vector.length = this.maxVec;
@@ -42,7 +36,7 @@ Ball.prototype = {
 		this.updateShape();
 	},
 
-	checkBorders: function () {
+	checkBorders: function() {
 		var size = view.size;
 		if (this.point.x < 0)
 			this.point.x = 0
@@ -54,12 +48,12 @@ Ball.prototype = {
 			this.point.y = size.height
 	},
 
-	updateShape: function () {
+	updateShape: function() {
 		var segments = this.path.segments;
-		for (var i = 0; i < this.numSegment; i++)
+		for (var i = 0; i < this.numSegment; i ++)
 			segments[i].point = this.getSidePoint(i);
 
-		for (var i = 0; i < this.numSegment; i++) {
+		for (var i = 0; i < this.numSegment; i ++) {
 			if (this.boundOffset[i] < this.radius / 4)
 				this.boundOffset[i] = this.radius / 4;
 			var next = (i + 1) % this.numSegment;
@@ -68,19 +62,13 @@ Ball.prototype = {
 			offset += (this.radius - offset) / 15;
 			offset += ((this.boundOffset[next] + this.boundOffset[prev]) / 2 - offset) / 3;
 			this.boundOffsetBuff[i] = this.boundOffset[i] = offset;
-		}
-		// this.path.smooth();
-		var _this = this
-		this.texts.forEach(function(ele, i) {
-			ele.point = _this.path.segments[i].point
-			ele.rotation = 0
-			ele.rotate(360 / _this.texts.length * i + 90, ele.point)
-		});
+        }
+		this.path.smooth();
 	},
 
-	react: function (b) {
+	react: function(b) {
 		var dist = this.point.getDistance(b.point);
-		if ((dist < this.radius + b.radius) && dist != 0) {
+		if (dist < this.radius + b.radius && dist != 0) {
 			var overlap = this.radius + b.radius - dist;
 			var direc = (this.point - b.point).normalize(overlap * 0.015);
 			this.vector += direc / 2;
@@ -93,29 +81,29 @@ Ball.prototype = {
 		}
 	},
 
-	getBoundOffset: function (b) {
+	getBoundOffset: function(b) {
 		var diff = this.point - b;
 		var angle = (diff.angle + 180) % 360;
 		return this.boundOffset[Math.floor(angle / 360 * this.boundOffset.length)];
 	},
 
-	calcBounds: function (b) {
-		for (var i = 0; i < this.numSegment; i++) {
+	calcBounds: function(b) {
+		for (var i = 0; i < this.numSegment; i ++) {
 			var tp = this.getSidePoint(i);
 			var bLen = b.getBoundOffset(tp);
 			var td = tp.getDistance(b.point);
 			if (td < bLen) {
-				this.boundOffsetBuff[i] -= (bLen - td) / 2;
+				this.boundOffsetBuff[i] -= (bLen  - td) / 2;
 			}
 		}
 	},
 
-	getSidePoint: function (index) {
+	getSidePoint: function(index) {
 		return this.point + this.sidePoints[index] * this.boundOffset[index];
 	},
 
-	updateBounds: function () {
-		for (var i = 0; i < this.numSegment; i++)
+	updateBounds: function() {
+		for (var i = 0; i < this.numSegment; i ++)
 			this.boundOffset[i] = this.boundOffsetBuff[i];
 	}
 };
@@ -123,14 +111,14 @@ Ball.prototype = {
 //--------------------- main ---------------------
 
 var balls = [];
-var numBalls = 24;
+var numBalls = 60;
 for (var i = 0; i < numBalls; i++) {
 	var position = Point.random() * view.size;
 	var vector = new Point({
 		angle: 360 * Math.random(),
 		length: Math.random() * 10
 	});
-	var radius = Math.random() * 60 + 130;
+	var radius = Math.random() * 60 + 100;
 	balls.push(new Ball(radius, position, vector));
 }
 
