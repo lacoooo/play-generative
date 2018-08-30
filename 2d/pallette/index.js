@@ -14,7 +14,7 @@ var index2 = Math.floor(Math.random() * colorPalettes.length)
 var colors2 = ['#929383', '#bec0bf', '#fffffe', '#ddf2f3', '#0a0f11', '#5dbfc0', '#b99314', '#fbc303', '#fba3dc', '#ec370d', '#195e98', '#44467f']
 var simplex = new SimplexNoise()
 var raster = new Raster('img')
-var scale = 12
+var scale = 40
 var begin = false
 
 raster.visible = false;
@@ -39,14 +39,17 @@ function productCircle() {
         var w = y + tombola.range(-scale, scale)
         var a = x + tombola.range(-scale, scale)
         var s = y + tombola.range(-scale, scale)
+        var r = x + tombola.range(-scale, scale)
+        var t = y + tombola.range(-scale, scale)
         path = new Path()
         path.add(new Point(x, y))
         path.add(new Point(q, w))
         path.add(new Point(a, s))
+        path.add(new Point(r, t))
         // path.fillColor = colors2[tombola.range(0, colors2.length - 1)]
         // path.fillColor = new Color(1, 1, 1)
         // path.fillColor = new Color(0, 0, 0)
-        path.opacity = 0.1
+        path.opacity = 0.6
         path.fillColor = colors2[tombola.range(0, colors2.length - 1)]
         path.closed = true
         path.smooth()
