@@ -158,8 +158,8 @@ function onMouseUp(event) {
 function anime() {
     paths.forEach(function (e) {
         e.segments.forEach(function (ele) {
-            ele.point += new Point(sn.noise2D(ele.point._x / 10, 100),
-            sn.noise2D(ele.point._y / 10, 100))
+            ele.point += new Point(sn.noise2D(ele.point._x / 50, 100),
+            sn.noise2D(ele.point._y / 50, 100))
         })
     })
 }

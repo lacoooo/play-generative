@@ -1,0 +1,161 @@
+// kynd.info 2014
+var t = new Path({
+	fillColor: 'blue',
+	close: true
+})
+var inde = 0
+t.add(new Point([0, 0]))
+t.add(new Point([1000, 0]))
+t.add(new Point([1000, 1000]))
+t.add(new Point([0, 1000]))
+function Ball(r, p, v) {
+	this.radius = r;
+	this.point = p;
+	this.vector = v;
+	this.maxVec = 15;
+	this.numSegment = Math.floor(r / 5);
+	this.boundOffset = [];
+	this.boundOffsetBuff = [];
+	this.sidePoints = [];
+	this.path = new Path({
+		// strokeColor: 'blue',
+		// fillColor: 'black',
+		// closed: true
+		// blendMode: 'normal'
+	});
+	this.texts = []
+
+	for (var i = 0; i < this.numSegment; i++) {
+		this.boundOffset.push(this.radius)
+		this.boundOffsetBuff.push(this.radius)
+		var p = new Point()
+		this.path.add(p)
+		var te = new PointText({
+			fontSize: 18 + ~~(Math.random() * 25)
+		})
+		te.fillColor = 'white'
+		te.content = (Math.random() * 100 + '')[0]
+		this.texts.push(te)
+		this.sidePoints.push(new Point({
+			angle: 360 / this.numSegment * i,
+			length: 1
+		}))
+	}
+}
+
+Ball.prototype = {
+	iterate: function () {
+		this.checkBorders();
+		if (this.vector.length > this.maxVec)
+			this.vector.length = this.maxVec;
+		this.point += this.vector;
+		this.updateShape();
+	},
+
+	checkBorders: function () {
+		var size = view.size;
+		if (this.point.x < 0)
+			this.point.x = 0
+		if (this.point.x > size.width)
+			this.point.x = size.width
+		if (this.point.y < 0)
+			this.point.y = 0
+		if (this.point.y > size.height)
+			this.point.y = size.height
+	},
+
+	updateShape: function () {
+		var segments = this.path.segments;
+		for (var i = 0; i < this.numSegment; i++)
+			segments[i].point = this.getSidePoint(i);
+
+		for (var i = 0; i < this.numSegment; i++) {
+			if (this.boundOffset[i] < this.radius / 4)
+				this.boundOffset[i] = this.radius / 4;
+			var next = (i + 1) % this.numSegment;
+			var prev = (i > 0) ? i - 1 : this.numSegment - 1;
+			var offset = this.boundOffset[i];
+			offset += (this.radius - offset) / 15;
+			offset += ((this.boundOffset[next] + this.boundOffset[prev]) / 2 - offset) / 3;
+			this.boundOffsetBuff[i] = this.boundOffset[i] = offset;
+		}
+		// this.path.smooth();
+		var _this = this
+		this.texts.forEach(function (ele, i) {
+			ele.point = _this.path.segments[i].point + [-7, 15]
+			ele.rotation = 0
+			ele.rotate(360 / _this.texts.length * i + 90, _this.path.segments[i].point - [-3, 6])
+		});
+	},
+
+	react: function (b) {
+		var dist = this.point.getDistance(b.point);
+		if ((dist < this.radius + b.radius) && dist != 0) {
+			var overlap = this.radius + b.radius - dist;
+			var direc = (this.point - b.point).normalize(overlap * 0.015);
+			this.vector += direc / 2;
+			b.vector -= direc / 2;
+
+			this.calcBounds(b);
+			b.calcBounds(this);
+			this.updateBounds();
+			b.updateBounds();
+		}
+	},
+
+	getBoundOffset: function (b) {
+		var diff = this.point - b;
+		var angle = (diff.angle + 180) % 360;
+		return this.boundOffset[Math.floor(angle / 360 * this.boundOffset.length)];
+	},
+
+	calcBounds: function (b) {
+		for (var i = 0; i < this.numSegment; i++) {
+			var tp = this.getSidePoint(i);
+			var bLen = b.getBoundOffset(tp);
+			var td = tp.getDistance(b.point);
+			if (td < bLen) {
+				this.boundOffsetBuff[i] -= (bLen - td) / 2;
+			}
+		}
+	},
+
+	getSidePoint: function (index) {
+		return this.point + this.sidePoints[index] * this.boundOffset[index];
+	},
+
+	updateBounds: function () {
+		for (var i = 0; i < this.numSegment; i++)
+			this.boundOffset[i] = this.boundOffsetBuff[i];
+	}
+};
+
+//--------------------- main ---------------------
+
+var balls = [];
+var numBalls = 40;
+for (var i = 0; i < numBalls; i++) {
+	var position = Point.random() * view.size;
+	var vector = new Point({
+		angle: 360 * Math.random(),
+		length: Math.random() * 10
+	});
+	var radius = Math.random() * 90 + 110;
+	balls.push(new Ball(radius, position, vector));
+}
+
+function onFrame() {
+	for (var i = 0; i < balls.length - 1; i++) {
+		for (var j = i + 1; j < balls.length; j++) {
+			balls[i].react(balls[j]);
+		}
+	}
+	for (var i = 0, l = balls.length; i < l; i++) {
+		balls[i].iterate();
+	}
+	var base64 = canvas.toDataURL('image/png', 1)
+	save.setAttribute('href', base64)
+	save.setAttribute('download', inde + ".png")
+	save.click()
+	inde ++
+} 

@@ -32,7 +32,7 @@
     var simplex = new SimplexNoise()
     var drawIt = false
     var stw = 20
-    var canvasSize = 1200
+    var canvasSize = 800
     var points = [0, 0]
     var text = '是诸法空相不生不灭不垢不净不增不减是故空中无色无受想行识无眼耳鼻舌身意无色声香味触法无眼界乃至无意识界无无明亦无无明尽乃至无老死亦无老死尽'
     // let colors = colorPalettes[Math.round(Math.random() * colorPalettes.length)]
@@ -57,21 +57,24 @@
       fill(0)
       textSize(12)
       textFont('仿宋')
+    }
 
+    function draw() {
+      background(240)
       for (let i = 1; i < canvasSize; i += ratei) {
 
         for (let j = 1; j < canvasSize - 300; j += ratej) {
-          const dx = simplex.noise2D(i / noiseScale, j / noiseScale) * increase
-          const dy = simplex.noise2D(i / noiseScale + 100, j / noiseScale + 100) * increase
+          const dx = simplex.noise2D(i / noiseScale + frameCount / 10, j / noiseScale) * increase
+          const dy = simplex.noise2D(i / noiseScale + 100 + frameCount / 10, j / noiseScale + 100) * increase
           push()
 
-          if (i < canvasSize / 2) {
-            translate(150 + j + dx, i + dy)
-          }
-          else if (increase > 0.5) {
-            translate(1000 + (-j - dx), i + dy)
-          }
-          scale(0.3 + dy / 20)
+          // if (i < canvasSize / 2) {
+            translate(150 + j + dx * 2, i + dy * 2)
+          // }
+          // else if (increase > 0.5) {
+          //   translate(1000 + (-j - dx), i + dy)
+          // }
+          scale(1 + dy / 10)
           // rotate(dy / 50)
           text(getText(), 0, 0)
           pop()
@@ -87,10 +90,6 @@
           ratej -= 2
         }
       }
-    }
-
-    function draw() {
-
     }
 
   </script>

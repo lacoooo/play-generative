@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      align-content: center;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<canvas id="canvas" width='1000' height='1000' resize hidpi="on" style="background:rgb(255, 255, 255)"></canvas>
+<a id='save' href="">download</a>
+<body>
+  <script src="../../../assets/tombola.js"></script>
+  <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+  <script src="https://cdn.bootcss.com/paper.js/0.11.5/paper-full.min.js"></script>
+  <script src="../../../assets/colorPalettes100.js"></script>
+  <script src='./index.js' type="text/paperscript" canvas="canvas"></script>
+</body>
+
+</html>
