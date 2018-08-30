@@ -38,17 +38,25 @@
     // let colors = colorPalettes[Math.round(Math.random() * colorPalettes.length)]
     var texx = text.split('')
     var q = 0
-    let ratei = 14
-    let ratej = 10
+    let ratei = 23
+    let ratej = 17
     let increase = 0.3
     var noiseScale = 300
     var drift = 20
+    var inde = 0
 
     function getText() {
       return texx[Math.floor(Math.random() * text.length)]
     }
+
+    var ts = []
+
+    for(var i = 0; i < canvasSize * canvasSize; i++) {
+      ts.push(getText())
+    }
+
     function setup() {
-      createCanvas(canvasSize, canvasSize)
+      t = createCanvas(canvasSize, canvasSize)
       background(240)
       stroke(0)
       strokeWeight(0.1)
@@ -56,28 +64,33 @@
       textSize(15)
       fill(0)
       textSize(12)
-      textFont('仿宋')
+      frameRate(2)
+      textFont('宋体')
     }
 
     function draw() {
+      // if (inde >= 900) return
       background(240)
       for (let i = 1; i < canvasSize; i += ratei) {
 
         for (let j = 1; j < canvasSize - 300; j += ratej) {
-          const dx = simplex.noise2D(i / noiseScale + frameCount / 10, j / noiseScale) * increase
-          const dy = simplex.noise2D(i / noiseScale + 100 + frameCount / 10, j / noiseScale + 100) * increase
+          const dx = simplex.noise2D(i / noiseScale + frameCount / 100, j / noiseScale) * increase
+          const dy = simplex.noise2D(i / noiseScale + 100 + frameCount / 100, j / noiseScale + 100) * increase
           push()
 
           // if (i < canvasSize / 2) {
-            translate(150 + j + dx * 2, i + dy * 2)
+          translate(150 + j + dx * 3, i + dy * 3 + 13)
           // }
           // else if (increase > 0.5) {
           //   translate(1000 + (-j - dx), i + dy)
           // }
-          scale(1 + dy / 10)
+          const w = 1.5 + dy / 7
+          scale(w >= 0.8 ? w : 0.8)
           // rotate(dy / 50)
-          text(getText(), 0, 0)
+          text(ts[canvasSize * i + j], 0, 0)
+          // ellipse(0,0,10,10)
           pop()
+          if (random() > 0.9) ts[canvasSize * i + j] = getText()
         }
         if (i < 60) {
         }
@@ -90,6 +103,9 @@
           ratej -= 2
         }
       }
+      
+      inde ++
+      // saveCanvas(t, 'q' + inde + '', 'jpg');
     }
 
   </script>

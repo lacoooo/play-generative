@@ -14,7 +14,7 @@ var index2 = Math.floor(Math.random() * colorPalettes.length)
 var colors2 = ['#929383', '#bec0bf', '#fffffe', '#ddf2f3', '#0a0f11', '#5dbfc0', '#b99314', '#fbc303', '#fba3dc', '#ec370d', '#195e98', '#44467f']
 var simplex = new SimplexNoise()
 var raster = new Raster('img')
-var scale = 40
+var scale = 20
 var begin = false
 
 raster.visible = false;
@@ -49,15 +49,16 @@ function productCircle() {
         // path.fillColor = colors2[tombola.range(0, colors2.length - 1)]
         // path.fillColor = new Color(1, 1, 1)
         // path.fillColor = new Color(0, 0, 0)
-        path.opacity = 0.6
-        path.fillColor = colors2[tombola.range(0, colors2.length - 1)]
+        path.opacity = 1
+        path.strokeColor = 'black' || colors2[tombola.range(0, colors2.length - 1)]
+        path.strokeWidth = 1
         path.closed = true
         path.smooth()
-        if (Math.random() > 0.6) {
-            path.flatten(10)
-        }
+        // if (Math.random() > 0.6) {
+        //     path.flatten(10)
+        // }
     }
-
+    scale = Math.floor(Math.random() * 10) + 10
 }
 
 function init() {
