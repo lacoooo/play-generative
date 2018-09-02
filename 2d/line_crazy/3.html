@@ -44,8 +44,8 @@
       var options = new Options()
       var gui = new dat.GUI()
 
-      gui.add(options, 'prec', 10, 400)
-      gui.add(options, 'lw', 1, 5)
+      gui.add(options, 'prec', 5, 400)
+      gui.add(options, 'lw', 0.5, 5)
 
       return options
 
@@ -83,14 +83,14 @@
     }
 
     function mouseDragged() {
-      strokeWeight(random(2))
+      strokeWeight(options.lw + random())
       const prec = options.prec
       for (let i = 0; i < 10; i++) {
         const p = ~~(mouseX + mouseY * canvasSize + random(-prec, prec))
         if (!newData[p]) return
         const q = (p / canvasSize).toFixed() * 1
         const e = p % canvasSize
-        stroke(`rgba(${newData[p][0]}, ${newData[p][1]}, ${newData[p][2]}, 1)`)
+        stroke(`rgba(${newData[p][0]}, ${newData[p][1]}, ${newData[p][2]}, 0.8)`)
         beginShape()
         curveVertex(mouseX + random(-prec, prec), mouseY + random(-prec, prec))
         curveVertex(mouseX + random(-prec, prec), mouseY + random(-prec, prec))
