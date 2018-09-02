@@ -28,7 +28,7 @@
     var newData = []
     var simplex = new SimplexNoise()
     var drawIt = false
-    var canvasSize = 800
+    var canvasSize = 1200
     var prec = 500
     function go() {
       drawIt = !drawIt
@@ -47,7 +47,7 @@
       canvas.height = canvasSize
       var img = new Image()
       img.crossOrigin = "anonymous"
-      img.src = '../img/9(12).jpg'
+      img.src = '1.jpg'
       img.onload = () => {
         ctx.drawImage(img, 0, 0, canvasSize, canvasSize)
         originData = Array.from(ctx.getImageData(0, 0, canvasSize, canvasSize).data)

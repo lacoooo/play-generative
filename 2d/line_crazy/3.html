@@ -8,7 +8,6 @@
   <title>Document</title>
   <style>
     body {
-      height: 100vh;
       display: flex;
       flex-direction: column;
       align-content: center;
@@ -16,49 +15,54 @@
       justify-content: center;
     }
 
-    canvas {
-      width: 300px;
-    }
-
-    #button {
-      height: 20px;
-      line-height: 20px;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-      padding: 6px 14px;
-      cursor: pointer;
-      color: rgba(0, 0, 0, 0.4);
-      margin: 10px;
-      user-select: none;
+    #canvas {
+      display: none;
     }
   </style>
 </head>
 <canvas id='canvas'></canvas>
-<div id='button' onclick="go()">draw</div>
 
 <body>
-  <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
   <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+  <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
   <script>
     var originData = []
     var newData = []
-    var simplex = new SimplexNoise()
-    var drawIt = false
     var canvasSize = 1200
-    var prec = 500
-    var button = document.getElementById('button')
-    function go() {
-      drawIt = !drawIt
-      if (drawIt) button.innerHTML = 'reset'
-      else button.innerHTML = 'draw'
-      prec = 500
+    var prec = 200
+    var img2
+
+    var options = (() => {
+
+      class Options {
+        constructor() {
+          this.prec = 200
+          this.lw = 1
+        }
+      }
+
+      var options = new Options()
+      var gui = new dat.GUI()
+
+      gui.add(options, 'prec', 10, 400)
+      gui.add(options, 'lw', 1, 5)
+
+      return options
+
+    })()
+
+    function preload() {
+      img2 = loadImage('./1.jpg')
+      // console.log(img2)
     }
+
     function setup() {
       createCanvas(canvasSize, canvasSize)
       background(255)
       stroke(0)
-      strokeWeight(1)
+      strokeWeight(options.lw)
       noFill()
+      image(img2, 0, 0, canvasSize, canvasSize)
       var canvas = document.getElementById('canvas')
       var ctx = canvas.getContext('2d')
       canvas.width = canvasSize
@@ -76,35 +80,24 @@
           }
         }
       }
-      setInterval(() => {
-        if (prec < 11) prec = Math.random() * 160
-      }, 1000)
     }
 
-    function draw() {
-      if (!drawIt) {
-        background(255)
-        return
-      }
-      for (let i = 0; i < 100; i++) {
-        const p = Math.round(Math.random() * newData.length)
+    function mouseDragged() {
+      strokeWeight(random(2))
+      const prec = options.prec
+      for (let i = 0; i < 10; i++) {
+        const p = ~~(mouseX + mouseY * canvasSize + random(-prec, prec))
         if (!newData[p]) return
         const q = (p / canvasSize).toFixed() * 1
         const e = p % canvasSize
-        let r = newData[p][0]
-        let g = newData[p][1]
-        let b = newData[p][2]
-        if (!r && Math.random() > .4) {
-          r = g = b = 255
-        }
-        stroke(`rgba(${r}, ${g}, ${b}, .6)`)
+        stroke(`rgba(${newData[p][0]}, ${newData[p][1]}, ${newData[p][2]}, 1)`)
         beginShape()
-        for (let i = 0; i < 4; i++) {
-          curveVertex(e + (Math.random() - 0.5) * prec, q + (Math.random() - 0.5) * prec)
-        }
+        curveVertex(mouseX + random(-prec, prec), mouseY + random(-prec, prec))
+        curveVertex(mouseX + random(-prec, prec), mouseY + random(-prec, prec))
+        curveVertex(mouseX + random(-prec, prec), mouseY + random(-prec, prec))
+        curveVertex(mouseX + random(-prec, prec), mouseY + random(-prec, prec))
         endShape()
       }
-      if (prec > 6) prec -= 2
     }
 
   </script>
