@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+</head>
+
+<body>
+
+    <script>
+
+        c = {
+            w: 1200, h: 1200
+        }
+
+        var image, data
+
+        var boids = []
+
+        var blocks = 0
+
+        function preload() {
+
+        }
+
+        function setup() {
+            mc = createCanvas(c.w, c.h)
+            context = mc.drawingContext
+            roads_canvas = document.createElement('canvas')
+            roads_canvas.width = c.w
+            roads_canvas.height = c.h
+            roads_context = roads_canvas.getContext('2d')
+
+            watercolor_canvas = document.createElement('canvas')
+            watercolor_canvas.width = c.w
+            watercolor_canvas.height = c.h
+            watercolor_context = watercolor_canvas.getContext('2d')
+
+            boids.push(new Boid(width / 2, height / 2, random() * 180 * Math.PI / 180))
+
+        }
+
+        function draw() {
+
+            image = roads_context.getImageData(0, 0, width, height)
+            data = image.data
+            for (var i = 0; i < boids.length; i++) {
+
+                var boid = boids[i]
+                boid.update()
+                // Looks messy but just sets a range
+                // var n = ((0.9 - 0.6) * ((boid.dist / width) * 2)) + 0.6
+                if (!boid.dead && random() > 0.7 && boids.length < 400) {
+                    boids.push(new Boid(boid.x, boid.y, (Math.random() > 0.5 ? 90 : - 90) * Math.PI / 180 + boid.angle))
+                }
+
+            }
+            clear()
+            context.globalAlpha = 0.5
+            context.drawImage(watercolor_canvas, 0, 0)
+            context.globalAlpha = 1
+            context.drawImage(roads_canvas, 0, 0)
+
+        }
+
+        function mouseClicked() {
+            boids.push(new Boid(mouseX, mouseY, random() * 180 * Math.PI / 180))
+        }
+
+        class Boid {
+            constructor(x, y, angle) {
+                this.x = x;
+                this.y = y;
+
+                this.angle = pow(Math.random(), 10) + angle;
+                this.dx = cos(this.angle);
+                this.dy = sin(this.angle);
+                this.life = random() * 30 + 10;
+                this.dead = false;
+                this.dist = dist(this.x, this.y, width / 2, height / 2);
+                this.hue = random() * 120;
+            }
+
+            update() {
+                roads_context.strokeStyle = '#000';
+                roads_context.beginPath();
+                roads_context.moveTo(this.x, this.y);
+
+                this.x += this.dx * 2
+                this.y += this.dy * 2
+
+                this.dist = dist(this.x, this.y, width / 2, height / 2);
+
+                roads_context.lineTo(this.x, this.y);
+                roads_context.stroke();
+
+                var trail = Math.random() * 80 * this.dist / width + 10;
+                var color = { h: this.hue, s: "100%", l: "50%" }
+                watercolor_context.strokeStyle = "hsla(" + color.h + "," + color.s + "," + color.l + ",0.1)";
+                watercolor_context.lineWidth = 2;
+                for (var i = 0; i < 5; i++) {
+                    watercolor_context.beginPath();
+                    watercolor_context.moveTo(this.x, this.y);
+                    var px = this.x + Math.cos(this.angle + 90) * (i * (trail / 10));
+                    var py = this.y + Math.sin(this.angle + 90) * (i * (trail / 10));
+                    watercolor_context.lineTo(px, py);
+                    watercolor_context.stroke();
+                }
+
+                var index = (Math.floor(this.x) + width * Math.floor(this.y)) * 4;
+
+                // if (this.gen >= this.life) this.kill();
+                if (data[index + 3] > 0) {
+                    this.kill();
+                    blocks++;
+                }
+
+                if (this.x < 0 || this.x > width) this.kill();
+                if (this.y < 0 || this.y > height) this.kill();
+
+            }
+
+            kill() {
+                boids.splice(boids.indexOf(this), 1);
+                this.dead = true;
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
