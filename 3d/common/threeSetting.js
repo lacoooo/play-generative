@@ -51,9 +51,12 @@ const threeSetting = {
         renderer.setPixelRatio(window.devicePixelRatio)
         renderer.setSize(window.innerWidth, window.innerHeight)
 
+        renderer.shadowMap.enabled = true
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap
+
         container.appendChild(renderer.domElement)
-        // stats = new Stats()
-        // container.appendChild(stats.dom)
+        stats = new Stats()
+        container.appendChild(stats.dom)
         controls = new THREE.OrbitControls( camera, renderer.domElement )
     },
 

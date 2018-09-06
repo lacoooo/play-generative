@@ -5,13 +5,13 @@ let sn = new SimplexNoise()
 let baseImageData = []
 
 function preload() {
-    img = loadImage('./0.jpg')
-    // img2 = loadImage('./2.jpg')
+    img = loadImage('./1.jpg')
+    img2 = loadImage('./2.jpg')
 }
 
 
 function setup() {
-    c = createCanvas(1000, 1000)
+    c = createCanvas(800, 800)
     ctx = c.drawingContext
     ctx.shadowBlur = 8
     ctx.shadowColor = "rgba(0,0,0,0.05)"
@@ -24,7 +24,7 @@ function setup() {
     canvas.width = width
     canvas.height = height
     ctx.drawImage(img.canvas, 0, 0, width, height)
-    // image(img2, 0, 0, width, height)
+    image(img2, 0, 0, width, height)
     let originData = Array.from(ctx.getImageData(0, 0, width, height).data)
     for (let i = 0; i < (originData.length / 4); i++) {
         baseImageData[i] = []
