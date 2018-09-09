@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script src="../../assets/color.js"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.0/dat.gui.min.js"></script>
+    <script>
+        var sim = new SimplexNoise()
+        var Co = net.brehaut.Color
+        c = {
+            w: 2000, h: 2000
+        }
+
+        originData = []
+        newData = []
+
+        function RgbToHsl(r, g, b) {
+            r /= 255, g /= 255, b /= 255;
+            var max = Math.max(r, g, b), min = Math.min(r, g, b);
+            var h, s, l = (max + min) / 2;
+
+            if (max == min) {
+                h = s = 0;
+            } else {
+                var d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return { h: Math.floor(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) }
+        }
+
+        function prepImg() {
+            img.loadPixels()
+            originData = img.pixels
+            for (let i = 0; i < (originData.length / 4); i++) {
+                newData[i] = []
+                var n = newData[i]
+                for (let y = 0; y < 4; y++) {
+                    n.push(originData[i * 4 + y])
+                }
+                n[4] = round(0.34 * n[0] + 0.5 * n[1] + 0.16 * n[2])
+                n[5] = RgbToHsl(n[0], n[1], n[2])
+            }
+        }
+
+        function fM(num, ad) {
+            return (num > 0 ? num : 0) + (ad || 0)
+        }
+
+        function preload() {
+            img = loadImage('./1.jpg')
+        }
+
+        function drawFlower() {
+            const x = ~~random(width)
+            const y = ~~random(height)
+            let oc = newData[x + width * y]
+            if (oc[4] >= 250) return
+            let col = newData[x + width * y][5]
+            
+            const rsc = 14
+
+            let rch = ~~random(-rsc, rsc)
+            let rcs = ~~random(-rsc / 2, rsc / 2)
+            let rcl = ~~random(-rsc / 1.5, rsc)
+
+            stroke(`hsla(${fM(col.h + rch)},${fM(col.s + rcs)}%,${fM(col.l - 22 + rcl)}%,1)`)
+            fill(`hsla(${fM(col.h + rch)},${fM(col.s + rcs)}%,${fM(col.l + 10 + rcl, 5)}%,1)`)
+
+            push()
+
+            translate(x, y)
+            let sc = random(0.1, 1.6)
+            let dps = 0
+            const bsr = ~~random(360)
+            for (let i = 0; i < 20; i++) {
+                rotate(radians(360 / 20 * i + bsr))
+                ellipse(9 * (sc + dps), 0, 16 * (sc + dps), 6 * (sc + dps))
+            }
+            stroke(`hsla(${fM(col.h + rch)},${fM(col.s + rcs)}%,${fM(col.l - 20 + rcl)}%,1)`)
+            fill(`hsla(${fM(col.h + rch)},${fM(col.s + rcs - 4)}%,${fM(col.l + rcl)}%,1)`)
+            ellipse(0, 0, 9 * (sc + dps), 9 * (sc + dps))
+
+            pop()
+        }
+
+        function setup() {
+            mc = createCanvas(c.w, c.h)
+            ctx = mc.drawingContext
+            prepImg()
+            ellipseMode(CENTER)
+            // background(0)
+        }
+
+        function draw() {
+            for (let i = 0; i < 20; i++) {
+                drawFlower()
+            }
+        }
+
+        function mouseClicked() {
+
+        }
+
+    </script>
+</body>
+
+</html>
