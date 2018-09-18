@@ -7,13 +7,13 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <style>
-    body {
+    /* body {
       display: flex;
       flex-direction: column;
       align-content: center;
       align-items: center;
       justify-content: center;
-    }
+    } */
 
     #canvas {
       display: none;
@@ -28,7 +28,7 @@
   <script>
     var originData = []
     var newData = []
-    var canvasSize = 1200
+    var canvasSize = 1900
     var prec = 200
     var img2
 
@@ -63,7 +63,7 @@
       strokeWeight(options.lw)
       noFill()
       image(img2, 0, 0, canvasSize, canvasSize)
-      var canvas = document.getElementById('canvas')
+      var canvas = document.createElement('canvas')
       var ctx = canvas.getContext('2d')
       canvas.width = canvasSize
       canvas.height = canvasSize
@@ -83,6 +83,7 @@
     }
 
     function mouseDragged() {
+      console.log(mouseX, mouseY)
       strokeWeight(options.lw + random())
       const prec = options.prec
       for (let i = 0; i < 10; i++) {

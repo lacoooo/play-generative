@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/matter-js/0.12.0/matter.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+    <script>
+
+        var Engine = Matter.Engine,
+            World = Matter.World,
+            Bodies = Matter.Bodies,
+            Body = Matter.Body,
+            Composite = Matter.Composite,
+            Common = Matter.Common
+        var engine
+        var world
+        var timeScale
+        
+        var timeScaleTarget = 1,
+            counter2 = 0
+
+        var pars = []
+        var imgs = []
+
+        function preload() {
+            img = loadImage('./1.png')
+            img2 = loadImage('./2.png')
+            imgs.push(loadImage(`./1.png`))
+        }
+
+        function setup() {
+            createCanvas(1600, 1300)
+            // background('red')
+            engine = Engine.create()
+            world = engine.world
+            world.gravity.x = 0
+            world.gravity.y = 1
+            noStroke()
+            noFill()
+            imageMode(CENTER)
+            // var wall = Bodies.rectangle(0, 1530, 4000, 500, { isStatic: true })
+            // World.add(world, wall)
+            var wall = Bodies.rectangle(-60, 0, 100, 3000, { isStatic: true })
+            World.add(world, wall)
+            wall = Bodies.rectangle(1650, 0, 100, 3000, { isStatic: true })
+            World.add(world, wall)
+        }
+
+        function draw() {
+            Engine.update(engine)
+            if (timeScale) engine.timing.timeScale -= 0.01
+            if (engine.timing.timeScale <= 0.05) {
+                timeScale = false
+                engine.timing.timeScale = 1
+            }
+            // if (!(frameCount % 3)) return
+            // clear()
+            // background(0)
+            // background('rgba(0,0,0,0.005)')
+            pars.map(ele => {
+                ele.show()
+            })
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.index = pars.length - 1
+                this.time = 0
+                this.r = {
+                    w: random(80)
+                }
+                this.body = Bodies.circle(x, y, this.r.w)
+                this.body.angle = 0
+                this.img = imgs[0]
+                World.add(world, this.body)
+            }
+
+            show() {
+                var pos = this.body.position
+                
+                push()
+                translate(pos.x, pos.y)
+                rotate(this.body.angle)
+                if (random() > 0.995) {
+                    this.img = img2
+                    setTimeout(() => {
+                        this.img = img
+                    }, 160)
+                }
+                image(this.img, 0, 0, this.r.w * 2, this.r.w * 2)
+                pop()
+                if (this.time <= 0) return
+                if (this.time == 1) {
+                    this.img = imgs[0]
+                }
+                this.time--
+            }
+        }
+
+        function explosion(engine) {
+            var bodies = Composite.allBodies(engine.world);
+
+            for (var i = 0; i < bodies.length; i++) {
+                var body = bodies[i];
+
+                if (!body.isStatic) {
+                    var forceMagnitude = 0.03 * body.mass;
+
+                    Body.applyForce(body, body.position, {
+                        x: (forceMagnitude + Common.random() * forceMagnitude) * Common.choose([1, -1]),
+                        y: -forceMagnitude + Common.random() * -forceMagnitude
+                    });
+                }
+            }
+            pars.map(ele => {
+                ele.img = imgs[0]
+                ele.time = ~~random(50, 100)
+            })
+        };
+
+        function mouseDragged() {
+            pars.push(new Particle(mouseX, mouseY))
+        }
+
+        function doubleClicked() {
+            // if (keyIsPressed) return
+            // timeScale = true
+            // explosion(engine)
+            if (world.gravity.y == 0) world.gravity.y = 1
+            else world.gravity.y = 0
+        }
+
+    </script>
+</body>
+
+</html>
