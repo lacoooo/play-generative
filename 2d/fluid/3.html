@@ -108,7 +108,7 @@
                 img.src = './1.jpg'
                 img.onload = () => {
                     ctx2.drawImage(img, 0, 0, canvas_width, canvas_height)
-                    ctx.drawImage(img, 0, 0, canvas_width, canvas_height)
+                    // ctx.drawImage(img, 0, 0, canvas_width, canvas_height)
                     originData = Array.from(ctx2.getImageData(0, 0, canvas_width, canvas_height).data)
 
                     for (let i = 0; i < (originData.length / 4); i++) {
@@ -174,12 +174,11 @@
             }
 
             function change_cell_velocity(cell_data, mvelX, mvelY, pen_size) {
-                //This gets the distance between the cell and the mouse cursor.
+
                 var dx = cell_data.x - mouse.x
                 var dy = cell_data.y - mouse.y
                 var dist = Math.floor(Math.sqrt(dy * dy + dx * dx))
 
-                //If the distance is less than the radius...
                 if (dist < pen_size) {
 
                     //If the distance is very small, set it to the pen_size.
@@ -294,7 +293,6 @@
                 this.x = x
                 this.y = y
 
-                //This is the width and height of the cell
                 this.r = res
 
                 this.col = 0
@@ -315,6 +313,7 @@
                     this.c = c
                     this.die = Math.random() * 400
                     this.age = 0
+                    this.w = 30
                 }
 
                 draw() {
@@ -324,7 +323,9 @@
 
                     var limit = 1
                     ctx.strokeStyle = this.c
-                    ctx.lineWidth = 8
+                    this.w -= 0.2
+                    if (this.w <= 8) this.w = 8
+                    ctx.lineWidth = this.w
                     ctx.beginPath()
                     ctx.moveTo(this.x, this.y)
                     if (dist > limit) ctx.lineTo(this.px, this.py)
@@ -352,8 +353,8 @@
             }
 
             function mouse_down_handler(e) {
-                e.preventDefault() //Prevents the default action from happening (e.g. navigation)
-                mouse.down = true //Sets the mouse object's "down" value to true
+                e.preventDefault()
+                mouse.down = true
             }
 
             function mouse_up_handler() {
@@ -369,12 +370,12 @@
 
                 if (!mouse.down) return
 
-                for (i = 0; i < 100; i++) {
+                for (i = 0; i < 60; i++) {
                     var x = Math.floor((Math.random() - 0.5) * 100 + mouse.x)
                     var y = Math.floor((Math.random() - 0.5) * 100 + mouse.y)
                     if (x > canvas_width || y > canvas_height) return
                     var color = baseImageData[x + y * canvas_width]
-                    var c = `rgba(${color[0]}, ${color[1]}, ${color[2]}, .06)`
+                    var c = `rgba(${color[0]}, ${color[1]}, ${color[2]}, .05)`
                     particles.push(new Particle(x, y, c))
                 }
             }
