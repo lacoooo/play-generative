@@ -108,7 +108,7 @@
                 img.src = './1.jpg'
                 img.onload = () => {
                     ctx2.drawImage(img, 0, 0, canvas_width, canvas_height)
-                    // ctx.drawImage(img, 0, 0, canvas_width, canvas_height)
+                    ctx.drawImage(img, 0, 0, canvas_width, canvas_height)
                     originData = Array.from(ctx2.getImageData(0, 0, canvas_width, canvas_height).data)
 
                     for (let i = 0; i < (originData.length / 4); i++) {
@@ -322,15 +322,16 @@
                     var dist = Math.sqrt(dx * dx + dy * dy)
 
                     var limit = 1
-                    ctx.strokeStyle = this.c
-                    this.w -= 0.2
-                    if (this.w <= 8) this.w = 8
-                    ctx.lineWidth = this.w
-                    ctx.beginPath()
-                    ctx.moveTo(this.x, this.y)
-                    if (dist > limit) ctx.lineTo(this.px, this.py)
-                    else ctx.lineTo(this.x + limit, this.y + limit)
-                    ctx.stroke()
+                    ctx.fillStyle = this.c
+                    // this.w += 0.2
+                    // if (this.w <= 8) this.w = 8
+                    // ctx.lineWidth = this.w
+                    // ctx.beginPath()
+                    // ctx.moveTo(this.x, this.y)
+                    // if (dist > limit) ctx.lineTo(this.px, this.py)
+                    // else ctx.lineTo(this.x + limit, this.y + limit)
+                    ctx.ellipse(this.x, this.y, this.w, this.w, 0, 0, 2 * Math.PI)
+                    ctx.fill()
                 }
 
                 death() {
