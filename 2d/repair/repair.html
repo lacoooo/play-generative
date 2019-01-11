@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="file" id="file" multiple="multiple" accept="image/png,image/jpeg,image/jpg" onchange="selectImage(this);" />
+    <canvas id='canvas' style='width: 400px'></canvas>
+    <script>
+        function selectImage(file) {
+            if (!file.files || !file.files[0]) {
+                return
+            }
+            var reader = new FileReader()
+            reader.onload = function (evt) {
+                var image = evt.target.result;
+                var img = new Image()
+                img.crossOrigin = "anonymous"
+                img.src = image
+                img.onload = () => {
+                    var canvas = document.getElementById('canvas')
+                    var ctx = canvas.getContext('2d')
+                    canvas.width = img.width
+                    canvas.height = img.height
+                    ctx.drawImage(image, 0, 0, img.width, img.height);
+                    this.files = ''
+                }
+            }
+            
+            reader.readAsDataURL(file.files[0])
+        }
+    </script>
+</body>
+
+</html>

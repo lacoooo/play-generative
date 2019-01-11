@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/p5.js/0.7.2/p5.min.js"></script>
+    <script>
+
+        function setup() {
+            c = createCanvas(1000, 1000)
+            ctx = c.drawingContext
+            background(240)
+            noFill()
+
+            strokeWeight(1)
+            stroke('rgba(0, 0, 0, 0.03)')
+
+            for (var i = 0; i < 100; i++) {
+                var charge = 1 + floor(random() * 8);
+                for (var ii = -1; ii <= 1; ii += 2) {
+                    var q = new PointCharge(
+                        width * random(),
+                        height * random(),
+                        charge * ii,
+                        4
+                    );
+                    q.draw();
+                }
+            }
+        }
+
+        function draw() {
+            Tracer.drawAll(1);
+        }
+
+        var charges = [];
+
+        class PointCharge {
+            constructor(x, y, q, r) {
+                this.x = x;
+                this.y = y;
+                this.q = q;
+                this.r = r;
+                charges.push(this);
+                this.initPointers(x, y, q)
+            }
+
+            initPointers(x, y, q) {
+                var lines = 30;
+                if (q > 0)
+                {
+                    for (var i = 0; i < abs(this.q) * lines; i++) {
+                        var theta = PI * 2 * (i + (q > 0) / 2) / (abs(q) * lines);
+                        new Tracer(x + cos(theta), y + sin(theta), q);
+                    }
+                }
+            }
+
+            draw() {
+                ellipse(this.x, this.y, this.r, 0, 2 * PI);
+            }
+        }
+
+        var tracers = [];
+
+        class Tracer {
+
+            constructor(x, y, c) {
+                this.x = x;
+                this.y = y;
+                this.q = 1 - 2 * (c < 0);
+                this.moving = true;
+                tracers.push(this);
+            }
+
+            move(step) {
+                var vect = [0, 0];
+                for (var i = 0; i < charges.length; i++) {
+                    var q = charges[i];
+                    var rr = (this.x - q.x) ** 2 + (this.y - q.y) ** 2;
+                    if (rr <= q.r ** 2 && q.q * this.q < 0) {
+                        this.moving = false;
+                        return;
+                    }
+                    var r = rr ** 0.5;
+                    vect[0] += this.q * q.q / rr * (this.x - q.x) / r;
+                    vect[1] += this.q * q.q / rr * (this.y - q.y) / r;
+                }
+                var mag = (vect[0] ** 2 + vect[1] ** 2) ** 0.5;
+                vect[0] /= mag;
+                vect[1] /= mag;
+                var oldX = this.x;
+                var oldY = this.y;
+                this.x += vect[0] * step;
+                this.y += vect[1] * step;
+                if (this.x > 0 && this.x < width && this.y > 0 && this.y < height) {
+                    line(oldX, oldY, this.x, this.y)
+                }
+            }
+
+            static clear() {
+                tracers = [];
+            }
+
+            static drawAll(step) {
+                for (var i = 0; i < tracers.length; i++) {
+                    if (tracers[i].moving) {
+                        tracers[i].move(step);
+                    }
+                }
+            }
+
+        }
+
+        function keyPressed() {
+            // saveCanvas(c, 'myCanvas', 'jpg')
+        }
+    </script>
+</body>
+
+</html>
