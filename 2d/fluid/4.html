@@ -17,11 +17,10 @@
             ctx = c.drawingContext
             background(240)
             noFill()
-
             strokeWeight(1)
-            stroke('rgba(0, 0, 0, 0.03)')
+            stroke(`rgba(0, 0, 0, 0.05)`)
 
-            for (var i = 0; i < 100; i++) {
+            for (var i = 0; i < 40; i++) {
                 var charge = 1 + floor(random() * 8);
                 for (var ii = -1; ii <= 1; ii += 2) {
                     var q = new PointCharge(
@@ -53,17 +52,16 @@
 
             initPointers(x, y, q) {
                 var lines = 30;
-                if (q > 0)
+                // if (q > 0) 
                 {
                     for (var i = 0; i < abs(this.q) * lines; i++) {
                         var theta = PI * 2 * (i + (q > 0) / 2) / (abs(q) * lines);
-                        new Tracer(x + cos(theta), y + sin(theta), q);
+                        new Tracer(x + cos(theta) / 10, y + sin(theta) / 10, q);
                     }
                 }
             }
 
             draw() {
-                ellipse(this.x, this.y, this.r, 0, 2 * PI);
             }
         }
 
@@ -76,6 +74,7 @@
                 this.y = y;
                 this.q = 1 - 2 * (c < 0);
                 this.moving = true;
+                this.step = 1
                 tracers.push(this);
             }
 
@@ -101,6 +100,7 @@
                 this.y += vect[1] * step;
                 if (this.x > 0 && this.x < width && this.y > 0 && this.y < height) {
                     line(oldX, oldY, this.x, this.y)
+                    this.step++
                 }
             }
 
