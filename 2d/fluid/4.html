@@ -15,7 +15,7 @@
         function setup() {
             c = createCanvas(1000, 1000)
             ctx = c.drawingContext
-            background(240)
+            // background(240)
             noFill()
             strokeWeight(1)
             stroke(`rgba(0, 0, 0, 0.05)`)
@@ -51,8 +51,8 @@
             }
 
             initPointers(x, y, q) {
-                var lines = 30;
-                // if (q > 0) 
+                var lines = 40;
+                if (q > 0) 
                 {
                     for (var i = 0; i < abs(this.q) * lines; i++) {
                         var theta = PI * 2 * (i + (q > 0) / 2) / (abs(q) * lines);
