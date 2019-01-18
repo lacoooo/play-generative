@@ -37,10 +37,10 @@
             c = createCanvas(1200, 1000)
             ctx = c.drawingContext
             // prepImg()
-            background(240)
-            noFill()
-            strokeWeight(1)
-            stroke(`rgba(0, 0, 0, 0.15)`)
+            background(200)
+            fill(0)
+            strokeWeight(2)
+            stroke(255)
 
             for (var i = 0; i < 50; i++) {
                 var charge = 1 + floor(random() * 8);
@@ -57,7 +57,7 @@
         }
 
         function draw() {
-            Tracer.drawAll(1);
+            Tracer.drawAll(10);
         }
 
         var charges = [];
@@ -117,12 +117,14 @@
                 vect[1] /= mag;
                 var oldX = this.x;
                 var oldY = this.y;
+                var t = '人类的本质是什么？'
+                var u = t[floor(random() * t.length)]
                 this.x += (vect[0] * step + (simq.noise2D ? simq.noise2D( oldX / 120, 0) / 2.2 : 0));
                 this.y += (vect[1] * step + (simq.noise2D ? simq.noise2D(0, oldY / 120) / 2.2 : 0));
                 if (this.x > 0 && this.x < width && this.y > 0 && this.y < height) {
                     // line(oldX, oldY, this.x, this.y)
-                    textSize(20 * abs(simq.noise2D(frameCount / 600, 0)).toFixed(2))
-                    text(floor(random(10)), this.x + this.x * simq.noise2D( oldX / 820, 0), this.y)
+                    textSize(10 * abs(simq.noise2D(frameCount / 600, 0)).toFixed(2))
+                    text(u, this.x, this.y)
                     this.step++
                 }
             }
