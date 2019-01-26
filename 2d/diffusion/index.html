@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" class="https://github.com/processing/p5.js/releases/download/0.5.6/p5.min.js">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Diffusion Limited Aggregation</title>
+  
+  
+  
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+
+  <div id="controls">
+  <table>
+    <tr>
+      <td>Simulation Speed:</td> 
+      <td><input id="speedSlider" type="range" min="1" max ="5" value="1" oninput="updateVals()"></td>
+    </tr>
+    <tr>
+      <td>Active Particles:</td> 
+      <td><input id="particleSlider" type="range" min="1" max ="2000" value="1000" oninput="updateVals()"></td>
+    </tr>
+    <tr>
+      <td>Angle Mod:</td> 
+      <td><input id="angleSlider" type="range" min="0" max ="6.2" value=".62" step=".01" oninput="updateVals()"></td>
+    </tr>
+    <tr>
+      <td>Step Size:</td>
+      <td><input id="stepSlider" type="range" min="1" max ="15" value="1"  oninput="updateVals()"> </td>
+    </tr>
+    <tr>
+      <td>Orthogonal:</td>
+      <td><input id="orthoCheckbox" type="checkbox" onclick="updateDirs()"></td>
+    </tr>
+  </table>
+  <br>
+  <button onclick="resize()">Reseed</button>
+</div>
+  <script src='https://github.com/processing/p5.js/releases/download/0.5.6/p5.min.js'></script>
+
+  
+
+    <script  src="js/index.js"></script>
+
+
+
+
+</body>
+
+</html>
