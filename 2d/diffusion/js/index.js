@@ -57,12 +57,14 @@ function draw() {
     for (var i = 0; i < particles.length; i++) {
 
       if (j == 0) {
-        fill(200);
+        fill(240);
         noStroke()
-        ellipse(particles[i].x, particles[i].y, 2, 2);
+        rect(particles[i].x, particles[i].y, 2, 2);
       }
 
       if (i >= activeParticles) continue;
+      var ox = floor(particles[i].x)
+      var oy = floor(particles[i].y)
       particles[i].tick();
       var distance = getDist(particles[i]);
       if (distance > killRadius * killRadius) particles[i].respawn();
@@ -72,9 +74,8 @@ function draw() {
         var y = floor(particles[i].y);
         if (x > -1 && y > -1 && x < width && y < height) {
           grid[x][y] = true;
-          fill(40);
-          noStroke()
-          ellipse(x, y, 2, 2);
+          fill(40)
+          rect(x, y, 2, 2);
 
           var dx = abs(x - width / 2);
           var dy = abs(y - height / 2);
@@ -89,7 +90,7 @@ function draw() {
 
       if (j == speed - 1) {
         fill(40);
-        ellipse(particles[i].x, particles[i].y, 2, 2);
+        rect(particles[i].x, particles[i].y, 2, 2);
       }
 
     }
