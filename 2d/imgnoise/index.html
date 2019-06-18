@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+      canvas {
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <script src="https://cdn.bootcss.com/p5.js/0.8.0/p5.min.js"></script>
+    <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+    <script>
+      var sim = new SimplexNoise()
+      var img;
+      var cv;
+      var ctx;
+
+      function preload() {
+        img = loadImage("./1.jpg");
+      }
+
+      function setup() {
+        cv = createCanvas(1000, 1000);
+        // image(
+        //       img, 0 , 0
+        //     );
+        // noLoop();
+      }
+
+      function draw() {
+        let stepX = 20;
+        let stepY = 20;
+        const cellW = floor(width / stepX);
+        const cellH = floor(height / stepY);
+        for (let i = 0; i < stepX; i++) {
+          for (let j = 0; j < stepY; j++) {
+            image(
+              img,
+
+              i * cellW,
+              j * cellW,
+
+              cellW + cellW * (sim.noise2D(i / 20, (j + frameCount / 10) / 20) + .5) * 5,
+              cellH + cellH * (sim.noise2D(j / 20, (i + frameCount / 10) / 20 + 1000) + .5) * 5,
+
+              i * cellW,
+              j * cellH,
+
+              cellW + cellW * (sim.noise2D(i / 20, (j + frameCount / 10) / 20 + 1000) + 2) * 3,
+              cellH + cellH * (sim.noise2D(j / 20, (i + frameCount / 10) / 20) + 2) * 3,
+            );
+          }
+        }
+        stepX = noise(0, frameCount / 200 + 1000) * 40
+        stepY = noise(0, frameCount / 200) * 40
+      }
+
+      function mouseDragged() {}
+
+      function mouseReleased() {}
+    </script>
+  </body>
+</html>
