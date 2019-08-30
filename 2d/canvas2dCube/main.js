@@ -16,9 +16,16 @@ window.cubes = []
 
 class Vect {
     constructor (x, y, z, l) {
-        this.x = x * l
-        this.y = y * l
-        this.z = z * l
+        this.x = x
+        this.y = y
+        this.z = z
+        this.l = l
+    }
+
+    get2dPos() {
+        return {
+            x: 0
+        }
     }
 }
 
