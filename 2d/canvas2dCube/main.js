@@ -1,5 +1,5 @@
 {       
-// var simplex = new SimplexNoise()
+var simplex = new SimplexNoise()
 
 class Coptions {
     constructor(w, h) {
@@ -22,13 +22,17 @@ class Vect {
     }
 
     get pos2d () {
-        let x = Math.sin(this._angel * Math.PI / 180 + this.frame * 0.01) * this.l
+        let x = Math.sin(this._angel * Math.PI / 180 - this.frame * 0.01) * this.l
+        // * (Math.sin(this._angel * Math.PI / 180 + this.frame * 0.01))
         let y = this.l / Math.sin(45 * Math.PI / 180) * 0.5 * this.index
-        let z = Math.cos(this._angel * Math.PI / 180 + this.frame * 0.01) * this.l
+        // * (1-Math.cos(this._angel * Math.PI / 180 + this.frame * 0.01))
+        let z = Math.cos(this._angel * Math.PI / 180 - this.frame * 0.01) * this.l
         x = x * 0.8 + x * z / this.l * 0.2
         y = y * 0.8 + y * z / this.l * 0.2
         return {
-            x, y
+            x: x + simplex.noise2D(x / 100, y / 100) * 4,
+            y: y + simplex.noise2D(x / 100, y / 100) * 4,
+            z: z / this.l
         }
     }
 
@@ -72,20 +76,48 @@ class Cube {
     }
     draw () {
         push()
+        fill('rgba(0,0,0,.2)')
         translate(width / 2, height / 2)
         this.faces.forEach((face) => {
             face.vectors.map(vecoter => vecoter.update())
             face.vectors.reduce((a, b) => {
-                line(a.pos2d.x, a.pos2d.y, b.pos2d.x, b.pos2d.y)
-                // text(`${Math.floor(a.pos2d.x)}, ${Math.floor(a.pos2d.y)}`, a.pos2d.x + 4, a.pos2d.y + 4)
+                strokeWeight(3 * b.pos2d.z + 4)
+                drawingContext.setLineDash([5, 15])
+                // line(a.pos2d.x, a.pos2d.y, b.pos2d.x, b.pos2d.y)
+                beginShape()
+                curveVertex(a.pos2d.x, a.pos2d.y)
+                curveVertex(a.pos2d.x, a.pos2d.y)
+                curveVertex(a.pos2d.x, a.pos2d.y)
+                curveVertex(b.pos2d.x, b.pos2d.y)
+                curveVertex(b.pos2d.x, b.pos2d.y)
+                curveVertex(b.pos2d.x, b.pos2d.y)
+                endShape()
                 return b
             })
         })
         for(let i = 0; i < 4; i ++) {
-            line(this.faces[0].vectors[i].pos2d.x, 
-                this.faces[0].vectors[i].pos2d.y,
-                this.faces[1].vectors[i].pos2d.x, 
+            // if (this.faces[0].vectors[i].pos2d.z > 0) {
+            //     continue
+            // }
+            strokeWeight(3 * this.faces[0].vectors[i].pos2d.z + 4)
+            // line(this.faces[0].vectors[i].pos2d.x, 
+            //     this.faces[0].vectors[i].pos2d.y,
+            //     this.faces[1].vectors[i].pos2d.x, 
+            //     this.faces[1].vectors[i].pos2d.y)
+            beginShape()
+            curveVertex(this.faces[0].vectors[i].pos2d.x, 
+                this.faces[0].vectors[i].pos2d.y)
+            curveVertex(this.faces[0].vectors[i].pos2d.x, 
+                this.faces[0].vectors[i].pos2d.y)
+            curveVertex(this.faces[0].vectors[i].pos2d.x, 
+                this.faces[0].vectors[i].pos2d.y)
+            curveVertex(this.faces[1].vectors[i].pos2d.x, 
                 this.faces[1].vectors[i].pos2d.y)
+            curveVertex(this.faces[1].vectors[i].pos2d.x, 
+                this.faces[1].vectors[i].pos2d.y)
+            curveVertex(this.faces[1].vectors[i].pos2d.x, 
+                this.faces[1].vectors[i].pos2d.y)
+            endShape()
         }
         pop()
     }
@@ -94,15 +126,14 @@ class Cube {
 window.setup = () => {
     createCanvas(co.w, co.h)
     // frameRate(3)
-    cubes.push(new Cube(200))
     // setInterval(() => {
-    //     cubes.push(new Cube(150))
-    // }, 3000)
+        cubes.push(new Cube(200 - cubes.length * 5))
+    // }, 1000)
     // noLoop()
 }
 
 window.draw = () => {
-    background(200)
+    background('rgba(200,200,200,1)')
     cubes.forEach(cube => {
         cube.draw()
     })
