@@ -77,7 +77,7 @@ class Cube {
             face.vectors.map(vecoter => vecoter.update())
             face.vectors.reduce((a, b) => {
                 line(a.pos2d.x, a.pos2d.y, b.pos2d.x, b.pos2d.y)
-                text(`${Math.floor(a.pos2d.x)}, ${Math.floor(a.pos2d.y)}`, a.pos2d.x + 4, a.pos2d.y + 4)
+                // text(`${Math.floor(a.pos2d.x)}, ${Math.floor(a.pos2d.y)}`, a.pos2d.x + 4, a.pos2d.y + 4)
                 return b
             })
         })
@@ -95,9 +95,9 @@ window.setup = () => {
     createCanvas(co.w, co.h)
     // frameRate(3)
     cubes.push(new Cube(200))
-    setInterval(() => {
-        cubes.push(new Cube(200))
-    }, 3000)
+    // setInterval(() => {
+    //     cubes.push(new Cube(150))
+    // }, 3000)
     // noLoop()
 }
 
