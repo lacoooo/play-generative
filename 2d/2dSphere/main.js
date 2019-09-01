@@ -28,12 +28,12 @@
             let y =
             Math.sin(this.rotation.y * Math.PI / 180) * this.radius
             let z =
-            Math.cos( this.rotation.x * Math.PI / 180 ) * this.radius
+            Math.cos( this.rotation.x * Math.PI / 180 )
             * (1 - Math.sin(this.rotation.y * Math.PI / 180))
-            x = x - x * this.pers + x * this.pers * z / this.radius
-            y = y - y * this.pers + y * this.pers * z / this.radius
+            x = x - x * this.pers + x * this.pers * z
+            y = y - y * this.pers + y * this.pers * z
             return {
-                x, y, z
+                x, y, z: z + 1
             }
         }
     
@@ -64,7 +64,7 @@
             }
             this.vectors.forEach(vect => {
                 vect.update(this.rotation)
-                ellipse(vect.pos.x, vect.pos.y, 10, 10)
+                ellipse(vect.pos.x, vect.pos.y, vect.pos.z * 10, vect.pos.z * 10)
             })
             pop()
         }
