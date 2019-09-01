@@ -4,11 +4,6 @@ var Vertex = function(x, y, z) {
     this.z = parseFloat(z);
 };
 
-var Vertex2D = function(x, y) {
-    this.x = parseFloat(x);
-    this.y = parseFloat(y);
-};
-
 var Cube = function(center, side) {
     // Generate the vertices
     var d = side / 2;
@@ -36,28 +31,28 @@ var Cube = function(center, side) {
     ];
 };
 
-function project(M) {
-    return new Vertex2D(M.x, M.z);
-}
-
 function render(object, ctx, dx, dy) {
-    console.log(111)
+    var index = 0
     // Clear the previous frame
     ctx.clearRect(0, 0, 2 * dx, 2 * dy);
     ctx.save()
-    ctx.translate(dx, dy)
+    ctx.translate(dx, 0)
     for (var i = 0; i < object.faces.length; i++) {
         // Current face
         var face = object.faces[i];
 
+        ctx.beginPath();
+        // if (i > 0) continue
         // Draw the other vertices
-        for (var j = 1; j < face.length; j++) {
-            var P = project(face[j]);
+        for (var j = 0; j < face.length; j++) {
+            index ++
+            // console.log(index)
+            var P = face[j]
             if (j === 0) {
-                ctx.beginPath();
-                ctx.moveTo(P.x, -P.y);
+                ctx.moveTo(P.x, P.y);
             }
-            ctx.lineTo(P.x, -P.y);
+            // console.log(P.x, -P.z)
+            ctx.lineTo(P.x, P.y);
         }
 
         // Close the path and draw the face
@@ -79,7 +74,7 @@ function render(object, ctx, dx, dy) {
     // object style
     var ctx = canvas.getContext('2d');
     ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    // ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
 
     // Create the cube
     var cube_center = new Vertex(0, dy, 0);
