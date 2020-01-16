@@ -63,66 +63,66 @@ function swirl(p, weight = 1) {
     const newX = 0.8 * (sinr * p.x - cosr * p.y)
     const newY = 0.8 * (cosr * p.y + sinr * p.y)
     return createVector(weight * newX, weight * newY)
-  }
-  
-  function sinusoidal(v, amount) {
-    return createVector(amount * sin(v.x), amount * sin(v.y))
-  }
-  
-  function waves2(p, weight) {
-    const x = weight * (p.x + 0.9 * sin(p.y * 4))
-    const y = weight * (p.y + 0.5 * sin(p.x * 5.555))
+}
+
+function sinusoidal(v, amount = 1) {
+return createVector(amount * sin(v.x), amount * sin(v.y))
+}
+
+function waves2(p, weight = 1) {
+const x = weight * (p.x + 0.9 * sin(p.y * 4))
+const y = weight * (p.y + 0.5 * sin(p.x * 5.555))
+return createVector(x, y)
+}
+
+function polar(p, weight = 1) {
+    const r = p.mag()
+    const theta = atan2(p.x, p.y)
+    const x = theta / PI
+    const y = r - 2.0
+    return createVector(weight * x, weight * y)
+}
+
+function hyperbolic(v, amount = 1) {
+    const r = v.mag() + pow(10, -10)
+    const theta = atan2(v.x, v.y)
+    const x = amount * sin(theta) / r
+    const y = amount * cos(theta) * r
     return createVector(x, y)
-  }
-  
-  function polar(p, weight) {
-      const r = p.mag()
-      const theta = atan2(p.x, p.y)
-      const x = theta / PI
-      const y = r - 2.0
-      return createVector(weight * x, weight * y)
-  }
-  
-  function hyperbolic(v, amount) {
-      const r = v.mag() + pow(10, -10)
-      const theta = atan2(v.x, v.y)
-      const x = amount * sin(theta) / r
-      const y = amount * cos(theta) * r
-      return createVector(x, y)
-  }
-  
-  function power(p, weight) {
-      const theta = atan2(p.y, p.x)
-      const sinr = sin(theta)
-      const cosr = cos(theta)
-      const pow = weight * pow(p.mag(), sinr)
-      return createVector(pow * cosr, pow * sinr)
-  }
-  
-  function cosine(p, weight) {
-      const pix = p.x * PI
-      const x = weight * 0.8 * cos(pix) * cosh(p.y)
-      const y = -weight * 0.8 * sin(pix) * sinh(p.y)
-      return createVector(x, y)
-  }
-  
-  function cross(p, weight) {
-    const r = sqrt(1.0 / (sq(sq(p.x)-sq(p.y))) + pow(10, -10))
-    return createVector(weight * 0.8 * p.x * r, weight * 0.8 * p.y * r)
-  }
-  
-  function vexp(p, weight) {
-    const r = weight * exp(p.x)
-    return createVector(r * cos(p.y), r * sin(p.y))
-  }
-  
-  function pdj(v, amount) {
-      const pdj_a = 0.1
-      const pdj_b = 1.9
-      const pdj_c = -0.8
-      const pdj_d = -1.2
-      return createVector( amount * (sin(pdj_a * v.y) - cos(pdj_b * v.x)), amount * (sin(pdj_c * v.x) - cos(pdj_d * v.y)))
-  }
-  
-  function cosh(x) { return 0.5 * (exp(x) + exp(-x))}
-  function sinh(x) { return 0.5 * (exp(x) - exp(-x))}
+}
+
+function power(p, weight = 1) {
+    const theta = atan2(p.y, p.x)
+    const sinr = sin(theta)
+    const cosr = cos(theta)
+    const pow = weight * pow(p.mag(), sinr)
+    return createVector(pow * cosr, pow * sinr)
+}
+
+function cosine(p, weight = 1) {
+    const pix = p.x * PI
+    const x = weight * 0.8 * cos(pix) * cosh(p.y)
+    const y = -weight * 0.8 * sin(pix) * sinh(p.y)
+    return createVector(x, y)
+}
+
+function cross(p, weight = 1) {
+const r = sqrt(1.0 / (sq(sq(p.x)-sq(p.y))) + pow(10, -10))
+return createVector(weight * 0.8 * p.x * r, weight * 0.8 * p.y * r)
+}
+
+function vexp(p, weight = 1) {
+const r = weight * exp(p.x)
+return createVector(r * cos(p.y), r * sin(p.y))
+}
+
+function pdj(v, amount = 1) {
+    const pdj_a = 0.1
+    const pdj_b = 1.9
+    const pdj_c = -0.8
+    const pdj_d = -1.2
+    return createVector( amount * (sin(pdj_a * v.y) - cos(pdj_b * v.x)), amount * (sin(pdj_c * v.x) - cos(pdj_d * v.y)))
+}
+
+function cosh(x) { return 0.5 * (exp(x) + exp(-x))}
+function sinh(x) { return 0.5 * (exp(x) - exp(-x))}
