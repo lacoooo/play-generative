@@ -33,13 +33,13 @@ class Agent {
     const yy = map(this.pos.y, 0, height, -1, 1)
     const v = createVector(xx, yy)
     v.add(createVector(5,-3))
-    this.angle += 300 * map( noise(v.x / 1, v.y / 14), 0, 1, -1, 1)
-    + (255 - pic.get(this.pos.x, this.pos.y)[0]) / 10
+    this.angle += (pic.get(this.pos.x, this.pos.y)[0]) / 2 * map( noise(v.x * 2, v.y * 2), 0, 1, -1, 1)
+    
   }
 }
 
 function preload() {
-    pic = loadImage('http://images.paixin.com/avatar/2020/0005/e35dd12372206d7a42aa0a6e77ce1ee9.jpg')
+    pic = loadImage('http://images.paixin.com/avatar/2020/0005/4b0f53cc54a0a01bd7a2403f895fbd41.jpg')
 }
 
 function setup() {
@@ -50,8 +50,8 @@ function setup() {
 }
 
 function draw() {
-    // for (let i = 0; i < 1; i ++) {
-        if (agents.length < 2000) {
+    for (let i = 0; i < 20; i ++) {
+        if (agents.length < 5000) {
             const posx = random(0, 800)
             const posy = random(0, 800)
             if (pic.get(posx, posy)[0] < random(255)) {
@@ -74,7 +74,7 @@ function draw() {
             // update
             a.update()
         }
-    // }
+    }
 }
 
 function mouseClicked() {
