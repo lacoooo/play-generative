@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title></title>
+</head>
+
+<body>
+<script src="../../assets/simplex-noise.min.js"></script>
+<script src="../../assets/p5.min.js"></script>
+<script src="../../assets/math.js"></script>
+<script src="../../assets/dat.gui.min.js"></script>
+<script>
+
+const agents = []
+
+class Agent {
+  pos = {
+      x: 0, y: 0
+  }
+  angle = 0 // current angle of the agent
+
+  update() {
+    // modify position using current angle
+    this.pos.x += cos(this.angle)
+    this.pos.y += sin(this.angle)
+
+    const xx = 3 * map(this.pos.x, 0, width, -1, 1)
+    const yy = 3 * map(this.pos.y, 0, height, -1, 1)
+
+    const v = swirl(createVector(xx, yy), 1)
+    // v.add(createVector(5,-3))
+
+    this.angle += map( noise(v.x, v.y), 0, 1, -1, 1 ) * 2
+  }
+}
+
+function setup() {
+    createCanvas(800, 800)
+    background(240)
+    stroke(20, 10)
+    strokeWeight(0.7)
+
+    for (let i = 0; i < 5000; i++) {
+        const a = new Agent()
+        const posx = random(200, 600)
+        const posy = random(200, 600)
+        a.pos = createVector(posx, posy)
+        a.angle = random(10)
+        agents.push(a)
+    }
+}
+
+function draw() {
+    for (let i = 0; i < 10; i ++) {
+        for (let a of agents) {
+            push()
+            // position
+            translate(a.pos.x, a.pos.y)
+            // rotate
+            rotate(a.angle)
+            // paint
+            point(0, 0)
+            pop()
+            // update
+            a.update()
+        }
+    }
+}
+
+function mouseClicked() {
+
+}
+
+</script>
+</body>
+
+</html>
