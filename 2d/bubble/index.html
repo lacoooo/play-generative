@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="https://cdn.bootcss.com/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+  <script src="https://cdn.bootcss.com/p5.js/0.6.0/p5.min.js"></script>
+  <script>
+class Bubble {
+
+constructor(num, center = {x: width / 2, y: height / 2}) {
+  this.center = center
+  this.sidePoints = []
+  this.power = {
+    side: 1,
+    center: 90
+  }
+  for (let i = 0; i < num; i ++) {
+    this.sidePoints.push(this.initPoint(i, num))
+  }
+}
+
+get len () {
+  return this.sidePoints.length || 0
+}
+
+initPoint(i, num) {
+  return {
+    x: this.center.x + sin(i / num * PI * 2 + 1) * 50,
+    y: this.center.y + cos(i / num * PI * 2 + 1) * 50,
+    i
+  }
+}
+
+// inter() {
+//   for (let i = 0; i < this.len; i ++) {
+//     for (let j = 0; j < this.len; j++) {
+//       if (i === j) {
+//         continue
+//       }
+//       const a = this.sidePoints[i]
+//       const b = this.sidePoints[j]
+//       const power = this.power.center / dist(a.x, a.y, b.x, b.y)
+//     }
+//   }
+// }
+  
+sizeCalc() {
+  for(let i = 0; i < this.len; i++) {
+    const a = this.sidePoints[i]
+    const d = dist(a.x, a.y, this.center.x, this.center.y)
+    const driftX = (a.x - this.center.x)
+    const driftY = (a.y - this.center.y)
+    a.x += driftX
+    a.y += driftY
+  }
+}
+  /**
+   * 
+  */
+draw() {
+  this.sidePoints.reduce((a, b) => {
+    line(a.x, a.y, b.x, b.y)
+    // text(a.i, a.x, a.y)
+    return b
+  })
+  point(this.center.x, this.center.y)
+  // line(this.sidePoints[0].x, this.sidePoints[0].y,
+  //     this.sidePoints[this.sidePoints.length - 1].x,
+  //     this.sidePoints[this.sidePoints.length - 1].y)
+}
+
+}
+function setup() { 
+  createCanvas(1000, 1000)
+  frameRate(60)
+  bubble = new Bubble(10)
+  // noLoop()
+} 
+
+function draw() {
+  background(240)
+  // bubble.inter()
+  bubble.sizeCalc()
+  bubble.draw()
+}
+
+  </script>
+</body>
+
+</html>
