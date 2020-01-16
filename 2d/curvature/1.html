@@ -16,6 +16,7 @@
 <script>
 
 const agents = []
+let pic
 
 class Agent {
   pos = {
@@ -28,14 +29,17 @@ class Agent {
     this.pos.x += cos(this.angle)
     this.pos.y += sin(this.angle)
 
-    const xx = 3 * map(this.pos.x, 0, width, -1, 1)
-    const yy = 3 * map(this.pos.y, 0, height, -1, 1)
-
-    const v = swirl(createVector(xx, yy), 1)
-    // v.add(createVector(5,-3))
-
-    this.angle += map( noise(v.x, v.y), 0, 1, -1, 1 ) * 2
+    const xx = map(this.pos.x, 0, width, -1, 1)
+    const yy = map(this.pos.y, 0, height, -1, 1)
+    const v = createVector(xx, yy)
+    v.add(createVector(5,-3))
+    this.angle += 300 * map( noise(v.x / 1, v.y / 14), 0, 1, -1, 1)
+    + (255 - pic.get(this.pos.x, this.pos.y)[0]) / 10
   }
+}
+
+function preload() {
+    pic = loadImage('http://images.paixin.com/avatar/2020/0005/e35dd12372206d7a42aa0a6e77ce1ee9.jpg')
 }
 
 function setup() {
@@ -43,19 +47,21 @@ function setup() {
     background(240)
     stroke(20, 10)
     strokeWeight(0.7)
-
-    for (let i = 0; i < 5000; i++) {
-        const a = new Agent()
-        const posx = random(200, 600)
-        const posy = random(200, 600)
-        a.pos = createVector(posx, posy)
-        a.angle = random(10)
-        agents.push(a)
-    }
 }
 
 function draw() {
-    for (let i = 0; i < 10; i ++) {
+    // for (let i = 0; i < 1; i ++) {
+        if (agents.length < 2000) {
+            const posx = random(0, 800)
+            const posy = random(0, 800)
+            if (pic.get(posx, posy)[0] < random(255)) {
+                const a = new Agent()
+                a.pos = createVector(posx, posy)
+                a.angle = random(10)
+                agents.push(a)
+            }
+        }
+
         for (let a of agents) {
             push()
             // position
@@ -68,7 +74,7 @@ function draw() {
             // update
             a.update()
         }
-    }
+    // }
 }
 
 function mouseClicked() {

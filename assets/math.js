@@ -45,7 +45,7 @@ function superformula(n) {
     const superformula_m = 6
     const superformula_n1 = 1
     const superformula_n2 = 7
-    const uperformula_n3 = 8
+    const superformula_n3 = 8
     f1 = pow(abs(cos(superformula_m*n/4)/superformula_a), superformula_n2)
     f2 = pow(abs(sin(superformula_m*n/4)/superformula_b), superformula_n3)
     fr = pow(f1 + f2, -1/superformula_n1)
