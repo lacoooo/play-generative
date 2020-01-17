@@ -14,24 +14,20 @@
 <script src="../../assets/dat.gui.min.js"></script>
 <script>
 
-// number of particles
 const N = 500
- 
-// colors (some of them taken from http://www.colourlovers.com/pattern/5526827/bleak
+
 const cols = [ '#FF8A00', '#FFD200', '#749D9D', '#FCF5B3', '#B39500', '#272429' ]
- 
-// collection of all particles
+
 const particles = []
 
 class Particle {
-  // position
   x
   y
   dx
   dy
   id
   age
-  c = cols[ceil(random(cols.length))]
+  c = cols[floor(random(cols.length))]
  
   constructor(i) {
     this.id = i
@@ -41,24 +37,21 @@ class Particle {
   reset() {
     const angle = random(TWO_PI)
     const r = 5.0 * randomGaussian() + (width / 2 - 100) * (1.0 - pow(random(1.0), 7.0))
-    x = cos(angle) * r
-    y = sin(angle) * r
+    this.x = cos(angle) * r
+    this.y = sin(angle) * r
  
-    // set random age
-    age = ceil(random(100,1000))
+    this.age = ceil(random(100,1000))
   }
  
   draw() {
-   stroke(c)
-   point(x + width / 2, y + height / 2)
+   stroke(this.c)
+   point(this.x + width / 2, this.y + height / 2)
   }
  
-  // update position with externally calculated speed
-  // check also age
   update() {
-    x += dx
-    y += dy
-    if(--age < 0) {
+    this.x += this.dx
+    this.y += this.dy
+    if(--this.age < 0) {
       this.reset()
     }
   }
@@ -69,7 +62,7 @@ function setup() {
     createCanvas(1000, 1000)
     noFill()
     smooth()
-    strokeWeight(2.0) // exaggerate a little bit for a while
+    strokeWeight(2.0)
     background(0, 0, 20)
 
     for(let i=0; i < N; i ++) {
