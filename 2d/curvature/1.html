@@ -34,12 +34,16 @@ class Agent {
     const v = createVector(xx, yy)
     v.add(createVector(5,-3))
     this.angle += (pic.get(this.pos.x, this.pos.y)[0]) / 2 * map( noise(v.x * 2, v.y * 2), 0, 1, -1, 1)
-    
+
   }
 }
-
+const imgList = [
+    'http://images.paixin.com/avatar/2020/0005/82560f94a699c960960d4f2dd68ddc2f.jpg',
+    'http://images.paixin.com/avatar/2020/0005/4b0f53cc54a0a01bd7a2403f895fbd41.jpg',
+    'http://images.paixin.com/avatar/2020/0005/c68f42051fbdc240afcd0efca8837fe4.jpg'
+]
 function preload() {
-    pic = loadImage('http://images.paixin.com/avatar/2020/0005/4b0f53cc54a0a01bd7a2403f895fbd41.jpg')
+    pic = loadImage(imgList[0])
 }
 
 function setup() {
