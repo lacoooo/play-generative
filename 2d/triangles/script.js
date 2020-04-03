@@ -41,21 +41,40 @@
 
     if (d === 0) {
       ctx.beginPath();
-      const step = Math.floor(randomRange(2, 5))
+      const step = Math.floor(randomRange(2, 6))
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 1
       ctx.fillStyle = colors[Math.floor(Math.random() * length)];
-      ctx.moveTo(x + Math.cos(a) * s, y + Math.sin(a) * s);
-      const scale = randomRange(20, 200)
-      a += randomRange(100, 150) * Math.PI / 180;
-      for(let i = 0; i < step; i++) {
-        ctx.bezierCurveTo(x + Math.cos(a) * s + randomRange(0, scale),
-        y + Math.sin(a) * s + randomRange(0, scale),
-        x + Math.cos(a) * s + randomRange(0, scale),
-        y + Math.sin(a) * s + randomRange(0, scale),
-        x + Math.cos(a) * s + randomRange(0, scale),
-        y + Math.sin(a) * s + randomRange(0, scale))
+      const scale = randomRange(2, 100)
+      const begin = {
+        x: x + Math.cos(a) * s,
+        y: y + Math.sin(a) * s
       }
+      ctx.moveTo(begin.x, begin.y);
+      let end
+      for(let i = 0; i < step; i++) {
+        a += randomRange(60, 200) * Math.PI / 180;
+        end = {
+          x: x + Math.cos(a) * s + randomRange(0, scale),
+          y: y + Math.sin(a) * s + randomRange(0, scale)
+        }
+        ctx.bezierCurveTo(
+        x + Math.sin(a) * s + randomRange(0, scale),
+        y + Math.cos(a) * s + randomRange(0, scale),
+        x + Math.cos(a) * s + randomRange(0, scale),
+        y + Math.sin(a) * s + randomRange(0, scale),
+        end.x,
+        end.y
+        )
+      }
+      ctx.bezierCurveTo(
+        begin.x + randomRange(0, scale),
+        begin.y + randomRange(0, scale),
+        begin.x + randomRange(0, scale),
+        begin.y + randomRange(0, scale),
+        begin.x,
+        begin.y,
+      )
       ctx.closePath();
       ctx.stroke();
       ctx.fill();
@@ -88,5 +107,5 @@
   };
 
 
-  draw(ctx, cx, cy + (h * 0.1), h * 0.4, 4);
+  draw(ctx, cx, cy, h * 1, 7);
 })();
