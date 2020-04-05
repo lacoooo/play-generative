@@ -41,11 +41,11 @@
 
     if (d === 0) {
       ctx.beginPath();
-      const step = Math.floor(randomRange(2, 12));
+      const step = Math.floor(randomRange(3, 20));
       ctx.strokeStyle = "black";
       ctx.lineWidth = 1;
       ctx.fillStyle = colors[Math.floor(Math.random() * length)];
-      const scale = randomRange(0, 1000);
+      const scale = randomRange(0, 10);
       const begin = {
         x: x + Math.cos(a) * s,
         y: y + Math.sin(a) * s,
@@ -53,25 +53,37 @@
       ctx.moveTo(begin.x, begin.y);
       let end;
       for (let i = 0; i < step; i++) {
+        // a += ((360 / step) * Math.PI) / 180;
+        // end = {
+        //   x: x + Math.cos(a) * s,
+        //   y: y + Math.sin(a) * s,
+        // };
+        // ctx.lineTo(end.x, end.y)
+
         a += ((360 / step) * Math.PI) / 180;
         end = {
-          x: x + Math.cos(a) * s + randomRange(0, scale),
-          y: y + Math.sin(a) * s + randomRange(0, scale),
+          x: x + Math.cos(a) * s,
+          y: y + Math.sin(a) * s,
         };
         ctx.bezierCurveTo(
-          x + Math.sin(a) * s + randomRange(0, scale),
-          y + Math.cos(a) * s + randomRange(0, scale),
-          x + Math.cos(a) * s + randomRange(0, scale),
-          y + Math.sin(a) * s + randomRange(0, scale),
+          end.x * s + randomRange(0, scale),
+          end.y * s + randomRange(0, scale),
+          end.x * s + randomRange(0, scale),
+          end.y * s + randomRange(0, scale),
           end.x,
           end.y
         );
+
       }
+      // ctx.lineTo(
+      //   begin.x,
+      //   begin.y
+      // );
       ctx.bezierCurveTo(
-        begin.x + randomRange(0, scale),
-        begin.y + randomRange(0, scale),
-        begin.x + randomRange(0, scale),
-        begin.y + randomRange(0, scale),
+        begin.x * s + randomRange(0, scale),
+        begin.y * s + randomRange(0, scale),
+        begin.x * s + randomRange(0, scale),
+        begin.y * s + randomRange(0, scale),
         begin.x,
         begin.y
       );
@@ -106,5 +118,5 @@
     }
   };
 
-  draw(ctx, cx, cy, h * 1, 7);
+  draw(ctx, cx, cy, h * 1, 5);
 })();
