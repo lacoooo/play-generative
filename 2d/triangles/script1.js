@@ -35,58 +35,46 @@
   ctx.fillStyle = colors[Math.floor(Math.random() * length)];
   ctx.rect(0, 0, w, h);
   ctx.fill();
+  ctx.lineCap = "round"
+  ctx.lineJoin="round"
+  ctx.miterLimit=1
   const draw = (ctx, x, y, s, d) => {
-    let ar = randomRange(70, 120);
+    let ar = randomRange(70, 200);
     let a = ar / 10;
 
     if (d === 0) {
       ctx.beginPath();
-      const step = Math.floor(randomRange(3, 20));
+      const step = Math.floor(randomRange(3, 5));
       ctx.strokeStyle = "black";
       ctx.lineWidth = 1;
       ctx.fillStyle = colors[Math.floor(Math.random() * length)];
-      const scale = randomRange(0, 10);
+      const scale = randomRange(0, 200);
       const begin = {
         x: x + Math.cos(a) * s,
         y: y + Math.sin(a) * s,
       };
       ctx.moveTo(begin.x, begin.y);
       let end;
+      let endPrev = {
+        x: 0, y: 0
+      };
       for (let i = 0; i < step; i++) {
-        // a += ((360 / step) * Math.PI) / 180;
-        // end = {
-        //   x: x + Math.cos(a) * s,
-        //   y: y + Math.sin(a) * s,
-        // };
-        // ctx.lineTo(end.x, end.y)
-
         a += ((360 / step) * Math.PI) / 180;
         end = {
           x: x + Math.cos(a) * s,
           y: y + Math.sin(a) * s,
         };
         ctx.bezierCurveTo(
-          end.x * s + randomRange(0, scale),
-          end.y * s + randomRange(0, scale),
-          end.x * s + randomRange(0, scale),
-          end.y * s + randomRange(0, scale),
+          (endPrev.x || begin.x) + randomRange(-scale, scale),
+          (endPrev.y || begin.y) + randomRange(-scale, scale),
+          end.x + randomRange(-scale, scale),
+          end.y + randomRange(-scale, scale),
           end.x,
           end.y
         );
+        endPrev = end
 
       }
-      // ctx.lineTo(
-      //   begin.x,
-      //   begin.y
-      // );
-      ctx.bezierCurveTo(
-        begin.x * s + randomRange(0, scale),
-        begin.y * s + randomRange(0, scale),
-        begin.x * s + randomRange(0, scale),
-        begin.y * s + randomRange(0, scale),
-        begin.x,
-        begin.y
-      );
       ctx.closePath();
       ctx.stroke();
       ctx.fill();
@@ -118,5 +106,5 @@
     }
   };
 
-  draw(ctx, cx, cy, h * 1, 5);
+  draw(ctx, cx, cy, h * 1, 8);
 })();
