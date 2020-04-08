@@ -44,7 +44,7 @@
 
     if (d === 0) {
       ctx.beginPath();
-      const step = Math.floor(randomRange(3, 5));
+      const step = Math.floor(randomRange(3, 4));
       ctx.strokeStyle = "black";
       ctx.lineWidth = 1;
       ctx.fillStyle = colors[Math.floor(Math.random() * length)];
@@ -106,5 +106,5 @@
     }
   };
 
-  draw(ctx, cx, cy, h * 1, 8);
+  draw(ctx, cx, cy, h * 1, 5);
 })();

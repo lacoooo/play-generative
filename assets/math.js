@@ -1,3 +1,9 @@
+if (!createVector) {
+    createVector = function(x, y) {
+        return {x, y}
+    }
+}
+
 function cartesian(n) {
     return createVector(cos(n), sin(n))
 }
