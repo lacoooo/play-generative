@@ -1,18 +1,9 @@
-/**
- * @param {number} x
- * @return {boolean}
- */
-var isPalindrome = function(x) {
-    x = String(x)
-    for (var i = 0; i < x.length / 2; i ++) {
-        if (i === x.length - i - 1) {
-            break
-        }
-        if (x[i] !== x[x.length  - i - 1]) {
-            return false
-        }
-    }
-    return true
+var threeSum = function(nums) {
+    
+    var arr = []
+    
+    return arr
+
 };
 
-console.log(isPalindrome(12123))
+console.log(threeSum([-1, 0, 1, 2, -1, -4]))
